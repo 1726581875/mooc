@@ -49,7 +49,9 @@ public class RespResult {
     public static RespResult fail(String msg){
         return new RespResult(500, msg ,null);
     }
-
+    public static RespResult fail(int status,String msg){
+        return new RespResult(status, msg ,null);
+    }
 
     /**
      * 判断是否成功
