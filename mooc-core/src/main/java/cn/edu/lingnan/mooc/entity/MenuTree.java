@@ -23,5 +23,11 @@ public class MenuTree {
     private String label;
 
     private Integer parentId;
+    
+    private String permission;
+
+    private String router;
+
+    private Integer leaf;
 
 }

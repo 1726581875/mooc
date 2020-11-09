@@ -1,0 +1,16 @@
+#忽略idea的相关文件
+.idea/
+*.iml
+
+#java字节码
+*.class
+
+#node.js相关
+node_modules/
+admin-web/node_modules/
+
+#maven
+*/target/
+
+#日志文件
+*/logs/*

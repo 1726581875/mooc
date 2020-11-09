@@ -66,9 +66,17 @@ public class MenuTreeService {
             }
 
         });
-
     }
 
 
+    /**
+     * 根据角色Id列表查询菜单权限
+     * @param roleIdList
+     * @return
+     */
+    public List<MenuTree> findMenuPermByRoleIds(List<Integer> roleIdList){
+        
+        return menuTreeRepository.findMenuPermByRoleIds(roleIdList);
+    }
 
 }

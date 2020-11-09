@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.param.RoLeParam;
 import cn.edu.lingnan.mooc.service.RoleService;
 import cn.edu.lingnan.mooc.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @GetMapping("/{id}")
+    public RespResult findRoleById(@PathVariable Integer id){
+        return RespResult.success(roleService.findById(id));
+    }
+
 
     /**
      * 分页查询role接口
@@ -60,7 +67,7 @@ public class RoleController {
      * @return
      */
     @PostMapping("/role")
-    public RespResult insertOrUpdate(@RequestBody Role role) {
+    public RespResult insertOrUpdate(@RequestBody RoLeParam role) {
         Integer flag = roleService.insertOrUpdate(role);
         if (flag == 0) {
             return RespResult.fail("新增Role失败");

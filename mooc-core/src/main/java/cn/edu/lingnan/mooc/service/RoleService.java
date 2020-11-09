@@ -1,14 +1,24 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.entity.MenuTree;
 import cn.edu.lingnan.mooc.entity.Role;
+import cn.edu.lingnan.mooc.entity.RoleMenuRel;
+import cn.edu.lingnan.mooc.param.RoLeParam;
+import cn.edu.lingnan.mooc.repository.RoleMenuRelRepository;
 import cn.edu.lingnan.mooc.repository.RoleRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
+import cn.edu.lingnan.mooc.vo.RoleVO;
+import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -17,20 +27,36 @@ import java.util.Optional;
 @Service
 public class RoleService {
 
-    @Resource
+    @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private MenuTreeService menuTreeService;
+    @Autowired
+    private RoleMenuRelRepository roleMenuRelRepository;
 
     /**
-     * 根据Id查找
+     * 根据Id查找角色
      * @param id
      * @return 如果找不到返回null
      */
-    public Role findById(Integer id){
+    public RoleVO findById(Integer id){
+        // 查询角色基本信息
         Optional<Role> optional = roleRepository.findById(id);
         if(!optional.isPresent()){
             return null;
         }
-        return optional.get();
+        Role role = optional.get();
+        //赋值给VO对象
+        RoleVO roleVO = CopyUtil.copy(role, RoleVO.class);
+        //查询该角色对应的权限Id
+        List<MenuTree> menuList = menuTreeService.findMenuPermByRoleIds(Lists.newArrayList(id));
+       // 取到IdList
+        List<Integer> menuIdLIst = menuList.stream().map(e -> e.getId()).collect(Collectors.toList());
+        List<Integer> leafNodeIdList = menuList.stream().filter(menu -> menu.getLeaf() == 1)
+                .map(menu -> menu.getId()).collect(Collectors.toList());
+        roleVO.setMenuIdList(menuIdLIst);
+        roleVO.setLeafNodeIdList(leafNodeIdList);
+        return roleVO;
     }
 
     public List<Role> findAll(){
@@ -53,7 +79,7 @@ public class RoleService {
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<Role> findPage(Role matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<RoleVO> findPage(Role matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -65,10 +91,10 @@ public class RoleService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         // 3、 传入条件、分页参数，调用方法
         Page<Role> rolePage = roleRepository.findAll(example, pageable);
-        //获取page对象里的list
-        List<Role> roleList = rolePage.getContent();
+        //获取page对象里的list,并复制到 转换为RoleVO对象list
+        List<RoleVO> roleList = CopyUtil.copyList(rolePage.getContent(),RoleVO.class);
         /* 4. 封装到自定义分页结果 */
-        PageVO<Role> pageVO = new PageVO<>();
+        PageVO<RoleVO> pageVO = new PageVO<>();
         pageVO.setContent(roleList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
@@ -92,18 +118,44 @@ public class RoleService {
     /**
      * 插入或更新数据
      * 说明:如果参数带id表示是更新，否则就是插入
-     * @param role
+     * @param roLeParam
      * @return 返回成功数
      */
-    public Integer insertOrUpdate(Role role){
-        if (role == null) {
+    @Transactional
+    public Integer insertOrUpdate(RoLeParam roLeParam){
+        if (roLeParam == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
+        // 保存菜单权限
+        List<Integer> paramMenuIdList = roLeParam.getMenuIdList();
+        Role role = CopyUtil.copy(roLeParam, Role.class);
         // id不为空，表示更新操作
-        if(role.getId() != null){
-          return this.update(role);
+        if(roLeParam.getId() != null){
+            if(paramMenuIdList != null){
+                //查询该角色对应的menuId
+                List<RoleMenuRel> localRoleMenuRelList = roleMenuRelRepository.findAll(Example.of(new RoleMenuRel(roLeParam.getId(), null)));
+
+                // 获取将要删除的RoleMenuRel对象
+                List<RoleMenuRel> withDeleteRoleMenu = localRoleMenuRelList.stream()
+                        .filter(roleMenuRel -> !paramMenuIdList.contains(roleMenuRel.getId())).collect(Collectors.toList());
+               // 构建要插入或更新的RoleMenuRel对象
+                List<RoleMenuRel> roleMenuRelList = paramMenuIdList.stream()
+                        .map(menuId -> new RoleMenuRel(role.getId(), menuId)).collect(Collectors.toList());
+
+                roleMenuRelRepository.saveAll(roleMenuRelList);
+                roleMenuRelRepository.deleteInBatch(withDeleteRoleMenu);
+            }
+
+            return this.update(role);
         }
         Role newRole = roleRepository.save(role);
+
+        if(paramMenuIdList != null){
+            List<RoleMenuRel> roleMenuRelList = paramMenuIdList.stream()
+                    .map(menuId -> new RoleMenuRel(role.getId(), menuId)).collect(Collectors.toList());
+            roleMenuRelRepository.saveAll(roleMenuRelList);
+        }
+
         return newRole == null ? 0 : 1;
     }
 
@@ -131,9 +183,18 @@ public class RoleService {
         return updateRole == null ? 0 : 1;
     }
 
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
 
+    @Transactional
     public Integer deleteById(Integer id){
+        // 删除角色
         roleRepository.deleteById(id);
+        // 删除角色权限
+        roleMenuRelRepository.deleteAllByRoleIdIn(Lists.newArrayList(id));
         return  findById(id) == null ? 1 : 0;
     }
 
@@ -143,8 +204,11 @@ public class RoleService {
      * @return 删除条数
      */
     public Integer deleteAllByIds(List<Integer> roleIdList){
+        //批量删除角色
         List<Role> delRoleList = roleRepository.findAllById(roleIdList);
         roleRepository.deleteInBatch(delRoleList);
+        //批量删除角色权限
+        roleMenuRelRepository.deleteAllByRoleIdIn(roleIdList);
         return delRoleList.size();
     }
 

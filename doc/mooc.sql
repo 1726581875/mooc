@@ -160,7 +160,8 @@ CREATE TABLE `role`(
 `name` varchar(20) NOT NULL COMMENT '角色名称',
 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-PRIMARY KEY (`id`)
+PRIMARY KEY (`id`),
+UNIQUE KEY `uk_name` (`name`)
 )ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='系统角色表';
 
 -- 角色表插入数据
