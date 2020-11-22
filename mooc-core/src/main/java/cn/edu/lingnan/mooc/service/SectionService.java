@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.Section;
+import cn.edu.lingnan.mooc.model.Section;
 import cn.edu.lingnan.mooc.repository.SectionRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import lombok.extern.slf4j.Slf4j;

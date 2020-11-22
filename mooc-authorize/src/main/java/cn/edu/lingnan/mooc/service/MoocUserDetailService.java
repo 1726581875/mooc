@@ -1,10 +1,14 @@
 package cn.edu.lingnan.mooc.service;
 
-import cn.edu.lingnan.mooc.entity.MoocManager;
+import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.repository.MenuTreeRepository;
 import cn.edu.lingnan.mooc.repository.MoocManagerRepository;
+import cn.edu.lingnan.mooc.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +16,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -26,12 +34,23 @@ public class MoocUserDetailService  implements UserDetailsService {
 
     @Resource
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
+    @Resource
     private MoocManagerRepository moocManagerRepository;
+    @Resource
+    private MenuTreeRepository menuTreeRepository;
+    @Resource
+    private RoleRepository roleRepository;
+
+    private  AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+/*        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);*/
+
 
         // 查询该用户
         MoocManager manager = new MoocManager();
@@ -65,4 +84,25 @@ public class MoocUserDetailService  implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
 
     }
+
+    public Optional<MoocManager> findManagerByAccount(String account){
+        // 查询该用户
+        MoocManager manager = new MoocManager();
+        manager.setAccount(account);
+        return moocManagerRepository.findOne(Example.of(manager));
+    }
+
+
+    public List<MenuTree> getMenuByManagerId(Integer managerId){
+
+        List<Role> roleList = roleRepository.findAllRoleByManagerId(managerId);
+        if(CollectionUtils.isEmpty(roleList)){
+            log.error("该管理员没有任何角色");
+            return new ArrayList<>();
+        }
+        List<Integer> roleIdList = roleList.stream().map(Role::getId).collect(Collectors.toList());
+        return menuTreeRepository.findMenuPermByRoleIds(roleIdList);
+    }
+
+
 }

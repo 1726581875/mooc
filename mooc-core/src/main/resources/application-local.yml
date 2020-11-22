@@ -1,0 +1,32 @@
+server:
+  port: 9001
+#  servlet:
+#    context-path: /core
+#向eureka注册
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
+
+spring:
+  application:
+    name: mooc-core
+#配置数据库连接参数
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mooc?characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+  #redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password: root
+  #执行数据库操作时，控制台打印sql语句
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+      format_sql: true
+    hibernate:
+      ddl-auto: update

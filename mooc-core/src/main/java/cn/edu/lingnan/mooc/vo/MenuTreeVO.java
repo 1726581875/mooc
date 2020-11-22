@@ -1,9 +1,6 @@
 package cn.edu.lingnan.mooc.vo;
 
 import cn.edu.lingnan.mooc.dto.MenuTreeDTO;
-import cn.edu.lingnan.mooc.entity.MenuTree;
-import com.sun.org.apache.xerces.internal.util.SecurityManager;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;

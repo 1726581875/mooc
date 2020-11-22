@@ -2,7 +2,9 @@ package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.service.MoocManagerService;
-import cn.edu.lingnan.mooc.entity.MoocManager;
+import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.mooc.util.CopyUtil;
+import cn.edu.lingnan.mooc.vo.MoocManagerVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -28,6 +30,7 @@ public class MoocManagerController {
      * @param pageSize
      * @return
      */
+
     @GetMapping("/list")
     public RespResult findByPage(MoocManager matchObject,
                                  @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
@@ -60,8 +63,10 @@ public class MoocManagerController {
      * @return
      */
     @PostMapping("/moocManager")
-    public RespResult insertOrUpdate(@RequestBody MoocManager moocManager) {
-        Integer flag = moocManagerService.insertOrUpdate(moocManager);
+    public RespResult insertOrUpdate(@RequestBody MoocManagerVO moocManager) {
+        MoocManager manager = CopyUtil.copy(moocManager, MoocManager.class);
+        manager.setStatus(moocManager.isStatus() ? 1 : 0);
+        Integer flag = moocManagerService.insertOrUpdate(manager);
         if (flag == 0) {
             return RespResult.fail("新增MoocManager失败");
         }

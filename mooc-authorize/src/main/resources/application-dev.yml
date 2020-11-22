@@ -18,3 +18,8 @@ spring:
       format_sql: true
     hibernate:
       ddl-auto: update
+#redis配置  host地址  端口port redis默认是6379 还有密码
+  redis:
+    host: localhost
+    port: 6379
+    password: root

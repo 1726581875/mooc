@@ -4,7 +4,11 @@ import cn.edu.lingnan.mooc.config.handle.MoocAuthenticationFailureHandler;
 import cn.edu.lingnan.mooc.exception.VerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,6 +30,8 @@ public class VerifyCodeFilter extends OncePerRequestFilter {
 
     private MoocAuthenticationFailureHandler failureHandler;
 
+    private AuthenticationManagerBuilder authenticationManagerBuilder;
+
     public VerifyCodeFilter(MoocAuthenticationFailureHandler failureHandler){
         this.failureHandler = failureHandler;
     }
@@ -38,6 +44,13 @@ public class VerifyCodeFilter extends OncePerRequestFilter {
         //如果是登陆请求才校验图片验证码
         if(request.getRequestURI().equals("/mooc/admin/login")
                 && request.getMethod().toUpperCase().equals("POST")) {
+
+/*            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(username, password);
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            */
+
             //获取到session里存的验证码
             String sessionVerifyCode = (String) request.getSession().getAttribute("verifyCode");
             //获取前端输入的验证码

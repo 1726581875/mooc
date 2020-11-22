@@ -1,14 +1,20 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.MoocManager;
+import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.enums.UserEnum;
 import cn.edu.lingnan.mooc.repository.MoocManagerRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
+import cn.edu.lingnan.mooc.vo.MoocManagerVO;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -19,7 +25,8 @@ public class MoocManagerService {
 
     @Resource
     private MoocManagerRepository moocManagerRepository;
-
+    @Resource
+    private RoleService roleService;
     /**
      * 根据Id查找
      * @param id
@@ -53,7 +60,7 @@ public class MoocManagerService {
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<MoocManager> findPage(MoocManager matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<MoocManagerVO> findPage(MoocManager matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -62,14 +69,30 @@ public class MoocManagerService {
         Example<MoocManager> example = Example.of(matchObject,matcher);
 
         // 2、 构造分页参数 ,第几页,每页大小
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
         // 3、 传入条件、分页参数，调用方法
         Page<MoocManager> moocManagerPage = moocManagerRepository.findAll(example, pageable);
         //获取page对象里的list
         List<MoocManager> moocManagerList = moocManagerPage.getContent();
+        // 将返回给前端的VO对象
+        List<MoocManagerVO> moocManagerVOList = new ArrayList<>(moocManagerList.size());
+        // 用户对应的获取角色列表
+        Map<Integer, List<Role>> roleMap = roleService.findRoleByManagerIdList(moocManagerList.stream().map(e -> e.getId()).collect(Collectors.toList()));
+
+        moocManagerList.forEach(manager -> {
+            MoocManagerVO managerVO = new MoocManagerVO();
+            managerVO.setId(manager.getId());
+            managerVO.setName(manager.getName());
+            managerVO.setAccount(manager.getAccount());
+            managerVO.setCreateTime(manager.getCreateTime());
+            managerVO.setStatus(UserEnum.isEnable(manager.getStatus()));
+            managerVO.setRoleList(roleMap.get(manager.getId()));
+            moocManagerVOList.add(managerVO);
+        });
+
         /* 4. 封装到自定义分页结果 */
-        PageVO<MoocManager> pageVO = new PageVO<>();
-        pageVO.setContent(moocManagerList);
+        PageVO<MoocManagerVO> pageVO = new PageVO<>();
+        pageVO.setContent(moocManagerVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(moocManagerPage.getTotalPages());

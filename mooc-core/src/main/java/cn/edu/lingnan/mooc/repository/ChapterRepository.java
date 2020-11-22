@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import cn.edu.lingnan.mooc.entity.Chapter;
+import cn.edu.lingnan.mooc.model.Chapter;
 
 /**
  * @author xmz

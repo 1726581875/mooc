@@ -1,7 +1,10 @@
 package cn.edu.lingnan.mooc.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import cn.edu.lingnan.mooc.entity.Role;
+import cn.edu.lingnan.mooc.model.Role;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  * @author xmz
@@ -11,4 +14,6 @@ import cn.edu.lingnan.mooc.entity.Role;
  */
 public interface RoleRepository extends JpaRepository<Role, Integer>,JpaSpecificationExecutor<Role> {
 
+    @Query(value = "select r.* from role r, manager_role_rel mr where r.id = mr.role_id and mr.manager_id = ?1",nativeQuery=true)
+    List<Role> findAllRoleInManagerId(Integer managerId);
 }

@@ -1,23 +1,22 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.MenuTree;
-import cn.edu.lingnan.mooc.entity.Role;
-import cn.edu.lingnan.mooc.entity.RoleMenuRel;
+import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.model.RoleMenuRel;
 import cn.edu.lingnan.mooc.param.RoLeParam;
 import cn.edu.lingnan.mooc.repository.RoleMenuRelRepository;
 import cn.edu.lingnan.mooc.repository.RoleRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import cn.edu.lingnan.mooc.vo.RoleVO;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
  * @date: 2020/10/23
  */
 @Service
+@Slf4j
 public class RoleService {
 
     @Autowired
@@ -212,5 +212,17 @@ public class RoleService {
         return delRoleList.size();
     }
 
+    public Map<Integer,List<Role>> findRoleByManagerIdList(List<Integer> managerIdList){
+        if(managerIdList == null && managerIdList.isEmpty()){
+            log.error("查询角色列表传入的id不能为null");
+            throw new IllegalArgumentException("传入的id不能为null");
+        }
+        // TODO 有时间要去优化
+        Map<Integer,List<Role>> roleMap = new HashMap<>(managerIdList.size());
+        managerIdList.forEach(managerId -> roleMap.put(managerId,roleRepository.findAllRoleInManagerId(managerId)));
+        //List<Role> roleList = roleRepository.findAllRoleInManagerIdList(managerIdList);
+        //Map<Integer, List<Role>> roleMap = roleList.stream().collect(Collectors.groupingBy(Role::getId));
+        return roleMap;
+    }
 
 }

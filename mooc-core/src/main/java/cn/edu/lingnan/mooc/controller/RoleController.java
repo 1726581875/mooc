@@ -1,9 +1,10 @@
 package cn.edu.lingnan.mooc.controller;
 
+import cn.edu.lingnan.mooc.annotation.Check;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.param.RoLeParam;
 import cn.edu.lingnan.mooc.service.RoleService;
-import cn.edu.lingnan.mooc.entity.Role;
+import cn.edu.lingnan.mooc.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,6 +21,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    @Check("role:add")
     @GetMapping("/{id}")
     public RespResult findRoleById(@PathVariable Integer id){
         return RespResult.success(roleService.findById(id));
@@ -41,6 +43,12 @@ public class RoleController {
                                  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
 
         return RespResult.success(roleService.findPage(matchObject, pageIndex, pageSize));
+    }
+
+    @Check("role:select")
+    @GetMapping("/all")
+    public RespResult findAllRole() {
+        return RespResult.success(roleService.findAll());
     }
 
     /**

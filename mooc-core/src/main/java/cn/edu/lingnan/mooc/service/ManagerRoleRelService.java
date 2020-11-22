@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.ManagerRoleRel;
+import cn.edu.lingnan.mooc.model.ManagerRoleRel;
 import cn.edu.lingnan.mooc.repository.ManagerRoleRelRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import org.springframework.stereotype.Service;

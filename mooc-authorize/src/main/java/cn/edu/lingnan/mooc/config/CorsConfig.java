@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.config;
 
+import cn.edu.lingnan.mooc.util.SpringContextHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,5 +44,10 @@ public class CorsConfig extends WebMvcConfigurationSupport {
                 .maxAge(3600);
     }
 
+
+    @Bean
+    public SpringContextHolder getSpringContextHolder(){
+        return new SpringContextHolder();
+    }
 
 }

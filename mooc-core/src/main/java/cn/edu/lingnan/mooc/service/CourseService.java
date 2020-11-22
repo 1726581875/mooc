@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.Course;
+import cn.edu.lingnan.mooc.model.Course;
 import cn.edu.lingnan.mooc.repository.CourseRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import org.springframework.stereotype.Service;

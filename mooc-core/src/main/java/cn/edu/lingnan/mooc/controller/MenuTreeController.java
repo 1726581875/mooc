@@ -20,6 +20,10 @@ public class MenuTreeController {
     @Autowired
     private MenuTreeService menuTreeService;
 
+    /**
+     * 获取权限菜单树
+     * @return
+     */
     @GetMapping("/tree")
     public RespResult getMenuTree(){
         return RespResult.success(menuTreeService.getMenuTree());

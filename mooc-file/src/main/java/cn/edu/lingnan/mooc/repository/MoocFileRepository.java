@@ -1,5 +1,5 @@
 package cn.edu.lingnan.mooc.repository;
-import cn.edu.lingnan.mooc.entity.MoocFile;
+import cn.edu.lingnan.mooc.model.MoocFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

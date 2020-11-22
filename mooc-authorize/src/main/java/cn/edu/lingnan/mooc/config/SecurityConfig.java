@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +25,8 @@ import org.springframework.web.cors.CorsUtils;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Autowired
     // spring在启动时会自动注入ObjectMapper，用于转换json串
@@ -61,12 +64,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login/msg")
                 .loginProcessingUrl("/mooc/admin/login")
                 //当登录成功，返回成功json
-                .successHandler((request,response,authentication) ->{
+/*                .successHandler((request,response,authentication) ->{
                     log.info("登录成功");
                     response.setContentType("application/json;charset=UTF-8");
                     RespResult respResult = RespResult.success("登录成功");
                     response.getWriter().write(objectMapper.writeValueAsString(respResult));
-                })
+                })*/
+                .successHandler(successHandler)
                 //当登录失败，返回失败json
                 .failureHandler((request,response,exception) ->{
                     log.info("登录失败,原因：{}",exception.getMessage());

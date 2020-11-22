@@ -2,7 +2,7 @@ package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.dto.ChapterDTO;
-import cn.edu.lingnan.mooc.entity.Chapter;
+import cn.edu.lingnan.mooc.model.Chapter;
 import cn.edu.lingnan.mooc.service.ChapterService;
 import com.alibaba.excel.EasyExcel;
 import lombok.extern.slf4j.Slf4j;

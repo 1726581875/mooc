@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.repository;
 
-import cn.edu.lingnan.mooc.entity.MenuTree;
+import cn.edu.lingnan.mooc.model.MenuTree;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface MenuTreeRepository extends JpaRepository<MenuTree,Integer> {
 
-    @Query(value = "select m.* from menu_tree m, role_menu_rel r where m.id = r.menu_id and role_id in ?1",nativeQuery=true)
+    @Query(value = "select m.* from menu_tree m, role_menu_rel r where m.id = r.menu_id and r.role_id in ?1",nativeQuery=true)
     List<MenuTree> findMenuPermByRoleIds(List<Integer> roleIdList);
 }

@@ -53,6 +53,10 @@ public class RespResult {
         return new RespResult(status, msg ,null);
     }
 
+    public static RespResult failUnKnownError(){
+        return new RespResult(-1, "未知异常" ,null);
+    }
+
     /**
      * 判断是否成功
      * @return
