@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.redis;
 
-import cn.edu.lingnan.mooc.model.UserToken;
+import cn.edu.lingnan.mooc.entity.UserToken;
 import cn.edu.lingnan.mooc.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

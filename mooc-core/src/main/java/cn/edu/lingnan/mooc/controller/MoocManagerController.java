@@ -2,7 +2,7 @@ package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.service.MoocManagerService;
-import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.mooc.entity.MoocManager;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import cn.edu.lingnan.mooc.vo.MoocManagerVO;
 import org.springframework.beans.factory.annotation.Autowired;

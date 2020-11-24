@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.role;
 
-import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.mooc.entity.MenuTree;
 import cn.edu.lingnan.mooc.repository.MenuTreeRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.dto.MenuTreeDTO;
-import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.mooc.entity.MenuTree;
 import cn.edu.lingnan.mooc.repository.MenuTreeRepository;
 import cn.edu.lingnan.mooc.util.CopyUtil;
 import cn.edu.lingnan.mooc.vo.MenuTreeVO;

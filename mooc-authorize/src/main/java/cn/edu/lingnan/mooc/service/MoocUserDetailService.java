@@ -1,8 +1,8 @@
 package cn.edu.lingnan.mooc.service;
 
-import cn.edu.lingnan.mooc.model.MenuTree;
-import cn.edu.lingnan.mooc.model.MoocManager;
-import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.entity.MenuTree;
+import cn.edu.lingnan.mooc.entity.MoocManager;
+import cn.edu.lingnan.mooc.entity.Role;
 import cn.edu.lingnan.mooc.repository.MenuTreeRepository;
 import cn.edu.lingnan.mooc.repository.MoocManagerRepository;
 import cn.edu.lingnan.mooc.repository.RoleRepository;

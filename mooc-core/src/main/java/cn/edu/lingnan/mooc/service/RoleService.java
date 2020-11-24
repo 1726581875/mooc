@@ -1,9 +1,9 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.model.MenuTree;
-import cn.edu.lingnan.mooc.model.Role;
-import cn.edu.lingnan.mooc.model.RoleMenuRel;
+import cn.edu.lingnan.mooc.entity.MenuTree;
+import cn.edu.lingnan.mooc.entity.Role;
+import cn.edu.lingnan.mooc.entity.RoleMenuRel;
 import cn.edu.lingnan.mooc.param.RoLeParam;
 import cn.edu.lingnan.mooc.repository.RoleMenuRelRepository;
 import cn.edu.lingnan.mooc.repository.RoleRepository;

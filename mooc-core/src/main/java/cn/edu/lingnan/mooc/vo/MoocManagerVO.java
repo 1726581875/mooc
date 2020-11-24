@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.vo;
 
-import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.mooc.entity.MoocManager;
 import cn.edu.lingnan.mooc.util.SpringContextHolder;
 import cn.edu.lingnan.mooc.vo.MoocManagerVO;
 import org.junit.Test;

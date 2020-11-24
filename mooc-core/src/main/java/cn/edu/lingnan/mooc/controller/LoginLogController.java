@@ -2,7 +2,7 @@ package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.service.LoginLogService;
-import cn.edu.lingnan.mooc.model.LoginLog;
+import cn.edu.lingnan.mooc.entity.LoginLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

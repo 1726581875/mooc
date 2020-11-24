@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.util;
 
-import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.entity.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

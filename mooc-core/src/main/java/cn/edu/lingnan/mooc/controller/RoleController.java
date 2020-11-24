@@ -4,7 +4,7 @@ import cn.edu.lingnan.mooc.annotation.Check;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.param.RoLeParam;
 import cn.edu.lingnan.mooc.service.RoleService;
-import cn.edu.lingnan.mooc.model.Role;
+import cn.edu.lingnan.mooc.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

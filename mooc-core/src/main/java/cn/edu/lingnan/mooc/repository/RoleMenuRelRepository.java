@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.repository;
 
-import cn.edu.lingnan.mooc.model.RoleMenuRel;
+import cn.edu.lingnan.mooc.entity.RoleMenuRel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,11 @@
 package cn.edu.lingnan.mooc.dao;
 
-import cn.edu.lingnan.mooc.model.MoocManager;
+import cn.edu.lingnan.authorize.dao.ManagerDAO;
+import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
+import cn.edu.lingnan.authorize.entity.MoocManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -13,7 +14,7 @@ import java.util.Arrays;
  * @date: 2020/11/22
  */
 @SpringBootTest
-@Transactional
+//@Transactional
 public class ManagerDAOTest {
 
     @Autowired
@@ -25,6 +26,18 @@ public class ManagerDAOTest {
     public void findMoocManagerTest(){
         MoocManager xmz = managerDAO.findManagerByAccount("xmz1");
         System.out.println(xmz);
-        menuTreeDAO.findMenuList(Arrays.asList(new Integer[]{1,2,3}));
+        menuTreeDAO.findMenuList(Arrays.asList(new Long[]{1L,2L,3L}));
+    }
+
+    @Test
+    public void saveTest(){
+        MoocManager manager = new MoocManager();
+        manager.setName("肖明章");
+        manager.setPassword("123456");
+        manager.setStatus(1);
+        manager.setAccount("www");
+        manager.setId(9L);
+        managerDAO.save(manager);
+
     }
 }

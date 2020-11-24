@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.dao;
 
-import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
+import cn.edu.lingnan.authorize.entity.MenuTree;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,9 +21,9 @@ public class MenuTreeDAOTest {
 
     @Test
     public void findMenuTreeTest(){
-        List<Integer> roleIds = new ArrayList<>();
-        roleIds.add(1);
-        roleIds.add(2);
+        List<Long> roleIds = new ArrayList<>();
+        roleIds.add(1L);
+        roleIds.add(2L);
         List<MenuTree> menuList = menuTreeDAO.findMenuList(roleIds);
         Assert.notEmpty(menuList,"查询角色菜单去权限不能为空");
         menuList.forEach(System.out::println);

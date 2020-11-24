@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.model.MenuTree;
-import cn.edu.lingnan.mooc.model.MoocManager;
-import cn.edu.lingnan.mooc.model.UserToken;
+import cn.edu.lingnan.mooc.entity.MenuTree;
+import cn.edu.lingnan.mooc.entity.MoocManager;
+import cn.edu.lingnan.mooc.entity.UserToken;
 import cn.edu.lingnan.mooc.repository.MoocManagerRepository;
 import cn.edu.lingnan.mooc.service.MoocUserDetailService;
 import cn.edu.lingnan.mooc.util.RedisUtil;

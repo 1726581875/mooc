@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.vo;
 
-import cn.edu.lingnan.mooc.model.MenuTree;
+import cn.edu.lingnan.mooc.entity.MenuTree;
 import lombok.Data;
 import lombok.ToString;
 

@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.model.MoocFile;
+import cn.edu.lingnan.mooc.entity.MoocFile;
 import cn.edu.lingnan.mooc.service.MoocFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
