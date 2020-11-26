@@ -1,6 +1,10 @@
 package cn.edu.lingnan.mooc.common.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -9,6 +13,9 @@ import java.util.List;
  * 封装分页结果
  */
 @Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageVO <T> {
     // 当前第几页
     private Integer pageIndex;

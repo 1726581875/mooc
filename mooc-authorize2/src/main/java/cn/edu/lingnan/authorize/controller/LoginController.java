@@ -1,9 +1,10 @@
 package cn.edu.lingnan.authorize.controller;
 
+import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.entity.UserToken;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.authorize.entity.LoginParam;
-import cn.edu.lingnan.authorize.service.ManagerService;
+import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.authorize.util.VerificationCode;
 import org.slf4j.Logger;
@@ -29,10 +30,10 @@ public class LoginController {
     private final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
-    private ManagerService managerService;
+    private AuthorizeService authorizeService;
 
     @PostMapping("/login")
-    public RespResult login(@Valid LoginParam loginParam,BindingResult bindingResult, HttpServletRequest request){
+    public RespResult login(@RequestBody @Valid LoginParam loginParam,BindingResult bindingResult, HttpServletRequest request){
 
         // 入参校验
         if(bindingResult.hasErrors()){
@@ -47,7 +48,7 @@ public class LoginController {
            return RespResult.fail("验证码不正确");
         }
         // 调用service方法登录
-        RespResult respResult = managerService.login(loginParam, sessionId);
+        RespResult respResult = authorizeService.login(loginParam, request);
 
 
         return respResult;
@@ -61,7 +62,7 @@ public class LoginController {
         String text = code.getText();
         log.info("sessionId={},code={}",sessionId,text);
         // 验证码放到redis
-        RedisUtil.set(sessionId,text);
+        RedisUtil.set(sessionId,text,300);
         VerificationCode.output(image,response.getOutputStream());
     }
 
@@ -74,9 +75,9 @@ public class LoginController {
         if(token == null && userToken == null){
             RespResult.fail("token失效");
         }
-        RedisUtil.delete(token);
-        RedisUtil.delete(userToken.getAccount());
 
+        // 删除token/在线信息
+        authorizeService.delRedisTokenOnline(userToken.getAccount());
         return RespResult.success("登出成功");
     }
 

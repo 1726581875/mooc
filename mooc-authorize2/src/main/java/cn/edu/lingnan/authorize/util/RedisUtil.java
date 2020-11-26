@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedisUtil {
 
-    private static StringRedisTemplate redisTemplate = SpringContextHolder.getBean(StringRedisTemplate.class);
+    private static final StringRedisTemplate redisTemplate = SpringContextHolder.getBean(StringRedisTemplate.class);
 
-    private static ObjectMapper objectMapper = SpringContextHolder.getBean(ObjectMapper.class);
+    private static final ObjectMapper objectMapper = SpringContextHolder.getBean(ObjectMapper.class);
 
     private static final Logger log = LoggerFactory.getLogger(RedisUtil.class);
 

@@ -34,4 +34,10 @@ public class RoleDAO extends BaseDAO{
         ,(resultSet,i)-> new Role(resultSet.getInt("id"),resultSet.getString("name")));
     }
 
+    public void saveAll(List<Role> roleList){
+
+
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.dao;
+package cn.edu.lingnan.authorize.dao;
 
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;

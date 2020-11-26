@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.dao;
+package cn.edu.lingnan.authorize.dao;
 
 import cn.edu.lingnan.authorize.dao.RoleDAO;
 import org.junit.jupiter.api.Test;

@@ -29,6 +29,9 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        if(true){
+            return true;
+        }
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
 
@@ -49,7 +52,7 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         }
         // 3、获取到用户权限
         String userTokenPermission = userToken.getPermission();
-        String permissionStr = "admin,course:delete,role:select,role:delete";
+
 
         // 4、权限校验，获取controller方法上的@Check注解判断是否有权限
         if (handler instanceof HandlerMethod) {
@@ -67,8 +70,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             System.out.println("permission=" + permission);
 
             // 判断是否是超管,如果没有权限
-            boolean isSuperManager = false;
-            if(!isSuperManager &&!permissionStr.contains(permission)){
+            boolean isSuperManager = userToken.getUserId().equals(0L) ? true : false;
+            if(!isSuperManager &&!userTokenPermission.contains(permission)){
                 responseMsg(response,HttpStatus.FORBIDDEN.value(),"权限不足");
                 return false;
             }

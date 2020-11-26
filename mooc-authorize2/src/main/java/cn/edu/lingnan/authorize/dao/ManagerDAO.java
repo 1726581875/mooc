@@ -70,13 +70,17 @@ public class ManagerDAO extends BaseDAO {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO mooc_manager(name,account,password,status) ");
         sql.append("VALUES ");
-        sql.append("(?,?,?,?)");
+        sql.append("(?,?,?,?) ");
         sql.append("ON DUPLICATE KEY ");
-        sql.append("UPDATE password=?,status=?");
+        sql.append("UPDATE password=?,status=? ");
         jdbcTemplate.update(sql.toString(),manager.getName(),manager.getAccount(),manager.getPassword(),manager.getStatus()
                 ,manager.getPassword(),manager.getStatus());
     }
 
+    public MoocManager findById(){
+        String sql = "";
+        return null;
+    }
 
 
 }

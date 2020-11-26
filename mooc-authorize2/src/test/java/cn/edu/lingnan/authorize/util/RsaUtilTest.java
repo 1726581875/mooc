@@ -1,9 +1,12 @@
-package cn.edu.lingnan.mooc.util;
+package cn.edu.lingnan.authorize.util;
 
+import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Set;
 
 /**
  * @author xmz
@@ -28,5 +31,10 @@ public class RsaUtilTest {
         System.out.println(decryptResult);
     }
 
+    @Test
+    public void getOnlineUser(){
+        Set keys = RedisUtil.getRedisTemplate().keys("online_*");
+        keys.forEach(System.out::println);
+    }
 
 }

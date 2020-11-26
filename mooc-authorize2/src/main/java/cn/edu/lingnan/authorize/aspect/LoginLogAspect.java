@@ -52,6 +52,7 @@ public class LoginLogAspect {
         loginLog.setIp(ip.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip);
         loginLogDAO.insertLoginLog(loginLog);
 
+
         return respResult;
     }
 

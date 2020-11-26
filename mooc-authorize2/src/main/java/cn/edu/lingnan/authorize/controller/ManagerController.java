@@ -1,10 +1,12 @@
 package cn.edu.lingnan.authorize.controller;
 
-import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.authorize.entity.MoocManager;
 import cn.edu.lingnan.authorize.service.ManagerService;
+import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author xmz
@@ -13,17 +15,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/manager")
 public class ManagerController {
-
-    @Autowired
-    private ManagerService managerService;
-
-
-    public RespResult addManager(){
-
-        return null;
-    }
-
-
-
 
 }
