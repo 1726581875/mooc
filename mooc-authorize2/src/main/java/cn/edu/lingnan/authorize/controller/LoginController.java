@@ -40,7 +40,8 @@ public class LoginController {
             return RespResult.fail(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         // 防止传入不合法参数，防止sql注入
-
+       /* String authorize = request.getHeader("Authorize");
+        System.out.println(authorize);*/
         // 校验验证码是否正确
         String sessionId = request.getSession().getId();
         String verificationCode = RedisUtil.get(sessionId);

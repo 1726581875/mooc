@@ -49,6 +49,8 @@ public class MenuTreeDAO extends BaseDAO{
             menuTree.setParentId(resultSet.getLong("parent_id"));
             menuTree.setRouter(resultSet.getString("router"));
             menuTree.setPermission(resultSet.getString("permission"));
+            menuTree.setIcon(resultSet.getString("icon"));
+            menuTree.setMenuKey(resultSet.getString("menu_key"));
             return menuTree;
         }
     }

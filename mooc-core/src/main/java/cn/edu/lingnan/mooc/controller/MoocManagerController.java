@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.param.ManagerParam;
 import cn.edu.lingnan.mooc.service.MoocManagerService;
 import cn.edu.lingnan.mooc.entity.MoocManager;
 import cn.edu.lingnan.mooc.util.CopyUtil;
@@ -59,13 +60,13 @@ public class MoocManagerController {
      * 插入或更新moocManager
      * 请求方法: post
      * url: /admin/moocManagers/moocManager
-     * @param moocManager
+     * @param managerParam
      * @return
      */
     @PostMapping("/moocManager")
-    public RespResult insertOrUpdate(@RequestBody MoocManagerVO moocManager) {
-        MoocManager manager = CopyUtil.copy(moocManager, MoocManager.class);
-        manager.setStatus(moocManager.isStatus() ? 1 : 0);
+    public RespResult insertOrUpdate(@RequestBody ManagerParam managerParam) {
+        MoocManager manager = CopyUtil.copy(managerParam, MoocManager.class);
+        manager.setStatus(managerParam.isStatus() ? 1 : 0);
         Integer flag = moocManagerService.insertOrUpdate(manager);
         if (flag == 0) {
             return RespResult.fail("新增MoocManager失败");

@@ -83,7 +83,7 @@ public class RoleService {
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.startsWith());//startsWith右模糊(name%)/contains全模糊(%name%)
+                .withMatcher("name", match -> match.contains());//startsWith右模糊(name%)/contains全模糊(%name%)
          // 1.2 构造匹配条件Example对象
         Example<Role> example = Example.of(matchObject,matcher);
 

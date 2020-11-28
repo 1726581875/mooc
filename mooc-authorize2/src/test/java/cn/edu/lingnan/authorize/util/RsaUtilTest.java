@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author xmz
@@ -35,6 +37,12 @@ public class RsaUtilTest {
     public void getOnlineUser(){
         Set keys = RedisUtil.getRedisTemplate().keys("online_*");
         keys.forEach(System.out::println);
+    }
+
+    @Test
+    public void testTimer(){
+        System.out.println("创建定时任务");
+        Timer timer = new Timer();
     }
 
 }

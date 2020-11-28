@@ -16,4 +16,9 @@ import java.util.List;
 @RequestMapping("/manager")
 public class ManagerController {
 
+
+
+
+
+
 }

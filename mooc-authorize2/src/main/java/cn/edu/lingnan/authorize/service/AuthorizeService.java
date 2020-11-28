@@ -40,6 +40,8 @@ public class AuthorizeService {
     private RoleDAO roleDAO;
     @Autowired
     private MenuTreeDAO menuTreeDAO;
+    @Autowired
+    private MenuTreeService menuTreeService;
 
     @Value("${mooc.superAdmin.username:admin}")
     private String superAdminUsername;
@@ -78,14 +80,8 @@ public class AuthorizeService {
             return RespResult.fail("密码不正确");
         }
 
-        //获取菜单权限列表
-        List<MenuTree> menuPermissionList = getMenuPermissionList(manager.getId());
-
-        //获取该用户可以看到的菜单列表,set去重
-        Set<MenuTree> menuList = menuPermissionList.stream()
-                .filter(e -> e.getRouter() != null && !e.getRouter().equals("")).collect(Collectors.toSet());
-        // 去重，拼接权限字符串
-        String permissionStr = menuPermissionList.stream().collect(Collectors.toSet())
+       // 拼接权限字符串
+        String permissionStr = menuTreeService.getPermission(manager.getId())
                 .stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
 
         //生成token,设置redis
@@ -93,7 +89,7 @@ public class AuthorizeService {
         setRedisTokenOnline(manager,permissionStr,request,token);
 
         // 构造登录成功返回对象
-        LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,new ArrayList<>(menuList));
+        LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,menuTreeService.getMenuTree(manager.getId()));
 
         return RespResult.success(loginSuccessVO,"登录成功");
     }
