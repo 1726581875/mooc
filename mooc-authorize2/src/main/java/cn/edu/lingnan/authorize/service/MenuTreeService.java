@@ -6,6 +6,7 @@ import cn.edu.lingnan.authorize.entity.MenuTree;
 import cn.edu.lingnan.authorize.entity.MenuTreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +99,9 @@ public class MenuTreeService {
         }
         //获取管理员所有角色列表
         List<Long> roleIdList = roleDAO.findAllRoleIdByManagerId(managerId);
+        if(CollectionUtils.isEmpty(roleIdList)){
+            return new ArrayList<>();
+        }
         List<MenuTree> menuList = menuTreeDAO.findMenuList(roleIdList);
         //去重，注意对象去重，MenuTree需要重写equals 和 hashCode方法
         return new ArrayList<>(menuList.stream().collect(Collectors.toSet()));

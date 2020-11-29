@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.repository;
 
-import org.assertj.core.util.Lists;
+import cn.edu.lingnan.core.repository.RoleRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.repository;
 
-import cn.edu.lingnan.mooc.entity.MenuTree;
+import cn.edu.lingnan.core.entity.MenuTree;
+import cn.edu.lingnan.core.repository.MenuTreeRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

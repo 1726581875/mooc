@@ -1,9 +1,10 @@
 package cn.edu.lingnan.mooc.service;
 
+import cn.edu.lingnan.core.service.MoocManagerService;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.MoocManager;
-import cn.edu.lingnan.mooc.util.SpringContextHolder;
-import cn.edu.lingnan.mooc.vo.MoocManagerVO;
+import cn.edu.lingnan.core.entity.MoocManager;
+import cn.edu.lingnan.core.util.SpringContextHolder;
+import cn.edu.lingnan.core.vo.MoocManagerVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class MoocManagerServiceTest {
         MoocManager moocManager = new MoocManager();
         Integer pageInsex = 1;
         Integer pageSize = 10;
-        PageVO<MoocManagerVO> pageVO = service.findPage(moocManager, pageInsex, pageSize);
+        PageVO<MoocManagerVO> pageVO = service.findPage("moocManager", pageInsex, pageSize);
         Assert.notEmpty(pageVO.getContent(),"分页查询获取不到数据");
         System.out.println(pageVO.getContent());
 

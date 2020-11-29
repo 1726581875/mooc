@@ -18,7 +18,7 @@ public class OnlineServiceTest {
 
     @Test
     public void findOnlineUserByPageTest(){
-        PageVO<OnlineUser> userByPage = onlineService.getOnlineUserByPage(1, 10, "li");
+        PageVO<OnlineUser> userByPage = onlineService.getOnlineUserByPage(1, 10, "");
         System.out.println(userByPage);
     }
 

@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
-import cn.edu.lingnan.mooc.vo.RoleVO;
+import cn.edu.lingnan.core.service.RoleService;
+import cn.edu.lingnan.core.vo.RoleVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

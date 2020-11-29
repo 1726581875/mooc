@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.service;
 
-import cn.edu.lingnan.mooc.vo.MenuTreeVO;
+import cn.edu.lingnan.core.service.MenuTreeService;
+import cn.edu.lingnan.core.vo.MenuTreeVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

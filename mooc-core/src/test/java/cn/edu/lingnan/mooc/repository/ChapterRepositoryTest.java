@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.repository;
 
-import cn.edu.lingnan.mooc.entity.Chapter;
+import cn.edu.lingnan.core.entity.Chapter;
+import cn.edu.lingnan.core.repository.ChapterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

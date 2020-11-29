@@ -39,7 +39,7 @@ public class OnlineService {
         }
         // 条件查询
         String accountOrName = matchStr.trim();
-        if(matchStr != null && matchStr != "") {
+        if(matchStr != null && !matchStr.equals("")) {
             List<OnlineUser> onlineUserList = allOnlineUser.stream().filter(user -> user.getAccount().equals(accountOrName)).collect(Collectors.toList());
             //如果账户不匹配
             if (onlineUserList.isEmpty()) {
