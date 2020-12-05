@@ -1,18 +1,28 @@
 package cn.edu.lingnan.core.service;
 
-import cn.edu.lingnan.core.util.CopyUtil;
-import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.LoginLog;
+import cn.edu.lingnan.core.param.LoginLogParam;
 import cn.edu.lingnan.core.repository.LoginLogRepository;
+import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.util.ConvertTimeUtil;
+import cn.edu.lingnan.core.vo.LoginLogVO;
+import cn.edu.lingnan.mooc.common.model.PageVO;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.SimpleFormatter;
 
 /**
  * @author xmz
- * @date: 2020/10/23
+ * @date: 2020/11/29
  */
 @Service
 public class LoginLogService {
@@ -20,133 +30,96 @@ public class LoginLogService {
     @Resource
     private LoginLogRepository loginLogRepository;
 
-    /**
-     * 根据Id查找
-     * @param id
-     * @return 如果找不到返回null
-     */
-    public LoginLog findById(Integer id){
-        Optional<LoginLog> optional = loginLogRepository.findById(id);
-        if(!optional.isPresent()){
-            return null;
+
+    public PageVO<LoginLogVO> findLoginLogByCondition(LoginLogParam logParam,Integer pageIndex,Integer pageSize){
+
+        String matchStr = logParam.getMatchStr();
+        if(matchStr == null ||  matchStr.equals("")){
+            matchStr = null;
         }
-        return optional.get();
-    }
-
-    public List<LoginLog> findAll(){
-        return loginLogRepository.findAll();
-    }
-
-    /**
-     * 根据匹配条件查询所有
-     * @param matchObject
-     * @return
-     */
-    public List<LoginLog> findAllByCondition(LoginLog matchObject){
-        return loginLogRepository.findAll(Example.of(matchObject));
+        //如果不传时间，默认查30天前
+        String startTimeStr = logParam.getStartTime();
+        String endTimeStr = logParam.getEndTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if(null == startTimeStr || startTimeStr.equals("")){
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE,-30);
+            startTimeStr = formatter.format(calendar.getTime());
+        }
+        if(null == endTimeStr || endTimeStr.equals("")){
+            endTimeStr = formatter.format(new Date());
+        }
+        // 构造查询参数
+        Date startTime = ConvertTimeUtil.getTime(startTimeStr);
+        Date endTime = ConvertTimeUtil.getEndTime(endTimeStr);
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
+        // 调用分页条件查询方法
+        Page<LoginLog> loginLogPage = loginLogRepository.findLoginLogByCondition(matchStr, startTime, endTime, pageable);
+        // 封装返回结果
+        PageVO<LoginLogVO> pageVO = new PageVO<>();
+        pageVO.setContent(CopyUtil.copyList(loginLogPage.getContent(),LoginLogVO.class));
+        pageVO.setPageTotal((int) loginLogPage.getTotalElements()); //总条数
+        pageVO.setPageSize(pageSize);
+        pageVO.setPageIndex(pageIndex);
+        pageVO.setPageCount(loginLogPage.getTotalPages()); //页数
+        return pageVO;
     }
 
     /**
      * 条件分页查询
-     * @param matchObject 匹配对象
+     * @param logParam 匹配对象
      * @param pageIndex 第几页
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<LoginLog> findPage(LoginLog matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<LoginLogVO> findPage(LoginLogParam logParam, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.startsWith());//startsWith右模糊(name%)/contains全模糊(%name%)
-         // 1.2 构造匹配条件Example对象
-        Example<LoginLog> example = Example.of(matchObject,matcher);
+
+      //  predicates.add(cb.greaterThanOrEqualTo(root.get("commitTime").as(Date.class), stime（Date类型
+
+        Date startTime = ConvertTimeUtil.getTime(logParam.getStartTime());
+        Date endTime = ConvertTimeUtil.getEndTime(logParam.getEndTime());
+        Specification<LoginLog> querySpecifi = new Specification<LoginLog>() {
+            @Override
+            public Predicate toPredicate(Root<LoginLog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (startTime != null) {
+                    //大于或等于传入时间
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("commitTime").as(Date.class), startTime));
+                }
+                if (endTime != null) {
+                    //小于或等于传入时间
+                    predicates.add(cb.lessThanOrEqualTo(root.get("commitTime").as(Date.class), endTime));
+                }
+                if (StringUtils.isNotBlank(logParam.getMatchStr())) {
+                    //模糊查找
+                    predicates.add(cb.like(root.get("name").as(String.class), "%" + logParam.getMatchStr() + "%"));
+                }
+                // and到一起的话所有条件就是且关系，or就是或关系
+                Predicate[] predicates1 = predicates.toArray(new Predicate[predicates.size()]);
+                return cb.and(predicates1);
+            }
+        };
 
         // 2、 构造分页参数 ,第几页,每页大小
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
         // 3、 传入条件、分页参数，调用方法
-        Page<LoginLog> loginLogPage = loginLogRepository.findAll(example, pageable);
+        Page<LoginLog> loginLogPage = loginLogRepository.findAll(querySpecifi, pageable);
         //获取page对象里的list
         List<LoginLog> loginLogList = loginLogPage.getContent();
         /* 4. 封装到自定义分页结果 */
-        PageVO<LoginLog> pageVO = new PageVO<>();
-        pageVO.setContent(loginLogList);
+        PageVO<LoginLogVO> pageVO = new PageVO<>();
+        pageVO.setContent(CopyUtil.copyList(loginLogList,LoginLogVO.class));
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(loginLogPage.getTotalPages());
         return pageVO;
     }
 
-    /**
-     * 插入数据
-     * @param loginLog
-     * @return 返回成功数
-     */
-    public Integer insert(LoginLog loginLog){
-        if (loginLog == null) {
-            throw new IllegalArgumentException("插入表的对象不能为null");
-        }
-        LoginLog newLoginLog = loginLogRepository.save(loginLog);
-        return newLoginLog == null ? 0 : 1;
-    }
 
-    /**
-     * 插入或更新数据
-     * 说明:如果参数带id表示是更新，否则就是插入
-     * @param loginLog
-     * @return 返回成功数
-     */
-    public Integer insertOrUpdate(LoginLog loginLog){
-        if (loginLog == null) {
-            throw new IllegalArgumentException("插入表的对象不能为null");
-        }
-        // id不为空，表示更新操作
-        if(loginLog.getId() != null){
-          return this.update(loginLog);
-        }
-        LoginLog newLoginLog = loginLogRepository.save(loginLog);
-        return newLoginLog == null ? 0 : 1;
-    }
-
-
-    /**
-     *  选择性更新
-     * @param loginLog
-     * @return 返回成功条数
-     */
-    public Integer update(LoginLog loginLog){
-        // 入参校验
-        if(loginLog == null || loginLog.getId() == null){
-            throw new IllegalArgumentException("更新的对象不能为null");
-        }
-        // 是否存在
-        Optional<LoginLog> optional = loginLogRepository.findById(loginLog.getId());
-        if(!optional.isPresent()){
-            throw new RuntimeException("找不到id为"+ loginLog.getId() +"的LoginLog");
-        }
-        LoginLog dbLoginLog = optional.get();
-        //把不为null的属性拷贝到dbLoginLog
-        CopyUtil.notNullCopy(loginLog, dbLoginLog);
-        //执行保存操作
-        LoginLog updateLoginLog = loginLogRepository.save(dbLoginLog);
-        return updateLoginLog == null ? 0 : 1;
-    }
-
-
-    public Integer deleteById(Integer id){
-        loginLogRepository.deleteById(id);
-        return  findById(id) == null ? 1 : 0;
-    }
-
-    /**
-     * 批量删除
-     * @param loginLogIdList  id list
-     * @return 删除条数
-     */
-    public Integer deleteAllByIds(List<Integer> loginLogIdList){
-        List<LoginLog> delLoginLogList = loginLogRepository.findAllById(loginLogIdList);
-        loginLogRepository.deleteInBatch(delLoginLogList);
-        return delLoginLogList.size();
-    }
 
 
 }

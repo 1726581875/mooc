@@ -1,7 +1,13 @@
 package cn.edu.lingnan.core.repository;
 import cn.edu.lingnan.core.entity.LoginLog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author xmz
@@ -11,4 +17,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public interface LoginLogRepository extends JpaRepository<LoginLog, Integer>,JpaSpecificationExecutor<LoginLog> {
 
+
+    /**
+     * 分页条件查询
+     * @param matchStr 匹配字符串
+     * @param startTime
+     * @param endTime
+     * @param pageable
+     * @return
+     */
+    @Query(value="select * from login_log where create_time >= ?2 and create_time <= ?3 "
+            + " and if(?1 is null , 1=1 ,(account = ?1 or log_name = ?1))"
+            ,countQuery = "select count(1) from login_log",nativeQuery=true)
+    Page<LoginLog> findLoginLogByCondition(String matchStr, Date startTime, Date endTime, Pageable pageable);
 }

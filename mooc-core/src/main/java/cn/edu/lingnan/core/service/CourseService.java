@@ -1,14 +1,15 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.repository.CourseRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Course;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author xmz
@@ -53,28 +54,44 @@ public class CourseService {
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<Course> findPage(Course matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<CourseVO> findPage(Course matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.startsWith());//startsWith右模糊(name%)/contains全模糊(%name%)
+                .withMatcher("name", match -> match.contains());//startsWith右模糊(name%)/contains全模糊(%name%)
          // 1.2 构造匹配条件Example对象
         Example<Course> example = Example.of(matchObject,matcher);
-
-        // 2、 构造分页参数 ,第几页,每页大小
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-        // 3、 传入条件、分页参数，调用方法
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
         Page<Course> coursePage = courseRepository.findAll(example, pageable);
-        //获取page对象里的list
         List<Course> courseList = coursePage.getContent();
+
+        List<CourseVO> courseVOList = new ArrayList<>();
+        // 获取教师名字map
+        Map<Integer,String> teacherNameMap = new HashMap<>();
+        teacherNameMap.put(1,"肖明章");
+
+        // courseList -> courseVOList
+        courseList.forEach(course -> courseVOList.add(createCourseVO(course,teacherNameMap)));
+
         /* 4. 封装到自定义分页结果 */
-        PageVO<Course> pageVO = new PageVO<>();
-        pageVO.setContent(courseList);
+        PageVO<CourseVO> pageVO = new PageVO<>();
+        pageVO.setContent(courseVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(coursePage.getTotalPages());
         return pageVO;
     }
+
+    private CourseVO createCourseVO(Course course,Map<Integer,String> teacherNameMap){
+        // 基本信息
+        CourseVO courseVO = CopyUtil.copy(course, CourseVO.class);
+        // 设置教师名
+        courseVO.setTeacherName(teacherNameMap.getOrDefault(1,"未知老师"));
+        // 转换状态为文本
+        courseVO.setStatus(CourseEnum.getText(course.getStatus()));
+        return courseVO;
+    }
+
 
     /**
      * 插入数据

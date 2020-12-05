@@ -1,0 +1,24 @@
+package cn.edu.lingnan.core.repository;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
+
+/**
+ * @author xmz
+ * @date: 2020/12/06
+ */
+@SpringBootTest
+public class TagRepositoryTest {
+
+    @Resource
+    private TagRepository tagRepository;
+
+    @Test
+    public void findAllTagByCategoryId(){
+        tagRepository.findAllByCategoryId(2).forEach(System.out::println);
+    }
+
+
+}

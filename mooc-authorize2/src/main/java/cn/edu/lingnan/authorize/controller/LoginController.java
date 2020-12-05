@@ -72,6 +72,9 @@ public class LoginController {
     public RespResult loginOut(HttpServletRequest request){
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
+        if(token == null){
+            RespResult.success("登出成功");
+        }
         UserToken userToken = RedisUtil.get(token, UserToken.class);
         if(token == null && userToken == null){
             RespResult.fail("token失效");
