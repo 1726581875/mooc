@@ -1,9 +1,9 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.MoocUser;
+import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.core.entity.MoocUser;
-import cn.edu.lingnan.core.repository.MoocUserRepository;;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * @author xmz
- * @date: 2020/10/23
+ * @date: 2020/12/07
  */
 @Service
 public class MoocUserService {

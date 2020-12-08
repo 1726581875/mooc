@@ -24,10 +24,10 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addInterceptor(CheckPermissionInterceptor);
     }
 
-    @Bean
+/*    @Bean
     public SpringContextHolder springContextHolder() {
         return new SpringContextHolder();
-    }
+    }*/
 
 
     /**

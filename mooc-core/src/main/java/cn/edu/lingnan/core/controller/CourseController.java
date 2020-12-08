@@ -36,6 +36,12 @@ public class CourseController {
         return RespResult.success(courseService.findPage(matchObject, pageIndex, pageSize));
     }
 
+
+    @GetMapping("/{courseId}")
+    public RespResult findById(@PathVariable("courseId") Integer courseId) {
+        return RespResult.success(courseService.findById(courseId));
+    }
+
     /**
      * 更新course接口
      * 请求方法: put

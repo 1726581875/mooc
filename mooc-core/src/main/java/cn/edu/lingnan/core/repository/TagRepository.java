@@ -14,4 +14,7 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Integer>,JpaSpecificationExecutor<Tag> {
 
     List<Tag> findAllByCategoryId(Integer categoryId);
+
+    List<Tag> findAllByCategoryIdIn(List<Integer> categoryIdList);
+
 }

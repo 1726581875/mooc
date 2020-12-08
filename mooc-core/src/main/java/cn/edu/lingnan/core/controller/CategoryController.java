@@ -1,6 +1,7 @@
 package cn.edu.lingnan.core.controller;
 
 import cn.edu.lingnan.core.entity.Category;
+import cn.edu.lingnan.core.param.CategoryParam;
 import cn.edu.lingnan.core.service.CategoryService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +57,12 @@ public class CategoryController {
      * 插入或更新category
      * 请求方法: post
      * url: /admin/categorys/category
-     * @param category
+     * @param categoryParam
      * @return
      */
     @PostMapping("/category")
-    public RespResult insertOrUpdate(@RequestBody Category category) {
-        Integer flag = categoryService.insertOrUpdate(category);
+    public RespResult insertOrUpdate(@RequestBody CategoryParam categoryParam) {
+        Integer flag = categoryService.insertOrUpdate(categoryParam);
         if (flag == 0) {
             return RespResult.fail("新增Category失败");
         }

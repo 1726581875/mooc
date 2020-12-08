@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,11 +16,15 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
 
     private static StringRedisTemplate redisTemplate = SpringContextHolder.getBean(StringRedisTemplate.class);
-
+    /**
+     * ObjectMapper这个类进行json与对象之间的转换
+     */
     private static ObjectMapper objectMapper = SpringContextHolder.getBean(ObjectMapper.class);
 
     private static final Logger log = LoggerFactory.getLogger(RedisUtil.class);
-
+    /**
+     * 默认缓存2小时
+     */
     private static final long DEFAULT_EXPIRE_TIME = 7200L;
 
     public static RedisTemplate getRedisTemplate(){

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -18,6 +20,16 @@ public class TagService {
 
     @Resource
     private TagRepository tagRepository;
+
+    /**
+     * 根据分类id查找标签
+     * @param categoryIdList 分类id list
+     * @return
+     */
+    public Map<Integer,List<Tag>> findTagList(List<Integer> categoryIdList){
+        List<Tag> tagList = tagRepository.findAllByCategoryIdIn(categoryIdList);
+        return tagList.stream().collect(Collectors.groupingBy(Tag::getCategoryId));
+    }
 
     /**
      * 根据Id查找

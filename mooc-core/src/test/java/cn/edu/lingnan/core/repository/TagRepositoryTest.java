@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.repository;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +19,11 @@ public class TagRepositoryTest {
     @Test
     public void findAllTagByCategoryId(){
         tagRepository.findAllByCategoryId(2).forEach(System.out::println);
+    }
+
+    @Test
+    public void findAllTagByCategoryIdIn(){
+        tagRepository.findAllByCategoryIdIn(Lists.newArrayList(2,3)).forEach(System.out::println);
     }
 
 

@@ -1,22 +1,21 @@
 package cn.edu.lingnan.core.util;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @author xmz
  * @date: 2020/11/16
  */
+@Component
 public class SpringContextHolder implements ApplicationContextAware{
 
     private static ApplicationContext applicationContext = null;
 
     private static final Logger log = LoggerFactory.getLogger(SpringContextHolder.class);
-
-
 
     /**
      * 从静态变量applicationContext中取得Bean, 自动转型为所赋值对象的类型.
