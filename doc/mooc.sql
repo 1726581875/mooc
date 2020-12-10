@@ -81,6 +81,7 @@ CREATE TABLE `course_tag_rel`(
 
 
 
+
 -- 课程大章表
 DROP TABLE IF EXISTS `chapter`;
 CREATE TABLE `chapter` (
