@@ -78,9 +78,11 @@ CREATE TABLE `course_tag_rel`(
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) 
 )ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='课程标签关联表';
-
-
-
+insert into `course_tag_rel`(course_id, tag_id)
+VALUES
+(1,1),
+(1,2),
+(1,2);
 
 -- 课程大章表
 DROP TABLE IF EXISTS `chapter`;
