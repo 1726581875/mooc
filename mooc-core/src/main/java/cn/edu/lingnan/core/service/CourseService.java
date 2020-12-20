@@ -1,7 +1,9 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.repository.CourseRepository;
+import cn.edu.lingnan.core.repository.TagRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -20,18 +22,25 @@ public class CourseService {
 
     @Resource
     private CourseRepository courseRepository;
+    @Resource
+    private TagRepository tagRepository;
 
     /**
      * 根据Id查找
      * @param id
      * @return 如果找不到返回null
      */
-    public Course findById(Integer id){
+    public CourseVO findById(Integer id){
         Optional<Course> optional = courseRepository.findById(id);
         if(!optional.isPresent()){
             return null;
         }
-        return optional.get();
+        Course course = optional.get();
+        CourseVO courseVO = CopyUtil.copy(course, CourseVO.class);
+        //获取课程标签
+        List<Tag> tagList = tagRepository.findTagListByCourseId(id);
+        courseVO.setTagList(tagList);
+        return courseVO;
     }
 
     public List<Course> findAll(){

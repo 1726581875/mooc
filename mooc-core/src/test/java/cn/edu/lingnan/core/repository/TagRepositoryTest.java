@@ -26,5 +26,10 @@ public class TagRepositoryTest {
         tagRepository.findAllByCategoryIdIn(Lists.newArrayList(2,3)).forEach(System.out::println);
     }
 
+    @Test
+    public void findTagListByCourseIdTest(){
+        tagRepository.findTagListByCourseId(1).forEach(System.out::println);
+    }
+
 
 }

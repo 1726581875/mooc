@@ -36,7 +36,11 @@ public class CourseController {
         return RespResult.success(courseService.findPage(matchObject, pageIndex, pageSize));
     }
 
-
+    /**
+     * 根据id查询课程
+     * @param courseId
+     * @return
+     */
     @GetMapping("/{courseId}")
     public RespResult findById(@PathVariable("courseId") Integer courseId) {
         return RespResult.success(courseService.findById(courseId));

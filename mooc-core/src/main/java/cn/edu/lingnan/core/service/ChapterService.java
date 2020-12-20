@@ -1,15 +1,21 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.repository.ChapterRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.vo.ChapterVO;
+import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Chapter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -21,6 +27,8 @@ public class ChapterService {
 
     @Resource
     private ChapterRepository chapterRepository;
+    @Autowired
+    private CourseService courseService;
 
     /**
      * 根据Id查找
@@ -55,23 +63,43 @@ public class ChapterService {
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<Chapter> findPage(Chapter matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<ChapterVO> findPage(Chapter matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.startsWith());//startsWith右模糊(name%)/contains全模糊(%name%)
+                .withMatcher("name", match -> match.contains());//startsWith右模糊(name%)/contains全模糊(%name%)
          // 1.2 构造匹配条件Example对象
         Example<Chapter> example = Example.of(matchObject,matcher);
 
+        // 二次排序
+        List<Sort.Order> orders= Arrays.asList(
+                new Sort.Order(Sort.Direction.DESC,"courseId"),
+                new Sort.Order(Sort.Direction.ASC,"sort")
+        );
         // 2、 构造分页参数 ,第几页,每页大小,排序（按创建时间倒序）
-        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize,Sort.Direction.DESC ,"createTime");
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.by(orders));
         // 3、 传入条件、分页参数，调用方法
         Page<Chapter> chapterPage = chapterRepository.findAll(example, pageable);
         //获取page对象里的list
         List<Chapter> chapterList = chapterPage.getContent();
+        // 大章对应课程Map<课程id，课程对象>
+        Map<Integer, CourseVO> courseMap = new HashMap<>(10);
+        if(!CollectionUtils.isEmpty(chapterList)) {
+            Set<Integer> chapterIdSet = chapterList.stream().map(Chapter::getCourseId).collect(Collectors.toSet());
+            chapterIdSet.forEach(id -> courseMap.put(id,courseService.findById(id)));
+        }
+        // 转换成VO对象
+        List<ChapterVO> chapterVOList = CopyUtil.copyList(chapterList, ChapterVO.class);
+        // 设置课程名
+        chapterVOList.forEach(e -> {
+            e.setCourseName(courseMap.getOrDefault(e.getCourseId(), new CourseVO()).getName());
+            e.setSectionList(new ArrayList<>());
+        });
+        // 排序，章节顺序按照sort字段升序排
+       // Collections.sort(chapterVOList , Comparator.comparingInt(ChapterVO::getSort));
         /* 4. 封装到自定义分页结果 */
-        PageVO<Chapter> pageVO = new PageVO<>();
-        pageVO.setContent(chapterList);
+        PageVO<ChapterVO> pageVO = new PageVO<>();
+        pageVO.setContent(chapterVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(chapterPage.getTotalPages());

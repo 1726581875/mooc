@@ -36,6 +36,15 @@ public class SectionController {
         return RespResult.success(sectionService.findPage(matchObject, pageIndex, pageSize));
     }
 
+
+    @GetMapping("/listByChapter/{chapterId}")
+    public RespResult findSectionByChapterId(@PathVariable("chapterId") Integer chapterId) {
+        Section condition = new Section();
+        condition.setChapterId(chapterId);
+        return RespResult.success(sectionService.findAllByCondition(condition));
+    }
+
+
     /**
      * 更新section接口
      * 请求方法: put

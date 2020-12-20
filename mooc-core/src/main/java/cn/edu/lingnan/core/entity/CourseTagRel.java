@@ -1,33 +1,23 @@
 package cn.edu.lingnan.core.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
-import lombok.Data;
+import javax.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import javax.persistence.Id;
+import lombok.Data;
 import java.util.Date;
-
 @Data
-@DynamicInsert
 @DynamicUpdate
-@Entity(name = "chapter")
-public class Chapter{
+@DynamicInsert
+@Entity(name = "course_tag_rel")
+public class CourseTagRel{
     // id   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     // 课程id   
     private Integer courseId;
-    // 名称   
-    private String name;
-    // 排序
-    private Integer sort;
+    // 标签id   
+    private Integer tagId;
     // 创建时间   
     private Date createTime;
-    // 修改时间   
-    private Date updateTime;
-
+    
 }

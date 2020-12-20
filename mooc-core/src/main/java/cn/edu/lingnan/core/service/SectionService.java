@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.vo.SectionVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Section;
 import cn.edu.lingnan.core.repository.SectionRepository;
@@ -44,8 +45,9 @@ public class SectionService {
      * @param matchObject
      * @return
      */
-    public List<Section> findAllByCondition(Section matchObject){
-        return sectionRepository.findAll(Example.of(matchObject));
+    public List<SectionVO> findAllByCondition(Section matchObject) {
+        List<Section> sectionList = sectionRepository.findAll(Example.of(matchObject));
+        return CopyUtil.copyList(sectionList, SectionVO.class);
     }
 
     /**

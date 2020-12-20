@@ -1,10 +1,12 @@
 package cn.edu.lingnan.core.vo;
 
+import cn.edu.lingnan.core.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author xmz
@@ -30,6 +32,12 @@ public class CourseVO {
     private Integer learningNum;
     // 状态|0草稿/1发布/2禁用/3已删除
     private String status;
+
+    /**
+     * 所属标签list
+     */
+    private List<Tag> tagList;
+
     // 创建时间
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
