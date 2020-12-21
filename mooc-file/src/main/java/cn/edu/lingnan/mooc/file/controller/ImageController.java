@@ -1,7 +1,7 @@
-package cn.edu.lingnan.mooc.controller;
+package cn.edu.lingnan.mooc.file.controller;
 
+import cn.edu.lingnan.mooc.file.util.FileUtils;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;

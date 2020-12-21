@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.util;
+package cn.edu.lingnan.mooc.file.util;
 
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;

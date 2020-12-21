@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.entity;
+package cn.edu.lingnan.mooc.file.entity;
 
 import javax.persistence.*;
 import org.hibernate.annotations.DynamicInsert;

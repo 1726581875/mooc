@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.util;
+package cn.edu.lingnan.mooc.file.util;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;

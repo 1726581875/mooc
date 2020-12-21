@@ -1,9 +1,9 @@
-package cn.edu.lingnan.mooc.service;
+package cn.edu.lingnan.mooc.file.service;
 
+import cn.edu.lingnan.mooc.file.entity.MoocFile;
+import cn.edu.lingnan.mooc.file.repository.MoocFileRepository;
+import cn.edu.lingnan.mooc.file.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.entity.MoocFile;
-import cn.edu.lingnan.mooc.repository.MoocFileRepository;
-import cn.edu.lingnan.mooc.util.CopyUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;

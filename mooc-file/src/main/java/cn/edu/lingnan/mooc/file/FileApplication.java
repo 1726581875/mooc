@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc;
+package cn.edu.lingnan.mooc.file;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

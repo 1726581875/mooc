@@ -1,8 +1,8 @@
-package cn.edu.lingnan.mooc.controller;
+package cn.edu.lingnan.mooc.file.controller;
 
+import cn.edu.lingnan.mooc.file.entity.MoocFile;
+import cn.edu.lingnan.mooc.file.service.MoocFileService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.entity.MoocFile;
-import cn.edu.lingnan.mooc.service.MoocFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,8 +53,8 @@ public class FileController {
         }
 
         // 文件相对路径
-        String fileRelativePath = File.separator + newFileName + "." + suffix;
-        File newFile = new File(FILE_PATH + fileRelativePath + ".shard-" + shardIndex);
+        String fileRelativePath = newFileName + "." + suffix;
+        File newFile = new File(FILE_PATH + File.separator + fileRelativePath + ".shard-" + shardIndex);
         // 如果该文件所在目录不存在，则创建该目录
         if (!newFile.getParentFile().exists()) {
             newFile.getParentFile().mkdirs();
@@ -80,6 +80,7 @@ public class FileController {
         moocFileService.insertOrUpdate(moocFile);
         if(shardIndex == shardCount){
             mergeShard(fileKey);
+            return RespResult.success("/video/" + fileRelativePath,"上传成功");
         }
 
        return RespResult.success();
