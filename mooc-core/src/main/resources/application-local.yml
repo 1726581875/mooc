@@ -30,6 +30,9 @@ spring:
       format_sql: true
     hibernate:
       ddl-auto: update
+  #时间格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 #rsa公钥、私钥
 mooc:

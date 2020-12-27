@@ -21,6 +21,8 @@ public class SectionVO {
     private Integer chapterId;
     // 视频
     private String video;
+    // 对应文件表ID
+    private Integer fileId;
     // 时长|单位秒
     private Integer duration;
     // 顺序

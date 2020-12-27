@@ -23,6 +23,8 @@ public class Chapter{
     private Integer courseId;
     // 名称   
     private String name;
+    // 大章总时长，单位s 秒
+    private Integer duration;
     // 排序
     private Integer sort;
     // 创建时间   

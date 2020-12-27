@@ -1,8 +1,12 @@
 package cn.edu.lingnan.mooc.file.controller;
 
+import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import cn.edu.lingnan.mooc.file.entity.MoocFile;
+import cn.edu.lingnan.mooc.file.enums.FileStatusEnum;
 import cn.edu.lingnan.mooc.file.service.MoocFileService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.file.service.SectionService;
+import cn.edu.lingnan.mooc.file.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -18,12 +24,16 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/video")
 @CrossOrigin(allowedHeaders = "*", allowCredentials = "true")
-public class FileController {
+public class VideoController {
 
     @Autowired
     private MoocFileService moocFileService;
+    @Autowired
+    private SectionService sectionService;
+    @Autowired
+    private VideoService videoService;
     @Value("${mooc.file.path}")
     private String FILE_PATH;
 
@@ -66,6 +76,7 @@ public class FileController {
             log.error("分片上传文件失败，error={}", e);
         }
 
+        // 构造入库对象
         moocFile.setFileKey(fileKey);
         moocFile.setName(newFileName);
         moocFile.setFileSize(fileSize);
@@ -73,14 +84,24 @@ public class FileController {
         moocFile.setShardIndex(shardIndex);
         moocFile.setShardSize(shardSize);
         moocFile.setShardCount(shardCount);
-        moocFile.setFilePath(fileRelativePath);
+        moocFile.setFilePath(FileConstant.MAPPING_PATH + fileRelativePath);
+        moocFile.setStatus(FileStatusEnum.NORMAL.getStatus());
+        moocFile.setCourseId(1);
+        moocFile.setFileType(1);
+        moocFile.setUserId(1);
 
         log.info("moocFile={}", moocFile);
         // 插入或更新
-        moocFileService.insertOrUpdate(moocFile);
+        MoocFile moocFile1 = moocFileService.insertOrUpdate(moocFile);
+        // 如果是最后一个分片
         if(shardIndex == shardCount){
+            // 合并分片
             mergeShard(fileKey);
-            return RespResult.success("/video/" + fileRelativePath,"上传成功");
+            // 返回文件相对路径给前端
+            Map<String,Object> respMap = new HashMap<>(2);
+            respMap.put("filePath", FileConstant.MAPPING_PATH + fileRelativePath);
+            respMap.put("fileId",moocFile1.getId());
+            return RespResult.success(respMap,"上传成功");
         }
 
        return RespResult.success();
@@ -128,7 +149,11 @@ public class FileController {
         return RespResult.success();
     }
 
-
+    /**
+     * 获取文件分片下标
+     * @param key
+     * @return
+     */
     @GetMapping("/key/{key}/shardIndex")
     public RespResult getFileShardIndexByKey(@PathVariable String key) {
 
@@ -214,7 +239,7 @@ public class FileController {
 
 
     @GetMapping("/key/{key}/merge")
-    public RespResult mergeShard(String key){
+    public RespResult mergeShard(@PathVariable String key){
         log.info("====合并分片开始====");
         //  查出文件表
         MoocFile file = moocFileService.findByFileKey(key);
@@ -224,16 +249,17 @@ public class FileController {
         }
 
         int shardCount = file.getShardCount();
-        String fileRerativePath = file.getFilePath();
+        String fileMappingPath = file.getFilePath();
+        String fileRelativePath = fileMappingPath.substring(FileConstant.MAPPING_PATH.length());
 
-        File mergeFile = new File(FILE_PATH + fileRerativePath);
+        File mergeFile = new File(FILE_PATH + File.separator + fileRelativePath);
 
         try(FileOutputStream fileOutput = new FileOutputStream(mergeFile, true);
              BufferedOutputStream buffOutput = new BufferedOutputStream(fileOutput, 8 * 1024 * 10)){
             byte[] bytes = new byte[8 * 1024];
             int len;
             for (int i = 1; i <= shardCount; i++) {
-                try(FileInputStream fileInput = new FileInputStream(new File(FILE_PATH + fileRerativePath + ".shard-" + i));
+                try(FileInputStream fileInput = new FileInputStream(new File(FILE_PATH + File.separator + fileRelativePath + ".shard-" + i));
                 BufferedInputStream buffInput = new BufferedInputStream(fileInput, 8 * 1024 * 10)) {
                     while ((len = buffInput.read(bytes)) != -1) {
                         buffOutput.write(bytes, 0, len);
@@ -254,15 +280,32 @@ public class FileController {
         log.info("====合并分片结束====");
 
         // 删除分片
-        log.info("删除分片开始");
+        log.info("====删除分片开始====");
         for (int i = 1; i <= shardCount; i++) {
-            String filePath = FILE_PATH + fileRerativePath + ".shard-" + i;
+            String filePath = FILE_PATH  + File.separator + fileRelativePath + ".shard-" + i;
             File delFile = new File(filePath);
             boolean result = delFile.delete();
             log.info("删除{}，{}", filePath, result ? "成功" : "失败");
         }
-        log.info("删除分片结束");
+        log.info("=====删除分片结束=====");
 
+        return RespResult.success();
+    }
+
+    /**
+     * 逻辑删除
+     * @param fileId 文件id
+     * @return
+     */
+    @DeleteMapping("/delete/{sectionId}/{fileId}")
+    public RespResult deleteFile(@PathVariable("sectionId") Integer sectionId, @PathVariable("fileId") Integer fileId){
+        // 更改小节url为空
+        // 如果sectionId传了0，说明是新增还没有小节，不需要更改url
+        if(sectionId != 0) {
+            sectionService.setSectionVideoUrl(sectionId, "");
+        }
+        // 检查是否要逻辑删除文件表
+        videoService.checkSectionExists(fileId);
         return RespResult.success();
     }
 

@@ -25,8 +25,12 @@ spring:
       properties:
         hibernate:
         format_sql: true
+  #时间格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 #文件存储路径
 mooc:
   file:
     path: E:\fujian\file\
+

@@ -36,7 +36,11 @@ public class SectionController {
         return RespResult.success(sectionService.findPage(matchObject, pageIndex, pageSize));
     }
 
-
+    /**
+     * 根据大章ID查询大章下的所有小节
+     * @param chapterId
+     * @return
+     */
     @GetMapping("/listByChapter/{chapterId}")
     public RespResult findSectionByChapterId(@PathVariable("chapterId") Integer chapterId) {
         Section condition = new Section();

@@ -113,7 +113,7 @@ public class MoocFileService {
      * @param moocFile
      * @return 返回成功数
      */
-    public Integer insertOrUpdate(MoocFile moocFile){
+    public MoocFile insertOrUpdate(MoocFile moocFile){
         if (moocFile == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
@@ -121,8 +121,7 @@ public class MoocFileService {
         if(moocFile.getId() != null){
           return this.update(moocFile);
         }
-        MoocFile newMoocFile = moocFileRepository.save(moocFile);
-        return newMoocFile == null ? 0 : 1;
+        return moocFileRepository.save(moocFile);
     }
 
 
@@ -131,7 +130,7 @@ public class MoocFileService {
      * @param moocFile
      * @return 返回成功条数
      */
-    public Integer update(MoocFile moocFile){
+    public MoocFile update(MoocFile moocFile){
         // 入参校验
         if(moocFile == null || moocFile.getId() == null){
             throw new IllegalArgumentException("更新的对象不能为null");
@@ -145,8 +144,7 @@ public class MoocFileService {
         //把不为null的属性拷贝到dbMoocFile
         CopyUtil.notNullCopy(moocFile, dbMoocFile);
         //执行保存操作
-        MoocFile updateMoocFile = moocFileRepository.save(dbMoocFile);
-        return updateMoocFile == null ? 0 : 1;
+        return moocFileRepository.save(dbMoocFile);
     }
 
 

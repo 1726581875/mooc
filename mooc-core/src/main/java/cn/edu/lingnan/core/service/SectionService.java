@@ -1,13 +1,17 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.MoocFile;
 import cn.edu.lingnan.core.vo.SectionVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Section;
 import cn.edu.lingnan.core.repository.SectionRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +26,8 @@ public class SectionService {
 
     @Resource
     private SectionRepository sectionRepository;
+    @Autowired
+    private MoocFileService moocFileService;
 
     /**
      * 根据Id查找
@@ -136,8 +142,26 @@ public class SectionService {
     }
 
 
+    /**
+     * 删除视频小节
+     * 1、更改视频文件状态为已删除
+     * 2、物理删除小节信息
+     * @param id
+     * @return
+     */
+    @Transactional
     public Integer deleteById(Integer id){
-        sectionRepository.deleteById(id);
+        Optional<Section> option = sectionRepository.findById(id);
+        if(option.isPresent()) {
+            // 更新视频文件表状态为已删除（逻辑删除）
+            Section section = option.get();
+            MoocFile file = new MoocFile();
+            file.setId(section.getFileId());
+            file.setStatus(2);
+            moocFileService.update(file);
+            // 删除小节(物理删除)
+            sectionRepository.deleteById(id);
+        }
         return  findById(id) == null ? 1 : 0;
     }
 

@@ -1,13 +1,15 @@
-package cn.edu.lingnan.core.entity;
+package cn.edu.lingnan.mooc.file.entity;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
-import lombok.Data;
-import lombok.ToString;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -16,7 +18,8 @@ import java.util.Date;
 @Entity(name = "chapter_section")
 @Data
 @ToString
-public class Section{
+@Accessors(chain=true)
+public class Section {
     // id   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -30,6 +30,8 @@ public class ChapterVO {
      * 章节名称
      */
     private String name;
+    // 大章总时长，单位s 秒
+    private Integer duration;
     /**
      * 排序
      */
