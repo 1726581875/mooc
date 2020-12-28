@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -30,6 +32,25 @@ public class ChapterService {
     @Autowired
     private CourseService courseService;
 
+    /**
+     * 交换排序位置
+     * @param id1
+     * @param sort1
+     * @param id2
+     * @param sort2
+     */
+    @Transactional
+    public void chapterSortSwap(Integer id1,Integer sort1, Integer id2, Integer sort2){
+        Chapter chapter1 = new Chapter();
+        chapter1.setId(id1);
+        chapter1.setSort(sort2);
+        Chapter chapter2 = new Chapter();
+        chapter2.setId(id2);
+        chapter2.setSort(sort1);
+        // 保存交换信息
+        this.update(chapter1);
+        this.update(chapter2);
+    }
     /**
      * 根据Id查找
      * @param id

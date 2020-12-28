@@ -19,6 +19,15 @@ public class SectionController {
     @Autowired
     private SectionService sectionService;
 
+
+
+    @PostMapping("/swap")
+    public RespResult sortSwap(@RequestParam("id1") Integer id1,@RequestParam("sort1") Integer sort1
+            ,@RequestParam("id2") Integer id2,@RequestParam("sort2") Integer sort2) {
+        sectionService.sectionSortSwap(id1,sort1,id2,sort2);
+        return RespResult.success();
+    }
+
     /**
      * 分页查询section接口
      * get请求

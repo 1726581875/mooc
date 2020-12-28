@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.Chapter;
 import cn.edu.lingnan.core.entity.MoocFile;
 import cn.edu.lingnan.core.vo.SectionVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -28,6 +29,28 @@ public class SectionService {
     private SectionRepository sectionRepository;
     @Autowired
     private MoocFileService moocFileService;
+
+
+
+    /**
+     * 交换排序位置
+     * @param id1
+     * @param sort1
+     * @param id2
+     * @param sort2
+     */
+    @Transactional
+    public void sectionSortSwap(Integer id1,Integer sort1, Integer id2, Integer sort2){
+        Section section1 = new Section();
+        section1.setId(id1);
+        section1.setSort(sort2);
+        Section section2 = new Section();
+        section2.setId(id2);
+        section2.setSort(sort1);
+        // 保存交换信息
+        this.update(section1);
+        this.update(section2);
+    }
 
     /**
      * 根据Id查找

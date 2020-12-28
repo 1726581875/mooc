@@ -29,6 +29,14 @@ public class ChapterController {
     @Autowired
     private ChapterService chapterService;
 
+
+
+    @PostMapping("/swap")
+    public RespResult sortSwap(@RequestParam("id1") Integer id1,@RequestParam("sort1") Integer sort1
+            ,@RequestParam("id2") Integer id2,@RequestParam("sort2") Integer sort2) {
+        chapterService.chapterSortSwap(id1,sort1,id2,sort2);
+        return RespResult.success();
+    }
     /**
      * 分页查询chapter接口
      * get请求
