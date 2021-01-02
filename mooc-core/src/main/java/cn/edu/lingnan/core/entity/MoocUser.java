@@ -1,6 +1,8 @@
 package cn.edu.lingnan.core.entity;
 
 import javax.persistence.*;
+
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import lombok.Data;
@@ -10,13 +12,14 @@ import java.util.Date;
 @DynamicUpdate
 @DynamicInsert
 @Entity(name = "mooc_user")
+@Accessors(chain=true)
 public class MoocUser{
     // ID   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     // 用户头像   
-    private String userIamge;
+    private String userImage;
     // 用户昵称   
     private String name;
     // 登录账号   

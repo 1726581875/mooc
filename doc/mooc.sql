@@ -192,7 +192,7 @@ CREATE TABLE `login_log` (
 DROP TABLE IF EXISTS `course_monitor_record`;
 CREATE TABLE `course_monitor_record` (
                                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                         `account` varchar(50) NOT NULL COMMENT '管理员账号',
+                                         `teacher_id` bigint UNSIGNED NOT NULL COMMENT '教师id',
                                          `course_id` bigint UNSIGNED NOT NULL COMMENT '课程id',
                                          `message` varchar(255) COMMENT '具体消息',
                                          `record_type` varchar(6) NOT NULL COMMENT '类型|新增课程、上传视频、删除课程',
@@ -200,19 +200,19 @@ CREATE TABLE `course_monitor_record` (
                                          `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8793 DEFAULT CHARSET=utf8 COMMENT='课程监控记录表';
-insert into course_monitor_record(account,course_id,message,record_type,ip)
+insert into course_monitor_record(teacher_id,course_id,message,record_type,ip)
 values
-('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
-('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
-('gotodo',1,'删除了课程 《我是大傻逼》','删除课程','127.0.0.1'),
-('gotodo',1,'上传了视频','上传视频','127.0.0.1'),
-('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1');
+(7,1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
+(7,1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
+(7,1,'删除了课程 《我是大傻逼》','删除课程','127.0.0.1'),
+(7,1,'上传了视频','上传视频','127.0.0.1'),
+(7,1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1');
 
 -- 普通用户表（教师/用户）
 DROP TABLE IF EXISTS `mooc_user`;
 CREATE TABLE `mooc_user`(
                             `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                            `user_iamge` varchar(50) NOT NULL COMMENT '用户头像',
+                            `user_image` varchar(50) NOT NULL COMMENT '用户头像',
                             `name` varchar(40) NOT NULL COMMENT '用户昵称',
                             `account` varchar(20) NOT NULL COMMENT '登录账号',
                             `password` varchar(1048) NOT NULL COMMENT '登录密码',
@@ -224,7 +224,7 @@ CREATE TABLE `mooc_user`(
                             PRIMARY KEY (`id`),
                             UNIQUE KEY `uk_account` (`account`)
 )ENGINE = INNODB DEFAULT charset=utf8 COMMENT='普通用户表';
-insert into `mooc_user`(user_iamge,name,account,password,user_type)
+insert into `mooc_user`(user_image,name,account,password,user_type)
 values
 ('/image/default.png','张三丰','zhangsanfeng','$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2','普通用户'),
 ('/image/default.png','张四丰','zhangsifeng','$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2','普通用户'),

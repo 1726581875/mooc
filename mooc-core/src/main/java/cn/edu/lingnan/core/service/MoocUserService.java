@@ -4,21 +4,59 @@ import cn.edu.lingnan.core.entity.MoocUser;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
  * @date: 2020/12/07
  */
+@Slf4j
 @Service
 public class MoocUserService {
 
     @Resource
     private MoocUserRepository moocUserRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+    /**
+     * 根据用户id list 获取用户list
+     * @param userIdList
+     * @return
+     */
+    public Map<Integer,MoocUser> getUserMap(List<Integer> userIdList){
+
+        List<MoocUser> moocUserList = moocUserRepository.findAllById(new HashSet<>(userIdList));
+        Map<Integer, List<MoocUser>> userMapList = moocUserList.stream().collect(Collectors.groupingBy(MoocUser::getId));
+        Map<Integer,MoocUser> resultMap = new HashMap<>();
+        userMapList.forEach((k,v) -> resultMap.put(k,v.get(0)));
+        return resultMap;
+
+/*        // 构造sql
+        StringBuilder sqlBuilder = new StringBuilder("select id,user_image , name, account,status,login_time,create_time," +
+                "update_time from mooc_user u where u.id in (");
+        sqlBuilder.append(userIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        sqlBuilder.append(")");
+        log.info("get user name sql is sql:{}",sqlBuilder.toString());
+        // 执行语句
+        Query query = entityManager.createNativeQuery(sqlBuilder.toString());
+        // 获取和构造返回结果
+        List<Object[]> resultList = query.getResultList();
+        Map<Integer,MoocUser> resultMap = new HashMap<>();
+        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),(MoocUser)o[1]));
+        return resultMap;
+        */
+
+    }
 
     /**
      * 根据Id查找

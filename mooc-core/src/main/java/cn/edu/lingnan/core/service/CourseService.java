@@ -8,15 +8,21 @@ import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Course;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
  * @date: 2020/10/13
  */
+@Slf4j
 @Service
 public class CourseService {
 
@@ -24,6 +30,30 @@ public class CourseService {
     private CourseRepository courseRepository;
     @Resource
     private TagRepository tagRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    /**
+     * 根据课程id list 获取对应课程名
+     * @param courseIdList
+     * @return
+     */
+    public Map<Integer,String> getCourseNameMap(List<Integer> courseIdList){
+        // 构造sql
+        StringBuilder sqlBuilder = new StringBuilder("select id,name from course where id in (");
+        sqlBuilder.append(courseIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        sqlBuilder.append(")");
+        log.info("get course name sql is:{}",sqlBuilder.toString());
+        // 执行语句
+        Query query = entityManager.createNativeQuery(sqlBuilder.toString());
+        // 获取和构造返回结果
+        List<Object[]> resultList = query.getResultList();
+        Map<Integer,String> resultMap = new HashMap<>();
+        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),o[1].toString()));
+        return resultMap;
+    }
+
 
     /**
      * 根据Id查找
