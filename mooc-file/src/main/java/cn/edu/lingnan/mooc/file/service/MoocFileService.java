@@ -4,21 +4,73 @@ import cn.edu.lingnan.mooc.file.entity.MoocFile;
 import cn.edu.lingnan.mooc.file.repository.MoocFileRepository;
 import cn.edu.lingnan.mooc.file.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.file.vo.FileVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
  * @date: 2020/10/17
  */
 @Service
+@Slf4j
 public class MoocFileService {
 
     @Resource
     private MoocFileRepository moocFileRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    /**
+     * 根据用户id list 获取对应用户名
+     * @param userIdList
+     * @return
+     */
+    public Map<Integer,String> getUserNameMap(List<Integer> userIdList){
+        // 构造sql
+        StringBuilder sqlBuilder = new StringBuilder("select id,name from mooc_user where id in (");
+        sqlBuilder.append(userIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        sqlBuilder.append(")");
+        log.info("get user name sql is sql:{}",sqlBuilder.toString());
+        // 执行语句
+        Query query = entityManager.createNativeQuery(sqlBuilder.toString());
+        // 获取和构造返回结果
+        List<Object[]> resultList = query.getResultList();
+        Map<Integer,String> resultMap = new HashMap<>();
+        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),o[1].toString()));
+        return resultMap;
+    }
+
+    /**
+     * 根据课程id list 获取对应课程名
+     * @param courseIdList
+     * @return
+     */
+    public Map<Integer,String> getCourseNameMap(List<Integer> courseIdList){
+        // 构造sql
+        StringBuilder sqlBuilder = new StringBuilder("select id,name from course where id in (");
+        sqlBuilder.append(courseIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        sqlBuilder.append(")");
+        log.info("get course name sql is:{}",sqlBuilder.toString());
+        // 执行语句
+        Query query = entityManager.createNativeQuery(sqlBuilder.toString());
+        // 获取和构造返回结果
+        List<Object[]> resultList = query.getResultList();
+        Map<Integer,String> resultMap = new HashMap<>();
+        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),o[1].toString()));
+        return resultMap;
+    }
 
     /**
      * 根据Id查找
@@ -71,7 +123,7 @@ public class MoocFileService {
      * @param pageSize 每页大小
      * @return
      */
-    public PageVO<MoocFile> findPage(MoocFile matchObject, Integer pageIndex, Integer pageSize){
+    public PageVO<FileVO> findPage(MoocFile matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -85,9 +137,20 @@ public class MoocFileService {
         Page<MoocFile> moocFilePage = moocFileRepository.findAll(example, pageable);
         //获取page对象里的list
         List<MoocFile> moocFileList = moocFilePage.getContent();
+        // 获取课程id list 和 用户id list
+        List<Integer> courseIdList = moocFileList.stream().map(MoocFile::getCourseId).collect(Collectors.toList());
+        List<Integer> userIdList = moocFileList.stream().map(MoocFile::getUserId).collect(Collectors.toList());
+        Map<Integer, String> userNameMap = this.getUserNameMap(userIdList);
+        Map<Integer, String> courseNameMap = this.getCourseNameMap(courseIdList);
+        // 复制基本属性到VO对象
+        List<FileVO> fileVOList = CopyUtil.copyList(moocFileList, FileVO.class);
+        fileVOList.forEach(file -> {
+            file.setUserName(userNameMap.getOrDefault(file.getUserId(),"未知用户"));
+            file.setCourseName(courseNameMap.getOrDefault(file.getCourseId(),"未知课程"));
+        });
         /* 4. 封装到自定义分页结果 */
-        PageVO<MoocFile> pageVO = new PageVO<>();
-        pageVO.setContent(moocFileList);
+        PageVO<FileVO> pageVO = new PageVO<>();
+        pageVO.setContent(fileVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(moocFilePage.getTotalPages());

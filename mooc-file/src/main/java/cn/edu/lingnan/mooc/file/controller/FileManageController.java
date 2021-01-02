@@ -20,6 +20,13 @@ public class FileManageController {
     @Autowired
     private MoocFileService moocFileService;
 
+
+    @GetMapping("/download/{fileId}")
+    public void downloadFile(@PathVariable("fileId") Integer fileId){
+
+
+    }
+
     /**
      * 分页查询moocFile接口
      * get请求

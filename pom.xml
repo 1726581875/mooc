@@ -20,6 +20,7 @@
         <module>mooc-gateway</module>
         <module>mooc-authorize</module>
         <module>mooc-authorize2</module>
+        <module>mooc-statistics</module>
     </modules>
     <groupId>cn.edu.lingnan.mooc</groupId>
     <artifactId>mooc</artifactId>
