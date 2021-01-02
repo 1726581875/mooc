@@ -87,7 +87,8 @@ CREATE TABLE `chapter` (
                            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
                            `course_id` bigint UNSIGNED NOT NULL COMMENT '课程id',
                            `name` varchar(30) NOT NULL COMMENT '名称',
-                           `sort` int NOT NULL COMMENT '顺序',
+                           `duration` INT DEFAULT 0 COMMENT '时长|单位秒',
+                           `sort` int DEFAULT 999 COMMENT '顺序',
                            `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
                            PRIMARY KEY (`id`)
@@ -115,11 +116,12 @@ DROP TABLE IF EXISTS `chapter_section`;
 create table `chapter_section` (
                                    `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
                                    `title` varchar(50) NOT NULL COMMENT '标题',
-                                   `course_id` bigint UNSIGNED NOT NULL COMMENT '课程id',
+                                   `course_id` bigint UNSIGNED COMMENT '课程id',
                                    `chapter_id` bigint UNSIGNED NOT NULL COMMENT '章节id',
-                                   `video` varchar(200) NOT NULL COMMENT '视频',
-                                   `duration` INT NOT NULL COMMENT '时长|单位秒',
-                                   `sort` INT NOT NULL COMMENT '顺序',
+                                   `video` varchar(200) COMMENT '视频',
+                                   `file_id` int COMMENT '文件表Id',
+                                   `duration` INT DEFAULT 0 COMMENT '时长|单位秒',
+                                   `sort` INT DEFAULT 999 COMMENT '顺序',
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
                                    PRIMARY KEY (`id`)
@@ -127,8 +129,8 @@ create table `chapter_section` (
 
 insert into `chapter_section` (title, course_id, chapter_id, video, duration,sort)
 values
-('测试小节01', 1, 1, '', 500,1),
-('测试小节02', 1, 1, '', 500,2),
+('测试小节01', 1, 1, '/file/39dee899-b1f0-427e-9c6c-61d80afbbf17.mp4', 500,1),
+('测试小节02', 1, 1, '/file/39dee899-b1f0-427e-9c6c-61d80afbbf17.mp4', 500,2),
 ('测试小节03', 1, 1, '', 500,3),
 ('测试小节01', 1, 2, '', 500,1),
 ('测试小节02', 1, 2, '', 500,2),
@@ -155,14 +157,18 @@ values
 DROP TABLE IF EXISTS `mooc_file`;
 CREATE TABLE `mooc_file` (
                              `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-                             `name` varchar(50) NOT NULL COMMENT '文件名',
-                             `file_path` varchar(200) NOT NULL COMMENT '视频相对路径',
-                             `file_size` INT NOT NULL COMMENT '大小|字节B',
+                             `name` varchar(200) NOT NULL COMMENT '文件名',
+                             `file_path` varchar(400) NOT NULL COMMENT '视频相对路径',
+                             `file_size` int NOT NULL COMMENT '大小|字节Byte',
                              `file_suffix` varchar(10) NOT NULL COMMENT '文件后缀',
-                             `file_key` varchar(50) NOT NULL COMMENT '文件唯一标识',
-                             `shard_index` INT NOT NULL COMMENT '分片下标',
-                             `shard_count` INT NOT NULL COMMENT '总共分片数',
-                             `shard_size` INT NOT NULL COMMENT '分片大小',
+                             `file_key` varchar(100) NOT NULL COMMENT '文件唯一标识',
+                             `file_type` int NOT NULL COMMENT '文件类型|1视频、2图片、3未知类型、4txt、5markdowm 5、ppt 6 word 7、excel 8、pdf',
+                             `shard_index` int NOT NULL COMMENT '分片下标',
+                             `shard_count` int NOT NULL COMMENT '总共分片数',
+                             `shard_size` int NOT NULL COMMENT '分片大小',
+                             `user_id` bigint NOT NULL COMMENT '所属用户ID',
+                             `course_id` bigint COMMENT '所属课程ID',
+                             `status` tinyint DEFAULT 1 COMMENT '文件状态| 1正常，2已删除',
                              `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                              `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
                              PRIMARY KEY (`id`)
@@ -182,7 +188,25 @@ CREATE TABLE `login_log` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8793 DEFAULT CHARSET=utf8 COMMENT='登录日志表';
 
-
+-- 课程监控记录表
+DROP TABLE IF EXISTS `course_monitor_record`;
+CREATE TABLE `course_monitor_record` (
+                                         `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                         `account` varchar(50) NOT NULL COMMENT '管理员账号',
+                                         `course_id` bigint UNSIGNED NOT NULL COMMENT '课程id',
+                                         `message` varchar(255) COMMENT '具体消息',
+                                         `record_type` varchar(6) NOT NULL COMMENT '类型|新增课程、上传视频、删除课程',
+                                         `ip` varchar(255) DEFAULT NULL COMMENT '登录ip',
+                                         `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8793 DEFAULT CHARSET=utf8 COMMENT='课程监控记录表';
+insert into course_monitor_record(account,course_id,message,record_type,ip)
+values
+('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
+('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1'),
+('gotodo',1,'删除了课程 《我是大傻逼》','删除课程','127.0.0.1'),
+('gotodo',1,'上传了视频','上传视频','127.0.0.1'),
+('gotodo',1,'新增了课程 《我是大傻逼》','新增课程','127.0.0.1');
 
 -- 普通用户表（教师/用户）
 DROP TABLE IF EXISTS `mooc_user`;
@@ -312,41 +336,41 @@ CREATE TABLE `menu_tree`(
 -- 初始化菜单
 insert into menu_tree(id,label,menu_key,icon,parent_id,permission,router,leaf)
 values
-(1,'课程管理','course','el-icon-video-camera',0,'course:select','/course',0),
-(11,'课程信息管理','courseInfo',null,1,'courseInfo:select','/courseInfo',0),
-(111,'查询',null,null,11,'courseInfo:select',null,1),
-(112,'新增',null,null,11,'courseInfo:instert',null,1),
-(113,'修改',null,null,11,'courseInfo:update',null,1),
-(114,'删除',null,null,11,'courseInfo:delete',null,1),
-(115,'导出',null,null,11,'courseInfo:export',null,1),
-(12,'章节管理','chapter',null,1,'chapter:select','/chapter',0),
-(2,'人员管理','person','el-icon-s-custom',0,'user','/person',0),
-(211,'教师管理','teacher',null,2,'teacher:select','/teacher',0),
-(212,'普通用户','user',null,2,'user:select','/user',0),
-(21,'查询',null,null,2,'user:select',null,1),
-(22,'新增',null,null,2,'user:instert',null,1),
-(23,'修改',null,null,2,'user:update',null,1),
-(24,'删除',null,null,2,'user:delete',null,1),
-(25,'导出',null,null,2,'user:export',null,1),
+(1,'监控中心','monitor','el-icon-view',0,'monitor:select','/monitor',0),
+(2,'课程管理','course','el-icon-video-camera',0,'course:select','/course',0),
+(21,'课程信息管理','courseInfo',null,2,'courseInfo:select','/courseInfo',0),
+(211,'查询',null,null,21,'courseInfo:select',null,1),
+(212,'新增',null,null,21,'courseInfo:instert',null,1),
+(213,'修改',null,null,21,'courseInfo:update',null,1),
+(214,'删除',null,null,21,'courseInfo:delete',null,1),
+(215,'导出',null,null,21,'courseInfo:export',null,1),
+(22,'章节管理','chapter',null,2,'chapter:select','/chapter',0),
+(3,'人员管理','person','el-icon-s-custom',0,'user','/person',0),
+(311,'教师管理','teacher',null,3,'teacher:select','/teacher',0),
+(312,'普通用户','user',null,3,'user:select','/user',0),
+(31,'查询',null,null,3,'user:select',null,1),
+(32,'新增',null,null,3,'user:instert',null,1),
+(33,'修改',null,null,3,'user:update',null,1),
+(34,'删除',null,null,3,'user:delete',null,1),
+(35,'导出',null,null,3,'user:export',null,1),
 
-(3,'分类管理','category','el-icon-notebook-2',0,'category:select','/category',0),
-(4,'文件管理','file','el-icon-folder',0,'file:select','/file',0),
-
-(5,'报表统计','charts','el-icon-s-data',0,'report:select','/report',0),
-(51,'查询',null,null,5,'report:select',null,1),
-(52,'导出',null,null,5,'report:export',null,1),
-(6,'系统管理','sys','el-icon-s-tools',0,'sys','/system',0),
-(61,'管理员管理','manager',null,6,'manager:select','/system/manager',0),
-(62,'角色管理','role',null,6,'role:select','/system/role',0),
-(621,'查询',null,null,62,'role:select',null,1),
-(622,'新增',null,null,62,'role:instert',null,1),
-(623,'修改',null,null,62,'role:update',null,1),
-(625,'删除',null,null,62,'role:delete',null,1),
-(626,'导出',null,null,62,'role:export',null,1),
-(63,'系统日志','log',null,6,'log:select','/system/log',0),
-(631,'查询',null,null,63,'role:select',null,1),
-(632,'导出',null,null,63,'role:export',null,1),
-(65,'在线人员管理','online',null,6,'online:select','/online/user',0);
+(4,'分类管理','category','el-icon-notebook-2',0,'category:select','/category',0),
+(5,'文件管理','file','el-icon-folder',0,'file:select','/file',0),
+(6,'报表统计','charts','el-icon-s-data',0,'report:select','/report',0),
+(61,'查询',null,null,6,'report:select',null,1),
+(62,'导出',null,null,6,'report:export',null,1),
+(7,'系统管理','sys','el-icon-s-tools',0,'sys','/system',0),
+(71,'管理员管理','manager',null,7,'manager:select','/system/manager',0),
+(72,'角色管理','role',null,7,'role:select','/system/role',0),
+(721,'查询',null,null,72,'role:select',null,1),
+(722,'新增',null,null,72,'role:instert',null,1),
+(723,'修改',null,null,72,'role:update',null,1),
+(725,'删除',null,null,72,'role:delete',null,1),
+(727,'导出',null,null,72,'role:export',null,1),
+(73,'系统日志','log',null,7,'log:select','/system/log',0),
+(731,'查询',null,null,73,'role:select',null,1),
+(732,'导出',null,null,73,'role:export',null,1),
+(75,'在线人员管理','online',null,7,'online:select','/online/user',0);
 
 
 -- 管理员与角色关联表
