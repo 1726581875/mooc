@@ -13,7 +13,7 @@ import java.util.Date;
  * @date: 2020/12/30
  */
 @Data
-@Document(indexName = "mooc_course",type = "doc",
+@Document(indexName = "mooc_course",type = "_doc",
         useServerConfiguration = true,createIndex = false)
 public class EsCourse {
 
@@ -38,13 +38,13 @@ public class EsCourse {
     @Field(type = FieldType.Integer)
     private Integer teachId;
     /**
-     * 创建时间
+     * 修改时间
      */
     @Field(type = FieldType.Date,format = DateFormat.custom,
             pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")
     private Date updateTime;
     /**
-     * 修改时间
+     * 创建时间
      */
     @Field(type = FieldType.Date,format = DateFormat.custom,
             pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")

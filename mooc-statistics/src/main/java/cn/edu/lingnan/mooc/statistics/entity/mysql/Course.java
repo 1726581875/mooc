@@ -1,12 +1,12 @@
-package cn.edu.lingnan.core.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+package cn.edu.lingnan.mooc.statistics.entity.mysql;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -14,7 +14,7 @@ import java.util.Date;
 @DynamicUpdate
 @Entity(name = "course")
 @Data
-public class Course{
+public class Course {
     // 主键id   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

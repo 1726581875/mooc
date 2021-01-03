@@ -6,19 +6,40 @@ PUT /mooc_course
   },
   "mappings": {
     "properties": {
+      "id": {
+        "type": "integer"
+      },
       "name": {
         "type": "text"
       },
-       "summery": {
+      "summery": {
         "type": "text"
-       },
+      },
       "teachId": {
         "type": "integer"
       },
+      "updateTime": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      },
       "createTime": {
         "type": "date",
-        "format": "yyyy-MM-dd HH:mm:ss||epoch_millis"
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
       }
     }
   }
+}
+
+PUT /mooc_course/_doc/1?pretty=true
+{
+  "name" : "测试课程",
+  "summery": "这是一门测试课程",
+  "teachId": 1,
+  "createTime": "2021-01-01",
+  "updateTime": "2021-01-01"
+}
+
+GET /mooc_course/_doc/_search
+{
+
 }
