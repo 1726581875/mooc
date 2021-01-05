@@ -2,13 +2,22 @@ package cn.edu.lingnan.mooc.statistics.repository;
 
 import cn.edu.lingnan.mooc.statistics.entity.es.EsCourse;
 import cn.edu.lingnan.mooc.statistics.entity.mysql.Course;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +33,35 @@ public class EsCourseRepositoryTest {
     @Autowired
     private CourseRepository mysqlCourseRepository;
 
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
+
+    @Test
+    public void testElasticsearchTemplate() throws IOException {
+
+        String keyword = "spring";
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name",keyword));
+        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("summary",keyword));
+        // 构件SearchSourceBuilder
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(boolQueryBuilder);
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("mooc_course");
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        SearchHits hits = searchResponse.getHits();
+
+        SearchHit[] hits1 = hits.getHits();
+        String sourceAsString = hits1[0].getSourceAsString();
+        System.out.println(sourceAsString);
+    }
+
     @Test
     public void esFindAllTest(){
         esCourseRepository.findAll().forEach(System.out::println);
@@ -31,7 +69,7 @@ public class EsCourseRepositoryTest {
 
     @Test
     public void testFindByQuery(){
-        String keyword = "测试";
+        String keyword = "spring";
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         queryBuilder.should(QueryBuilders.matchPhraseQuery("name",keyword));
         queryBuilder.should(QueryBuilders.matchPhraseQuery("summary",keyword));
@@ -63,6 +101,10 @@ public class EsCourseRepositoryTest {
         return esCourse;
     }
 
+    @Test
+    private void testGetCourseAccount(){
+
+    }
 
 
 }

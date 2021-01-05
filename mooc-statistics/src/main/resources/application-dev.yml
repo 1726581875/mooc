@@ -3,11 +3,15 @@ server:
   port: 9005
 
 spring:
-  #es连接配置
+#  #es连接配置
   data:
     elasticsearch:
       cluster-nodes: 127.0.0.1:9300
       cluster-name: my-application
+  #ES http rest连接
+#  elasticsearch:
+#    rest:
+#      uris: http://127.0.0.1:9200
 
   #配置数据库连接参数
   datasource:
