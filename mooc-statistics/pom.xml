@@ -57,6 +57,13 @@
             <version>6.5.4</version>
         </dependency>
 
+        <!-- 引入系统common依赖-->
+        <dependency>
+            <artifactId>mooc-common</artifactId>
+            <groupId>cn.edu.lingnan.mooc</groupId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>
