@@ -44,12 +44,13 @@ public class MonitorController {
      * @param type
      * @return
      */
+    @GetMapping("/countLoginUser")
     public RespResult getUserCount(@RequestParam(value = "type", defaultValue = "week") String type){
         Map<String, Long> countMap = null;
         if ("week".equals(type)) {
-            countMap = monitorService.countWeekCourse();
+            countMap = monitorService.countWeekPerson();
         } else {
-            countMap = monitorService.countMonthCourse();
+            countMap = monitorService.countMonthPerson();
         }
         return RespResult.success(countMap);
     }

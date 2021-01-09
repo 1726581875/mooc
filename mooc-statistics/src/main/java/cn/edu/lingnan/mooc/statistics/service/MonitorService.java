@@ -1,5 +1,7 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
+import cn.edu.lingnan.mooc.statistics.entity.mysql.LoginAmountCount;
+import cn.edu.lingnan.mooc.statistics.repository.LoginAmountCountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -20,10 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author xiaomingzhang
@@ -35,6 +34,8 @@ public class MonitorService {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+    @Autowired
+    private LoginAmountCountRepository loginAmountCountRepository;
 
     /**
      * 获取一周前的新建课程数
@@ -191,16 +192,66 @@ public class MonitorService {
         return searchResponse;
     }
 
-
-
+    /**
+     * 获取七天前的系统登录人数
+     * @return
+     */
     public Map<String,Long> countWeekPerson(){
+        // 设置开始时间为7天前
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(new Date());
+        begin.set(Calendar.DATE, begin.get(Calendar.DATE) - 7);
+        Long beginTime = begin.getTimeInMillis();
+        // 结束时间为今天
+        Calendar end = Calendar.getInstance();
+        end.setTime(new Date());
+        Long endTime = end.getTimeInMillis();
 
-        return null;
+        // 初始化统计的日期对应登录人数map
+        Map<String, Long> dailyCountMap = initDailyCount(beginTime, endTime);
+        // 查询出对应时间的登录人数
+        List<LoginAmountCount> loginAmountCountList = loginAmountCountRepository
+                .findLoginAmountCountByTime(begin.getTime(), end.getTime());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+        // 构造需要返回的map
+        Map<String,Long> countMap = new HashMap<>(loginAmountCountList.size());
+        loginAmountCountList.forEach(e -> {
+            String formatDate = simpleDateFormat.format(e.getCountTime());
+            dailyCountMap.computeIfPresent(formatDate,(k,v)-> v + Long.valueOf(e.getAmount()));
+        });
+        return dailyCountMap;
     }
 
+    /**
+     * 获取近一个月的系统登录人数
+     * @return
+     */
     public Map<String,Long> countMonthPerson(){
+        // 设置开始时间为一个月前
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(new Date());
+        begin.add(Calendar.MONTH,-1);
+        Long beginTime = begin.getTimeInMillis();
+        // 结束时间为明天
+        Calendar end = Calendar.getInstance();
+        end.setTime(new Date());
+        Long endTime = end.getTimeInMillis();
 
-        return null;
+        // 初始化统计的日期对应登录人数map
+        Map<String, Long> dailyCountMap = initDailyCount(beginTime, endTime);
+        // 查询出对应时间的登录人数
+        List<LoginAmountCount> loginAmountCountList = loginAmountCountRepository
+                .findLoginAmountCountByTime(begin.getTime(), end.getTime());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+        // 构造需要返回的map
+        Map<String,Long> countMap = new HashMap<>(loginAmountCountList.size());
+        loginAmountCountList.forEach(e -> {
+            String formatDate = simpleDateFormat.format(e.getCountTime());
+            dailyCountMap.computeIfPresent(formatDate,(k,v)-> v + Long.valueOf(e.getAmount()));
+        });
+        return dailyCountMap;
     }
 
 
