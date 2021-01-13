@@ -3,10 +3,7 @@ package cn.edu.lingnan.mooc.statistics.controller;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.statistics.service.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -17,6 +14,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/monitor")
+@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MonitorController {
 
     @Autowired
