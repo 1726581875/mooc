@@ -147,7 +147,7 @@ public class CourseService {
         }
         // 新增课程
         Course newCourse = courseRepository.save(course);
-
+        // todo 需要去优化
         // 保存监控记录
         MonitorRecord monitorRecord = new MonitorRecord();
         monitorRecord.setCourseId(newCourse.getId());
@@ -206,6 +206,18 @@ public class CourseService {
         CopyUtil.notNullCopy(course, dbCourse);
         //执行保存操作
         Course updateCourse = courseRepository.save(dbCourse);
+
+        // todo 暂时不记录
+        // 保存修改课程的记录到监控记录表
+/*        MonitorRecord monitorRecord = new MonitorRecord();
+        monitorRecord.setCourseId(updateCourse.getId());
+        monitorRecord.setRecordType("新增课程");
+        monitorRecord.setCreateTime(updateCourse.getCreateTime());
+        monitorRecord.setMessage("更新了课程名");
+        monitorRecord.setTeacherId(updateCourse.getTeacherId());
+        monitorRecord.setIp("127.0.0.1");
+        monitorRecordRepository.save(monitorRecord);*/
+
         return updateCourse == null ? 0 : 1;
     }
 

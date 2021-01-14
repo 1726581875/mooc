@@ -37,10 +37,12 @@ public class VideoService {
                 return;
             }
         }
-        MoocFile moocFile = new MoocFile();
-        moocFile.setId(fileId);
-        moocFile.setStatus(FileStatusEnum.DELETED.getStatus());
-        moocFileService.update(moocFile);
+        if(fileId != 0) {
+            MoocFile moocFile = new MoocFile();
+            moocFile.setId(fileId);
+            moocFile.setStatus(FileStatusEnum.DELETED.getStatus());
+            moocFileService.update(moocFile);
+        }
     }
 
 }

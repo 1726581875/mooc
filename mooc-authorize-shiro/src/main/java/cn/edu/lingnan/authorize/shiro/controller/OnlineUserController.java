@@ -2,6 +2,7 @@ package cn.edu.lingnan.authorize.shiro.controller;
 
 import cn.edu.lingnan.authorize.shiro.service.OnlineService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,8 @@ public class OnlineUserController {
      * @param matchStr
      * @return
      */
+    // todo 使用这个注解会没有数据返回
+    //@RequiresPermissions("list")
     @GetMapping("/list")
     public RespResult findOnlineByCondition(@RequestParam(value="pageIndex",defaultValue = "1") Integer pageIndex,
                                             @RequestParam(value="pageSize",defaultValue = "10") Integer pageSize,
