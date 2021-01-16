@@ -1,8 +1,10 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.repository.CourseRepository;
+import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.TagRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
@@ -33,6 +35,8 @@ public class CourseService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private MonitorRecordRepository monitorRecordRepository;
 
     /**
      * 根据课程id list 获取对应课程名
@@ -141,9 +145,26 @@ public class CourseService {
         if (course == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
+        // 新增课程
         Course newCourse = courseRepository.save(course);
+
+        // 保存监控记录
+        MonitorRecord monitorRecord = new MonitorRecord();
+        monitorRecord.setCourseId(newCourse.getId());
+        monitorRecord.setRecordType("新增课程");
+        monitorRecord.setCreateTime(newCourse.getCreateTime());
+        monitorRecord.setMessage("新增了课程《" + newCourse.getName() +"》");
+        monitorRecord.setTeacherId(newCourse.getTeacherId());
+        monitorRecord.setIp("127.0.0.1");
+        monitorRecordRepository.save(monitorRecord);
         return newCourse == null ? 0 : 1;
     }
+
+
+
+
+
+
 
     /**
      * 插入或更新数据
@@ -160,6 +181,7 @@ public class CourseService {
           return this.update(course);
         }
         Course newCourse = courseRepository.save(course);
+
         return newCourse == null ? 0 : 1;
     }
 
