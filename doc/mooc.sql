@@ -469,20 +469,19 @@ CREATE TABLE `login_amount_count`
 (
     `id`   int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
     `amount` int NOT NULL COMMENT '登录人数|统计用户/教师',
-    `count_time` datetime     NOT NULL COMMENT '统计时间',
+    `count_time` varchar(64)     NOT NULL COMMENT '统计时间',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_count_time` (`count_time`)
+    PRIMARY KEY (`id`)
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='登录数量统计表';
 insert into login_amount_count(amount,count_time)
 values 
-(10,'2021-01-07'),
-(10,'2021-01-06'),
-(10,'2021-01-05'),
-(10,'2021-01-04'),
-(10,'2021-01-03'),
-(10,'2021-01-02'),
-(10,'2021-01-01'); 
+(10,'01-07'),
+(10,'01-06'),
+(10,'01-05'),
+(10,'01-04'),
+(10,'01-03'),
+(10,'01-02'),
+(10,'01-01');
   
