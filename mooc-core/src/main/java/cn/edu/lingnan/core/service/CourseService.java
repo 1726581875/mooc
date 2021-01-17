@@ -3,6 +3,7 @@ package cn.edu.lingnan.core.service;
 import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.enums.CourseEnum;
+import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.repository.CourseRepository;
 import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.TagRepository;
@@ -169,15 +170,18 @@ public class CourseService {
     /**
      * 插入或更新数据
      * 说明:如果参数带id表示是更新，否则就是插入
-     * @param course
+     * @param courseParam
      * @return 返回成功数
      */
-    public Integer insertOrUpdate(Course course){
-        if (course == null) {
+    public Integer insertOrUpdate(CourseParam courseParam){
+        if (courseParam == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
+
+        Course course = CopyUtil.copy(courseParam, Course.class);
+
         // id不为空，表示更新操作
-        if(course.getId() != null){
+        if(courseParam.getId() != null){
           return this.update(course);
         }
         Course newCourse = courseRepository.save(course);

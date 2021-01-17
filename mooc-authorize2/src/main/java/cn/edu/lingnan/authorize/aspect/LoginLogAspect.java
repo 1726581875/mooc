@@ -67,7 +67,9 @@ public class LoginLogAspect {
         String account = "获取账号异常";
         if(token != null){
             UserToken userToken = RedisUtil.get(token, UserToken.class);
-            account = userToken.getAccount();
+            if(userToken != null){
+                account = userToken.getAccount();
+            }
         }
 
         // 2、执行登出方法

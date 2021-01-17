@@ -26,7 +26,7 @@ public class Authorize2Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        System.out.println("工程启动了...");
+        System.out.println("权限工程启动了...");
     }
 
 

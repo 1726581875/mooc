@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
+import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.service.CourseService;
@@ -70,12 +71,12 @@ public class CourseController {
      * @return
      */
     @PostMapping("/course")
-    public RespResult insertOrUpdate(@RequestBody Course course) {
-        Integer flag = courseService.insertOrUpdate(course);
+    public RespResult insertOrUpdate(@RequestBody CourseParam courseParam) {
+        Integer flag = courseService.insertOrUpdate(courseParam);
         if (flag == 0) {
-            return RespResult.fail("新增Course失败");
+            return RespResult.fail();
         }
-        return RespResult.success("新增Course成功");
+        return RespResult.success();
     }
 
     /**
