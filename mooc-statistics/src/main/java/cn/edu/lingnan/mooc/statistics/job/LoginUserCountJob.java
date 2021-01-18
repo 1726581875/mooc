@@ -24,7 +24,7 @@ public class LoginUserCountJob {
     /**
      * 定时任务统计前一天登录人数
      */
-    @Scheduled(cron = "0/5 * * * * ? ")
+/*    @Scheduled(cron = "0/5 * * * * ? ")
     public void countLoginPersonAmount(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -58,12 +58,12 @@ public class LoginUserCountJob {
         loginAmountCount.setCreateTime(new Date());
         loginAmountCount.setCountTime(simpleDateFormat.format(beginTime));
         loginAmountCountRepository.save(loginAmountCount);
-    }
+    }*/
 
     /**
      * 统计登录人数补偿任务
      */
-    @Scheduled(cron = "0/5 * * * * ? ")
+/*    @Scheduled(cron = "0/5 * * * * ? ")
     public void countLoginAmountCompensate(){
 
         Calendar calendar = Calendar.getInstance();
@@ -82,7 +82,7 @@ public class LoginUserCountJob {
             this.countLoginPersonAmount();
         }
 
-    }
+    }*/
 
 
 

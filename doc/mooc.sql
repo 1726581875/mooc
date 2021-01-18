@@ -415,7 +415,8 @@ values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/mon
        (73, '系统日志', 'log', null, 7, 'log:select', '/system/log', 0),
        (731, '查询', null, null, 73, 'role:select', null, 1),
        (732, '导出', null, null, 73, 'role:export', null, 1),
-       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 0);
+       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 0),
+       (76, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 0);
 
 
 -- 管理员与角色关联表
@@ -476,12 +477,24 @@ CREATE TABLE `login_amount_count`
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='登录数量统计表';
 insert into login_amount_count(amount,count_time)
-values 
-(10,'01-07'),
-(10,'01-06'),
-(10,'01-05'),
-(10,'01-04'),
-(10,'01-03'),
-(10,'01-02'),
-(10,'01-01');
+values
+(18,'01-17'),
+(10,'01-16'),
+(6,'01-15'),
+(5,'01-14'),
+(4,'01-13'),
+(7,'01-12');
   
+
+-- 系统logo表
+DROP TABLE IF EXISTS `mooc_logo`;
+CREATE TABLE `mooc_logo` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `system_name` varchar(50) COMMENT '系统名',
+  `system_logo_path` varchar(200)  COMMENT '系统主页logo图片地址',
+  `login_logo_path` varchar(200)  COMMENT '登录页logo图片地址',
+  `favicon_path` varchar(200) COMMENT '网站图标地址',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+)ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='系统logo表';

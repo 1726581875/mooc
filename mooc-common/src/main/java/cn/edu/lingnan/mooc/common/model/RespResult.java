@@ -53,6 +53,13 @@ public class RespResult {
         return new RespResult(status, msg ,null);
     }
 
+    public static RespResult parameterError(){
+        return new RespResult(-2,"参数异常",null);
+    }
+    public static RespResult parameterError(String msg){
+        return new RespResult(-2,msg,null);
+    }
+
     public static RespResult failUnKnownError(){
         return new RespResult(-1, "未知异常" ,null);
     }

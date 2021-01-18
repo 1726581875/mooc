@@ -1,10 +1,12 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.entity.CourseTagRel;
 import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.repository.CourseRepository;
+import cn.edu.lingnan.core.repository.CourseTagRelRepository;
 import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.TagRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
@@ -14,6 +16,9 @@ import cn.edu.lingnan.core.entity.Course;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,8 +41,10 @@ public class CourseService {
 
     @PersistenceContext
     private EntityManager entityManager;
-
+    @Resource
     private MonitorRecordRepository monitorRecordRepository;
+    @Resource
+    private CourseTagRelRepository courseTagRelRepository;
 
     /**
      * 根据课程id list 获取对应课程名
@@ -173,18 +180,33 @@ public class CourseService {
      * @param courseParam
      * @return 返回成功数
      */
+    @Transactional(rollbackFor = Exception.class)
     public Integer insertOrUpdate(CourseParam courseParam){
         if (courseParam == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
 
         Course course = CopyUtil.copy(courseParam, Course.class);
-
-        // id不为空，表示更新操作
-        if(courseParam.getId() != null){
+        List<Tag> tagList = courseParam.getTagList();
+        // id不为空，表示更新操作,更新课程标签、课程基本信息
+        if(course.getId() != null){
+            //先删标签关系
+            courseTagRelRepository.deleteAllByCourseId(course.getId());
+            //再保存
+            if(!CollectionUtils.isEmpty(tagList)){
+                List<CourseTagRel> tagRelList = tagList.stream().map(tag -> new CourseTagRel(course.getId(),tag.getId())).collect(Collectors.toList());
+                courseTagRelRepository.saveAll(tagRelList);
+            }
+          //更新课程
           return this.update(course);
         }
+
+        //插入课程、课程标签关系
         Course newCourse = courseRepository.save(course);
+        if(!CollectionUtils.isEmpty(tagList)){
+            List<CourseTagRel> tagRelList = tagList.stream().map(tag -> new CourseTagRel(newCourse.getId(),tag.getId())).collect(Collectors.toList());
+            courseTagRelRepository.saveAll(tagRelList);
+        }
 
         return newCourse == null ? 0 : 1;
     }

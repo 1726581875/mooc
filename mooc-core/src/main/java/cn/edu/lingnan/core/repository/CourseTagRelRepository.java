@@ -11,4 +11,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public interface CourseTagRelRepository extends JpaRepository<CourseTagRel, Integer>,JpaSpecificationExecutor<CourseTagRel> {
 
+    /**
+     * 根据课程id删除标签关系
+     * @param courseId
+     */
+    void deleteAllByCourseId(Integer courseId);
+
 }

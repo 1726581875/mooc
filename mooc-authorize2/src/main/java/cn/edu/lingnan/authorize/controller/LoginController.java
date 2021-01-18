@@ -76,10 +76,9 @@ public class LoginController {
             RespResult.success("登出成功");
         }
         UserToken userToken = RedisUtil.get(token, UserToken.class);
-        if(token == null && userToken == null){
+        if(token == null || userToken == null){
             RespResult.fail("token失效");
         }
-
         // 删除token/在线信息
         authorizeService.delRedisTokenOnline(userToken.getAccount());
         return RespResult.success("登出成功");

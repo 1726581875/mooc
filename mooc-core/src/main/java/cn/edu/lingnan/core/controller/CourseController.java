@@ -66,11 +66,11 @@ public class CourseController {
     /**
      * 插入或更新course
      * 请求方法: post
-     * url: /admin/courses/course
-     * @param course
+     * url: /admin/courses/save
+     * @param courseParam
      * @return
      */
-    @PostMapping("/course")
+    @PostMapping("/save")
     public RespResult insertOrUpdate(@RequestBody CourseParam courseParam) {
         Integer flag = courseService.insertOrUpdate(courseParam);
         if (flag == 0) {

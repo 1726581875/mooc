@@ -9,15 +9,33 @@ import java.util.Date;
 @DynamicInsert
 @Entity(name = "course_tag_rel")
 public class CourseTagRel{
-    // id   
+    /**
+     * id
+     */
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    // 课程id   
+
+    /**
+     * 课程id
+     */
     private Integer courseId;
-    // 标签id   
+
+    /**
+     * 标签id
+     */
     private Integer tagId;
-    // 创建时间   
+    /**
+     * 创建时间
+     */
     private Date createTime;
+
+    public CourseTagRel(){};
+
+    public CourseTagRel(Integer courseId, Integer tagId){
+        this.courseId = courseId;
+        this.tagId = tagId;
+    }
+
     
 }
