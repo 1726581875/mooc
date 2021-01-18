@@ -8,9 +8,12 @@ import cn.edu.lingnan.core.repository.TagRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CategoryVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +48,20 @@ public class CategoryService {
         return optional.get();
     }
 
-    public List<Category> findAll(){
-        return categoryRepository.findAll();
+    public List<CategoryVO> findAll(){
+        // get all categoryList
+        List<Category> categoryList = categoryRepository.findAll();
+        // get categoryIdList
+        List<Integer> categoryIdList = categoryList.stream().map(Category::getId).collect(Collectors.toList());
+        // get tagList
+        List<Tag> tagList = tagRepository.findAllByCategoryIdIn(categoryIdList);
+        // categoryId/tagList map
+        Map<Integer, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getCategoryId));
+        //categoryList转换为categoryVOList
+        List<CategoryVO> categoryVOList = CopyUtil.copyList(categoryList, CategoryVO.class);
+        //set tagList
+        categoryVOList.stream().forEach(e->e.setTagList(tagMap.getOrDefault(e.getId(), Lists.newArrayList())));
+        return categoryVOList;
     }
 
     /**

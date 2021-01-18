@@ -26,4 +26,13 @@ public interface LoginAmountCountRepository extends JpaRepository<LoginAmountCou
     @Query(value="select * from login_amount_count where count_time >= ?1 and count_time <= ?2",nativeQuery = true)
     List<LoginAmountCount> findLoginAmountCountByTime(Date startTime, Date endTime);
 
+    /**
+     * 根据时间统计登录人数
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Query(value="select count(*) from login_amount_count where count_time >= ?1 and count_time <= ?2", nativeQuery = true)
+    int LoginPersonCountByTime(Date startTime, Date endTime);
+
 }

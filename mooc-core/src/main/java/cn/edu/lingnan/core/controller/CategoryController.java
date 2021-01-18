@@ -20,6 +20,18 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+
+
+    /**
+     * 分查询所有分类信息
+     * @return
+     */
+    @GetMapping("/all")
+    public RespResult findAllCategory() {
+        return RespResult.success(categoryService.findAll());
+    }
+
+
     /**
      * 分页查询category接口
      * get请求
