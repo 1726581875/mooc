@@ -23,8 +23,10 @@ public class LoginUserCountJob {
 
     /**
      * 定时任务统计前一天登录人数
+     * 每天凌晨1点执行
      */
-/*    @Scheduled(cron = "0/5 * * * * ? ")
+    @Scheduled(cron = "0 0 1 * * ?")
+    //@Scheduled(cron = "0/5 * * * * ? ")
     public void countLoginPersonAmount(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -36,13 +38,13 @@ public class LoginUserCountJob {
         Date beginTime = calendar.getTime();
 
 
-        Calendar endcCalendar = Calendar.getInstance();
-        endcCalendar.setTime(new Date());
-        endcCalendar.add(Calendar.DAY_OF_MONTH,-1);
-        endcCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        endcCalendar.set(Calendar.MINUTE, 59);
-        endcCalendar.set(Calendar.SECOND, 59);
-        Date endTime = endcCalendar.getTime();
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(new Date());
+        endCalendar.add(Calendar.DAY_OF_MONTH,-1);
+        endCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        endCalendar.set(Calendar.MINUTE, 59);
+        endCalendar.set(Calendar.SECOND, 59);
+        Date endTime = endCalendar.getTime();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -56,14 +58,16 @@ public class LoginUserCountJob {
         loginAmountCount.setAmount(count);
         loginAmountCount.setUpdateTime(new Date());
         loginAmountCount.setCreateTime(new Date());
-        loginAmountCount.setCountTime(simpleDateFormat.format(beginTime));
+        loginAmountCount.setCountTime(beginTime);
         loginAmountCountRepository.save(loginAmountCount);
-    }*/
+    }
 
     /**
      * 统计登录人数补偿任务
+     *
      */
-/*    @Scheduled(cron = "0/5 * * * * ? ")
+   // @Scheduled(cron = "0/5 * * * * ? ")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void countLoginAmountCompensate(){
 
         Calendar calendar = Calendar.getInstance();
@@ -76,13 +80,13 @@ public class LoginUserCountJob {
         Date beginTime = calendar.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         LoginAmountCount loginAmountCount = new LoginAmountCount();
-        loginAmountCount.setCountTime(simpleDateFormat.format(beginTime));
+        loginAmountCount.setCountTime(beginTime);
         Optional<LoginAmountCount> amountCount = loginAmountCountRepository.findOne(Example.of(loginAmountCount));
         if(!amountCount.isPresent()){
             this.countLoginPersonAmount();
         }
 
-    }*/
+    }
 
 
 

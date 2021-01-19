@@ -478,12 +478,12 @@ CREATE TABLE `login_amount_count`
   DEFAULT charset = utf8mb4 COMMENT ='登录数量统计表';
 insert into login_amount_count(amount,count_time)
 values
-(18,'01-17'),
-(10,'01-16'),
-(6,'01-15'),
-(5,'01-14'),
-(4,'01-13'),
-(7,'01-12');
+(18,'2021-01-17'),
+(10,'2021-01-16'),
+(6,'2021-01-15'),
+(5,'2021-01-14'),
+(4,'2021-01-13'),
+(7,'2021-01-12');
   
 
 -- 系统logo表

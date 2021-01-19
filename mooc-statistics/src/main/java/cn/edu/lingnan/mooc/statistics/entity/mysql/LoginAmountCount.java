@@ -22,7 +22,7 @@ public class LoginAmountCount {
 
     private Integer amount;
 
-    private String countTime;
+    private Date countTime;
 
     private Date createTime;
 

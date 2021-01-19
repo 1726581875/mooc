@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-public class TbLogo {
+public class MoocLogo {
 
     /**
      * id

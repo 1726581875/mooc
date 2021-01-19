@@ -1,6 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
-import cn.edu.lingnan.core.entity.TbLogo;
+import cn.edu.lingnan.core.entity.MoocLogo;
 import cn.edu.lingnan.core.service.LogoService;
 import cn.edu.lingnan.core.util.IPUtil;
 import cn.edu.lingnan.core.vo.LogoVO;
@@ -69,7 +69,7 @@ public class LogoController{
      * @return
      */
     @PostMapping("update")
-    public RespResult saveLogo(@RequestBody TbLogo logo, HttpServletRequest request) {
+    public RespResult saveLogo(@RequestBody MoocLogo logo, HttpServletRequest request) {
         // 校验特殊字符
         if (!StringUtils.isEmpty(logo.getSystemName())) {
             String regEx = "[`~!@#%^&*()+={}':;',\\[\\].<>?~！@#￥%……&*（）——+{}【】‘；：”“’。，\\-_、？]";

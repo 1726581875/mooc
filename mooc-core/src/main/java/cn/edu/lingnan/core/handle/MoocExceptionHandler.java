@@ -16,7 +16,8 @@ public class MoocExceptionHandler {
     public Object courseExceptionHandler(Exception e){
         if(e instanceof MoocException){//如果捕获的异常是自定义异常
             MoocException common = (MoocException) e;
-            return new RespResult(common.getCode(),common.getMsg(),null);//给前台传对应信息
+            //给前台传对应信息
+            return new RespResult(common.getCode(),common.getMsg(),null);
         }
 
         log.error("系统异常",e);

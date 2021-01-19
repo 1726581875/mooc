@@ -1,7 +1,7 @@
 package cn.edu.lingnan.core.service;
 
 import cn.edu.lingnan.core.constant.Constant;
-import cn.edu.lingnan.core.entity.TbLogo;
+import cn.edu.lingnan.core.entity.MoocLogo;
 import cn.edu.lingnan.core.repository.LogoRepository;
 import cn.edu.lingnan.core.util.FileUtil;
 import cn.edu.lingnan.core.vo.LogoVO;
@@ -9,7 +9,6 @@ import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,13 +72,13 @@ public class LogoService{
      * @param logo
      * @param ip
      */
-    public void updateOrInsert(TbLogo logo, String ip) {
+    public void updateOrInsert(MoocLogo logo, String ip) {
 
-        Optional<TbLogo> optional = logoRepository.findById(LOGO_ID);
+        Optional<MoocLogo> optional = logoRepository.findById(LOGO_ID);
         // 操作详情
         StringBuilder describe = new StringBuilder("");
         if (optional.isPresent()) {
-            TbLogo updateLogo = optional.get();
+            MoocLogo updateLogo = optional.get();
 
             // 记录日志
             describe.append(appendLogMsg(updateLogo, logo));
@@ -150,7 +149,7 @@ public class LogoService{
      * @param logo
      * @return
      */
-    private TbLogo insertLogo(TbLogo logo) {
+    private MoocLogo insertLogo(MoocLogo logo) {
         logo.setId(LOGO_ID);
         logo.setCreateTime(new Date());
         logo.setUpdateTime(new Date());
@@ -164,7 +163,7 @@ public class LogoService{
      * @param newLogo
      * @return
      */
-    private String appendLogMsg(TbLogo oldLogo, TbLogo newLogo) {
+    private String appendLogMsg(MoocLogo oldLogo, MoocLogo newLogo) {
         // 记录日志
         StringBuilder describe = new StringBuilder("");
         if (!oldLogo.getSystemLogoPath().equals(newLogo.getSystemLogoPath())) {
@@ -191,9 +190,9 @@ public class LogoService{
      * @return
      */
     public LogoVO findLogo() {
-        Optional<TbLogo> optional = logoRepository.findById(LOGO_ID);
+        Optional<MoocLogo> optional = logoRepository.findById(LOGO_ID);
         if (optional.isPresent()) {
-            TbLogo tbLogo = optional.get();
+            MoocLogo tbLogo = optional.get();
             LogoVO logoVO = new LogoVO();
             // 图片相对路径形式返回
             logoVO.setSystemName(tbLogo.getSystemName());
