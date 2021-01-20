@@ -1,9 +1,11 @@
 package cn.edu.lingnan.mooc.file.controller;
 
+import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import cn.edu.lingnan.mooc.file.util.FileUtils;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/image")
+@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class ImageController {
 
     @Value("mooc.file.path")
@@ -48,7 +51,7 @@ public class ImageController {
         }
 
 
-        return RespResult.success();
+        return RespResult.success(FileConstant.MAPPING_PATH + fileName);
     }
 
 
