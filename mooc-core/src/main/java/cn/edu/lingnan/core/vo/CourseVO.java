@@ -24,8 +24,10 @@ public class CourseVO {
     private Integer teacherId;
     // 讲师名字
     private String teacherName;
-    // 课程概述
-/*    private String summary;*/
+    /**
+     * 课程概述
+     */
+    private String summary;
     // 时长|单位秒
     private Integer duration;
     // 学习人数

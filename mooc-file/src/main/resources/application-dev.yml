@@ -32,5 +32,5 @@ spring:
 #文件存储路径
 mooc:
   file:
-    path: E:\fujian\file\
+    path: D:\data\
 

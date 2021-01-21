@@ -24,7 +24,7 @@ import java.util.UUID;
 @CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class ImageController {
 
-    @Value("mooc.file.path")
+    @Value("${mooc.file.path}")
     private String FILE_PATH;
 
     @PostMapping("/upload")
@@ -50,8 +50,7 @@ public class ImageController {
           log.info("图片上传发生异常",e);
         }
 
-
-        return RespResult.success(FileConstant.MAPPING_PATH + fileName);
+        return RespResult.success(FileConstant.MAPPING_PATH + fileName,"上传图片成功");
     }
 
 
