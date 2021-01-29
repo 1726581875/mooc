@@ -11,6 +11,7 @@ import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.TagRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
+import cn.edu.lingnan.core.vo.reception.ReceptionCourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.Course;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,30 @@ public class CourseService {
     private CourseTagRelRepository courseTagRelRepository;
 
     /**
+     *
+     * @param tagIdList
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+   public PageVO<ReceptionCourseVO> getCourseByTagList(List<Integer> tagIdList, Integer pageIndex, Integer pageSize){
+
+       Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
+       Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList,pageable);
+       List<Course> courseList = coursePage.getContent();
+       List<ReceptionCourseVO> courseVOList = CopyUtil.copyList(courseList,ReceptionCourseVO.class);
+       /* 4. 封装到自定义分页结果 */
+       PageVO<ReceptionCourseVO> pageVO = new PageVO<>();
+       pageVO.setContent(courseVOList);
+       pageVO.setPageIndex(pageIndex);
+       pageVO.setPageSize(pageSize);
+       pageVO.setPageCount(coursePage.getTotalPages());
+       return pageVO;
+   }
+
+
+    /**
+     * 前台调用
      * 根据课程id list 获取对应课程名
      * @param courseIdList
      * @return

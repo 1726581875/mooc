@@ -1,6 +1,7 @@
 package cn.edu.lingnan.core.controller;
 
 import cn.edu.lingnan.core.param.CourseParam;
+import cn.edu.lingnan.core.param.reception.QueryCourseParam;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.service.CourseService;
@@ -19,6 +20,32 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+
+    /**
+     * 前台方法
+     * 根据标签查询课程
+     * @param tagIdList
+     * @return
+     */
+    @PostMapping("/getByTag")
+    public RespResult findCourseByTagIdList(@RequestParam("tagIdList") List<Integer> tagIdList,
+                                            @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                                            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
+        return RespResult.success(courseService.getCourseByTagList(tagIdList,pageIndex,pageSize));
+    }
+
+    /**
+     * 前台方法
+     * 根据标签查询课程
+     * @param queryCourseParam
+     * @return
+     */
+    @PostMapping("/getByTag2")
+    public RespResult findCourseByTagIdList2(@RequestBody QueryCourseParam queryCourseParam){
+        return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
+                queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
+    }
 
     /**
      * 分页查询course接口
