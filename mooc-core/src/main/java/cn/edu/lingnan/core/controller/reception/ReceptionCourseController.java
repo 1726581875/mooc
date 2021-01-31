@@ -1,0 +1,46 @@
+package cn.edu.lingnan.core.controller.reception;
+
+import cn.edu.lingnan.core.param.reception.QueryCourseParam;
+import cn.edu.lingnan.core.service.CourseService;
+import cn.edu.lingnan.core.service.reception.ReceptionCourseService;
+import cn.edu.lingnan.mooc.common.model.RespResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * @author xmz
+ * @date: 2021/01/31
+ */
+@RestController
+@RequestMapping("/courses")
+@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
+public class ReceptionCourseController {
+
+    @Autowired
+    private CourseService courseService;
+    @Autowired
+    private ReceptionCourseService receptionCourseService;
+
+    /**
+     * 前台方法
+     * 根据标签查询课程
+     * @param queryCourseParam
+     * @return
+     */
+    @PostMapping("/getByTag")
+    public RespResult findCourseByTagIdList2(@RequestBody QueryCourseParam queryCourseParam){
+        if(queryCourseParam.getPageIndex() == null && queryCourseParam.getPageIndex() < 1){
+            queryCourseParam.setPageIndex(1);
+        }
+        if(queryCourseParam.getPageSize() == null){
+            queryCourseParam.setPageSize(10);
+        }
+        return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
+                queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
+    }
+
+    @GetMapping("/{id}")
+    public RespResult findCourseById(@PathVariable Integer id){
+        return RespResult.success(receptionCourseService.findCourseDetailById(id));
+    }
+}

@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -30,6 +31,18 @@ public class SectionService {
     @Autowired
     private MoocFileService moocFileService;
 
+    /**
+     * 根据chapterIdList 大章idList查询对应小节List
+     * @return
+     */
+    public Map<Integer,List<SectionVO>> findSectionMapByChapterIdList(List<Integer> chapterIdList){
+        List<Section> sectionList = sectionRepository.findAllByChapterIdIn(chapterIdList);
+        List<SectionVO> sectionVOList = CopyUtil.copyList(sectionList, SectionVO.class);
+        if(CollectionUtils.isEmpty(sectionVOList)){
+            return new HashMap<>();
+        }
+        return sectionVOList.stream().collect(Collectors.groupingBy(SectionVO::getChapterId));
+    }
 
 
     /**

@@ -1,22 +1,20 @@
 package cn.edu.lingnan.core.vo.reception;
 
 import cn.edu.lingnan.core.entity.MoocUser;
-import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.vo.CategoryVO;
+import cn.edu.lingnan.core.vo.ChapterVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * @author xiaomingzhang
- * @data 2021/01/29
+ * @author xmz
+ * @date: 2021/01/31
  */
 @Data
-@ToString
-public class ReceptionCourseVO {
+public class CourseDetailVO {
 
     /**
      * id
@@ -58,5 +56,13 @@ public class ReceptionCourseVO {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
+    /**
+     * 章节List
+     */
+    private List<ChapterVO> chapterVOList;
+    /**
+     * 该课程对应的教师
+     */
+    private MoocUser teacher;
 
 }

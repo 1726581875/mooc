@@ -21,28 +21,20 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-
-    /**
-     * 前台方法
-     * 根据标签查询课程
-     * @param tagIdList
-     * @return
-     */
-    @PostMapping("/getByTag")
-    public RespResult findCourseByTagIdList(@RequestParam("tagIdList") List<Integer> tagIdList,
-                                            @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
-                                            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
-        return RespResult.success(courseService.getCourseByTagList(tagIdList,pageIndex,pageSize));
-    }
-
     /**
      * 前台方法
      * 根据标签查询课程
      * @param queryCourseParam
      * @return
      */
-    @PostMapping("/getByTag2")
+    @PostMapping("/getByTag")
     public RespResult findCourseByTagIdList2(@RequestBody QueryCourseParam queryCourseParam){
+        if(queryCourseParam.getPageIndex() == null && queryCourseParam.getPageIndex() < 1){
+            queryCourseParam.setPageIndex(1);
+        }
+        if(queryCourseParam.getPageSize() == null){
+            queryCourseParam.setPageSize(10);
+        }
         return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
                 queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
     }

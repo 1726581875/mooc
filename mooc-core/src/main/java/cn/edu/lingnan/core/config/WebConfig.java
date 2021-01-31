@@ -61,6 +61,7 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(Constant.LOGO_MAPPING_PATH + "**").addResourceLocations("file:" + LOGO_BASE_PATH + "/");
+        registry.addResourceHandler(  "/file/**").addResourceLocations("file:" + LOGO_BASE_PATH + "/");
     }
 
 

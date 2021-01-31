@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import java.util.Date;
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "chapter")
+@Accessors(chain=true)
 public class Chapter{
     // id   
     @Id

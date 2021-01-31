@@ -36,6 +36,11 @@ public class OnlineUserController {
         return RespResult.success(onlineService.getOnlineUserByPage(pageIndex,pageSize,matchStr));
     }
 
+    /**
+     * 根据账号下线单个用户
+     * @param account
+     * @return
+     */
     @PostMapping("/offline/{account}")
     public RespResult offlineByAccount(@PathVariable String account){
         List<String> accountList = new ArrayList<>(1);
@@ -45,6 +50,11 @@ public class OnlineUserController {
         return RespResult.success();
     }
 
+    /**
+     * 批量下线用户
+     * @param accountList 用户账号list
+     * @return
+     */
     @PostMapping("/offline/list")
     public RespResult offlineByAccountList(@RequestBody List<String> accountList){
         System.out.println("accountList=" +  accountList);
