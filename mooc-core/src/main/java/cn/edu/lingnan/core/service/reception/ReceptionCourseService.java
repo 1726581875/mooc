@@ -49,7 +49,7 @@ public class ReceptionCourseService {
             courseDetailVO.setTeacher(teacherOptional.get());
             //获取章节信息,设置到VO对象
             List<ChapterVO> chapterVOList = receptionChapterService.findAllChapterByCourseId(courseId);
-            courseDetailVO.setChapterVOList(chapterVOList);
+            courseDetailVO.setChapterList(chapterVOList);
 
             return courseDetailVO;
         }

@@ -273,20 +273,20 @@ CREATE TABLE `mooc_user`
 ) ENGINE = INNODB
   DEFAULT charset = utf8 COMMENT ='普通用户表';
 insert into `mooc_user`(user_image, name, account, password, user_type)
-values ('/image/default.png', '张三丰', 'zhangsanfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+values ('/file/default.png', '张三丰', 'zhangsanfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', '张四丰', 'zhangsifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', '张四丰', 'zhangsifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', '张五丰', 'zhangwufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', '张五丰', 'zhangwufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', '张一丰', 'zhangyifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', '张一丰', 'zhangyifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', '张六丰', 'zhangliufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', '张六丰', 'zhangliufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', '张二丰', 'zhangerfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', '张二丰', 'zhangerfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/image/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', '教师'),
-       ('/image/default.png', '以父之名', 'yifuzhiming', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       ('/file/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', '教师'),
+       ('/file/default.png', '以父之名', 'yifuzhiming', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '教师');
 
 -- 系统管理员表

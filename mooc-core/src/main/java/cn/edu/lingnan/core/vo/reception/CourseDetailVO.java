@@ -59,7 +59,7 @@ public class CourseDetailVO {
     /**
      * 章节List
      */
-    private List<ChapterVO> chapterVOList;
+    private List<ChapterVO> chapterList;
     /**
      * 该课程对应的教师
      */
