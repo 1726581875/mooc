@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller.reception;
 
+import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.param.reception.QueryCourseParam;
 import cn.edu.lingnan.core.service.CourseService;
 import cn.edu.lingnan.core.service.reception.ReceptionCourseService;
@@ -42,5 +43,20 @@ public class ReceptionCourseController {
     @GetMapping("/{id}")
     public RespResult findCourseById(@PathVariable Integer id){
         return RespResult.success(receptionCourseService.findCourseDetailById(id));
+    }
+
+    /**
+     * 根据教师id查询 她/他 的开设的课程
+     * @param teachId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/listByTeachId")
+    public RespResult findCourseByTeachId(@RequestParam(value = "teacherId") Integer teachId,
+                                 @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+
+        return RespResult.success(receptionCourseService.findCourseByTeachId(teachId, pageIndex, pageSize));
     }
 }

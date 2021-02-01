@@ -6,13 +6,16 @@ import cn.edu.lingnan.core.repository.CourseRepository;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.ChapterVO;
+import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.reception.CourseDetailVO;
+import cn.edu.lingnan.core.vo.reception.ReceptionCourseVO;
+import cn.edu.lingnan.mooc.common.model.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author xmz
@@ -57,6 +60,28 @@ public class ReceptionCourseService {
 
         return null;
     }
+
+   public PageVO<ReceptionCourseVO> findCourseByTeachId(Integer teacherId,Integer pageIndex,Integer pageSize){
+       //构造匹配条件Example对象
+       Course matchObject = new Course();
+       matchObject.setTeacherId(teacherId);
+       Example<Course> example = Example.of(matchObject);
+       Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
+       Page<Course> coursePage = courseRepository.findAll(example, pageable);
+       List<Course> courseList = coursePage.getContent();
+       //对象转换，属性值复制
+       List<ReceptionCourseVO> courseVOList = CopyUtil.copyList(courseList,ReceptionCourseVO.class);
+
+       /* 4. 封装到自定义分页结果 */
+       PageVO<ReceptionCourseVO> pageVO = new PageVO<>();
+       pageVO.setContent(courseVOList);
+       pageVO.setPageIndex(pageIndex);
+       pageVO.setPageSize(pageSize);
+       pageVO.setPageCount(coursePage.getTotalPages());
+       return pageVO;
+   }
+
+
 
 
 }

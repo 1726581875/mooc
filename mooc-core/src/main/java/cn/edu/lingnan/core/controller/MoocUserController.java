@@ -37,6 +37,17 @@ public class MoocUserController {
     }
 
     /**
+     * 根据id获取用户
+     * @return
+     */
+    @GetMapping("/{id}")
+    public RespResult findById(@PathVariable Integer id) {
+        return RespResult.success(moocUserService.findById(id));
+    }
+
+
+
+    /**
      * 更新moocUser接口
      * 请求方法: put
      * url: /admin/moocUsers/{id}
