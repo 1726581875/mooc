@@ -490,7 +490,7 @@ CREATE TABLE `login_amount_count`
     `count_time` varchar(64)     NOT NULL COMMENT '统计时间',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
+     PRIMARY KEY (`id`)
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='登录数量统计表';
 insert into login_amount_count(amount,count_time)
@@ -515,3 +515,21 @@ CREATE TABLE `mooc_logo` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
 )ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='系统logo表';
+
+
+-- 用户收藏表
+DROP TABLE IF EXISTS `collection`;
+CREATE TABLE `collection` (
+  `id`  bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `course_id`  bigint UNSIGNED NOT NULL  COMMENT '课程Id',
+  `user_id`  bigint UNSIGNED NOT NULL  COMMENT '用户Id|教师/普通用户',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+   PRIMARY KEY (`id`),
+   UNIQUE INDEX `uk_course_user_id` (`course_id`, `user_id`)
+)ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='用户收藏表';
+insert into collection(course_id, user_id)
+values (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),
+(1,2),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2);
+
+
