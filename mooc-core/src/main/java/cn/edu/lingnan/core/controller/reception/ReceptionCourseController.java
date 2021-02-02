@@ -34,7 +34,7 @@ public class ReceptionCourseController {
             queryCourseParam.setPageIndex(1);
         }
         if(queryCourseParam.getPageSize() == null){
-            queryCourseParam.setPageSize(10);
+            queryCourseParam.setPageSize(15);
         }
         return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
                 queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
@@ -55,8 +55,25 @@ public class ReceptionCourseController {
     @GetMapping("/listByTeachId")
     public RespResult findCourseByTeachId(@RequestParam(value = "teacherId") Integer teachId,
                                  @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
-                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+                                 @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
 
         return RespResult.success(receptionCourseService.findCourseByTeachId(teachId, pageIndex, pageSize));
     }
+
+
+    /**
+     * 根据用户id查询 她/他 的收藏的课程
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/collection/list")
+    public RespResult findCollectionCourseByUserId(@RequestParam(value = "userId") Integer userId,
+                                          @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                                          @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
+
+        return RespResult.success(receptionCourseService.findCollectionCourseByUserId(userId, pageIndex, pageSize));
+    }
+
 }

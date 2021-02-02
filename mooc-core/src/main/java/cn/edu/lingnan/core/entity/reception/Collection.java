@@ -1,0 +1,33 @@
+package cn.edu.lingnan.core.entity.reception;
+
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Date;
+
+/**
+ * @author xiaomingzhang
+ * @data 2021/02/02
+ * 收藏表实体类
+ */
+@Data
+@Entity
+public class Collection {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Integer id;
+
+    private Integer courseId;
+
+    private Integer userId;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+
+}
