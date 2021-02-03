@@ -47,17 +47,17 @@ public class ReceptionCourseController {
 
     /**
      * 根据教师id查询 她/他 的开设的课程
-     * @param teachId
+     * @param userId
      * @param pageIndex
      * @param pageSize
      * @return
      */
     @GetMapping("/listByTeachId")
-    public RespResult findCourseByTeachId(@RequestParam(value = "teacherId") Integer teachId,
+    public RespResult findCourseByTeachId(@RequestParam(value = "userId") Integer userId,
                                  @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
                                  @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
 
-        return RespResult.success(receptionCourseService.findCourseByTeachId(teachId, pageIndex, pageSize));
+        return RespResult.success(receptionCourseService.findCourseByTeachId(userId, pageIndex, pageSize));
     }
 
 

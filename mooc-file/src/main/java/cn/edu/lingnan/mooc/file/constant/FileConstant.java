@@ -6,6 +6,9 @@ package cn.edu.lingnan.mooc.file.constant;
  */
 public interface FileConstant {
 
+    /**
+     * 文件映射路径
+     */
     String MAPPING_PATH = "/file/";
 
 
