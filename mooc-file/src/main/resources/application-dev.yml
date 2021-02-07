@@ -19,6 +19,11 @@ spring:
     url: jdbc:mysql://localhost:3306/mooc?characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
     password: root
+    #redis配置
+    redis:
+      host: localhost
+      port: 6379
+      password: root
     #执行数据库操作时，控制台打印sql语句
     jpa:
       show-sql: true

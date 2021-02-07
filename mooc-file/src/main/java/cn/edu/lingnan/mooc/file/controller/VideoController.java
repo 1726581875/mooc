@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.file.controller;
 
+import cn.edu.lingnan.mooc.file.authentication.util.UserUtil;
 import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import cn.edu.lingnan.mooc.file.entity.MoocFile;
 import cn.edu.lingnan.mooc.file.enums.FileStatusEnum;
@@ -44,7 +45,8 @@ public class VideoController {
                          Integer fileSize, // 文件大小 字节
                          Integer shardIndex, //分片下标
                          Integer shardSize, //分片大小
-                         Integer shardCount) { //分片总数
+                         Integer shardCount,//分片总数
+                         @RequestParam(value = "courseId",defaultValue = "0") Integer courseId) { //所属课程Id
 
         String newFileName = "";
         // 入库对象（插入或更新）
@@ -63,13 +65,20 @@ public class VideoController {
         }
 
         // 文件相对路径
-        String fileRelativePath = newFileName + "." + suffix;
-        File newFile = new File(FILE_PATH + File.separator + fileRelativePath + ".shard-" + shardIndex);
+        String fileFullName = newFileName + "." + suffix;
+        //获取当前用户id
+        int userId = UserUtil.getUserToken().getUserId().intValue();
+        //拼接保存数据库的路径
+        StringBuilder fileRelativePath = new StringBuilder();
+        fileRelativePath.append(FileConstant.MAPPING_PATH).append(userId).append("/")
+                .append(courseId).append("/").append(fileFullName);
+        //保存到服务器全路径
+        String fullPath = FILE_PATH + File.separator + fileRelativePath.toString().substring(FileConstant.MAPPING_PATH.length());
+        File newFile = new File(fullPath + ".shard-" + shardIndex);
         // 如果该文件所在目录不存在，则创建该目录
         if (!newFile.getParentFile().exists()) {
             newFile.getParentFile().mkdirs();
         }
-
         try {
             fileShard.transferTo(newFile);
         } catch (IOException e) {
@@ -84,11 +93,12 @@ public class VideoController {
         moocFile.setShardIndex(shardIndex);
         moocFile.setShardSize(shardSize);
         moocFile.setShardCount(shardCount);
-        moocFile.setFilePath(FileConstant.MAPPING_PATH + fileRelativePath);
+        moocFile.setFilePath(fileRelativePath.toString());
         moocFile.setStatus(FileStatusEnum.NORMAL.getStatus());
-        moocFile.setCourseId(1);
+        moocFile.setCourseId(courseId);
+        //类型1为视频
         moocFile.setFileType(1);
-        moocFile.setUserId(1);
+        moocFile.setUserId(userId);
 
         log.info("moocFile={}", moocFile);
         // 插入或更新
@@ -99,7 +109,7 @@ public class VideoController {
             mergeShard(fileKey);
             // 返回文件相对路径给前端
             Map<String,Object> respMap = new HashMap<>(2);
-            respMap.put("filePath", FileConstant.MAPPING_PATH + fileRelativePath);
+            respMap.put("filePath", fileRelativePath.toString());
             respMap.put("fileId",moocFile1.getId());
             return RespResult.success(respMap,"上传成功");
         }
@@ -237,7 +247,11 @@ public class VideoController {
         return null;
     }
 
-
+    /**
+     * 合并视频文件件分片
+     * @param key
+     * @return
+     */
     @GetMapping("/key/{key}/merge")
     public RespResult mergeShard(@PathVariable String key){
         log.info("====合并分片开始====");
