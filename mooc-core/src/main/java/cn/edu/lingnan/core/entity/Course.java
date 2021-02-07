@@ -29,10 +29,15 @@ public class Course{
     private Integer duration;
     // 封面图片   
     private String image;
-    // 学习人数   
+    // 学习人数（观看人数）
     private Integer learningNum;
     // 评论数   
     private Integer commentNum;
+    /**
+     * 收藏人数
+     */
+    private Integer collectionNum;
+
     // 状态|0草稿/1发布/2禁用/3已删除   
     private Integer status;
     // 创建时间   

@@ -1,11 +1,13 @@
-package cn.edu.lingnan.core.util;
+package cn.edu.lingnan.core.authentication.util;
 
+import cn.edu.lingnan.core.util.SpringContextHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,14 +104,6 @@ public class RedisUtil {
 
     public static long getExpire(String key,TimeUnit timeUnit){
         return redisTemplate.getExpire(key,timeUnit);
-    }
-
-    public static boolean isExist(String key){
-        return redisTemplate.hasKey(key);
-    }
-
-    public static boolean isNotExist(String key){
-        return !redisTemplate.hasKey(key);
     }
 
 }

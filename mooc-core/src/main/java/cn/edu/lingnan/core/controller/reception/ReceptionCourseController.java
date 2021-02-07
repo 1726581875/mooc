@@ -40,6 +40,11 @@ public class ReceptionCourseController {
                 queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
     }
 
+    /**
+     * 根据课程Id查询课程基本信息
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public RespResult findCourseById(@PathVariable Integer id){
         return RespResult.success(receptionCourseService.findCourseDetailById(id));
@@ -75,5 +80,16 @@ public class ReceptionCourseController {
 
         return RespResult.success(receptionCourseService.findCollectionCourseByUserId(userId, pageIndex, pageSize));
     }
+
+    /**
+     * 点击收藏或者取消收藏
+     * @return
+     */
+    @PutMapping("/collectionOrCancel/{courseId}")
+    public RespResult collectionOrCancel(@PathVariable Integer courseId){
+        receptionCourseService.collectionOrCancel(courseId);
+        return RespResult.success();
+    }
+
 
 }

@@ -49,6 +49,10 @@ public class CourseDetailVO {
      * 学习人数
      */
     private Integer learningNum;
+    /**
+     * 收藏人数
+     */
+    private Integer collectionNum;
 
     /**
      * 创建时间
@@ -64,5 +68,9 @@ public class CourseDetailVO {
      * 该课程对应的教师
      */
     private MoocUser teacher;
+    /**
+     * 是否已经收藏
+     */
+    private Boolean collection;
 
 }
