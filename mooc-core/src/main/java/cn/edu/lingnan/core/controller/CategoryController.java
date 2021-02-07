@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.Category;
 import cn.edu.lingnan.core.param.CategoryParam;
 import cn.edu.lingnan.core.service.CategoryService;

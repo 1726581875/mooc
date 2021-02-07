@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.Category;
 import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.param.CategoryParam;
@@ -81,7 +82,6 @@ public class CategoryService {
      * @return
      */
     public PageVO<CategoryVO> findPage(Category matchObject, Integer pageIndex, Integer pageSize){
-
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withMatcher("name", match -> match.contains());
         Example<Category> example = Example.of(matchObject,matcher);

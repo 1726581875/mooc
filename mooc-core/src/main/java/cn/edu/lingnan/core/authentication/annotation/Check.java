@@ -1,4 +1,4 @@
-package cn.edu.lingnan.core.annotation;
+package cn.edu.lingnan.core.authentication.annotation;
 
 import java.lang.annotation.*;
 

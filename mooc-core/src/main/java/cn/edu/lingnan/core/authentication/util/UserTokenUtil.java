@@ -1,4 +1,6 @@
-package cn.edu.lingnan.core.annotation;
+package cn.edu.lingnan.core.authentication.util;
+
+import cn.edu.lingnan.core.authentication.entity.UserToken;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
  */
 public class UserTokenUtil {
 
-    private static final Map<String,UserToken> userTokenMap = new HashMap<>();
+    private static final Map<String, UserToken> userTokenMap = new HashMap<>();
 
     public UserToken getUserToken(String token){
 

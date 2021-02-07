@@ -3,7 +3,7 @@ package cn.edu.lingnan.core.controller;
 import cn.edu.lingnan.core.entity.Role;
 import cn.edu.lingnan.core.param.RoLeParam;
 import cn.edu.lingnan.core.service.RoleService;
-import cn.edu.lingnan.core.annotation.Check;
+import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

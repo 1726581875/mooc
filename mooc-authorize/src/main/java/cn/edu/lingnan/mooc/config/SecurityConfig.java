@@ -83,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //对请求的授权，指定下面这些都是授权的配置
                 .authorizeRequests()
                 //允许登录页
-                .antMatchers("/login/msg","/code/image","/mooc/admin/login")
+                .antMatchers("/login/msg","/mooc/admin/code/image","/mooc/admin/login")
                 .permitAll()
                 .anyRequest()//任何请求
                 .authenticated()//都需要身份验证

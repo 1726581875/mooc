@@ -1,8 +1,6 @@
 package cn.edu.lingnan.core.config;
 
 import cn.edu.lingnan.core.constant.Constant;
-import cn.edu.lingnan.core.handle.CheckPermissionInterceptor;
-import cn.edu.lingnan.core.util.SpringContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,13 +22,6 @@ public class WebConfig implements WebMvcConfigurer{
 
     @Value("${mooc.logo.path:D:\\data\\logo}")
     private String LOGO_BASE_PATH;
-
-    @Autowired
-    private cn.edu.lingnan.core.handle.CheckPermissionInterceptor CheckPermissionInterceptor;
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(CheckPermissionInterceptor);
-    }
 
 /*    @Bean
     public SpringContextHolder springContextHolder() {

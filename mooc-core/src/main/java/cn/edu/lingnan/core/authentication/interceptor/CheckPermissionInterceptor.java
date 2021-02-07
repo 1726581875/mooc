@@ -1,7 +1,8 @@
-package cn.edu.lingnan.core.handle;
+package cn.edu.lingnan.core.authentication.interceptor;
 
-import cn.edu.lingnan.core.annotation.Check;
-import cn.edu.lingnan.core.annotation.UserToken;
+import cn.edu.lingnan.core.authentication.annotation.Check;
+import cn.edu.lingnan.core.authentication.entity.UserToken;
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,9 +31,18 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        //todo 为了方便开发
+        //构造超管用户
+        UserToken superMan = new UserToken();
+        superMan.setUserId(0L);
+        superMan.setAccount("admin");
+        UserUtil.setUserToken(superMan);
+        //所有请求都放行
         if(true){
             return true;
         }
+
+
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
 
