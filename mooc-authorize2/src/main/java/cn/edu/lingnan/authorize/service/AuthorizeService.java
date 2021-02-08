@@ -98,6 +98,10 @@ public class AuthorizeService {
      *登录成功设置redis
      * 1、设置用户token和登录信息
      * 2、把前该账号旧token删除
+     * redis存储的k、v
+     * token-userDetail
+     * account-token
+     *
      * @param manager
      * @param permissionStr
      * @param request

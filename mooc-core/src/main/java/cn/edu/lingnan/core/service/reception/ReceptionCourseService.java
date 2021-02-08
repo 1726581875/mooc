@@ -93,7 +93,7 @@ public class ReceptionCourseService {
         String collectionNumKey = RedisPrefixConstant.COLLECTION_NUM_PRE + courseId;
         if(RedisUtil.isNotExist(collectionNumKey)){
             Optional<Course> courseOptional = courseRepository.findById(courseId);
-            if(courseOptional.isPresent()){
+            if(!courseOptional.isPresent()){
                 log.error("收藏/取消收藏课程-添加缓存失败,该课程不存在，courseId={}",courseId);
                 throw new RuntimeException("收藏课程失败，该课程不存在");
             }

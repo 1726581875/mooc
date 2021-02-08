@@ -61,7 +61,7 @@ public class LoginController {
         BufferedImage image = code.getImage();
         String sessionId = request.getSession().getId();
         String text = code.getText();
-        log.info("sessionId={},code={}",sessionId,text);
+        log.info("获取验证码，sessionId={},code={}",sessionId,text);
         // 验证码放到redis
         RedisUtil.set(sessionId,text,300);
         VerificationCode.output(image,response.getOutputStream());
