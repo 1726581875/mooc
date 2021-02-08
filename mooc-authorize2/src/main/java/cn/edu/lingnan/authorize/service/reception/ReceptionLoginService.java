@@ -1,9 +1,12 @@
 package cn.edu.lingnan.authorize.service.reception;
 
+import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.entity.LoginParam;
 import cn.edu.lingnan.authorize.entity.MoocManager;
+import cn.edu.lingnan.authorize.entity.OnlineUser;
 import cn.edu.lingnan.authorize.entity.UserToken;
+import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -30,7 +34,8 @@ public class ReceptionLoginService {
     private String RSA_PRI_KEY;
     @Resource
     private ManagerDAO managerDAO;
-
+    @Value("${mooc.login.expire.time:1800}")
+    private Integer LOGIN_EXPIRE_TIME;
     /**
      * 前台系统的登录方法
      * @param loginParam
@@ -63,7 +68,16 @@ public class ReceptionLoginService {
         userToken.setAccount(manager.getAccount());
         userToken.setUserId(manager.getId());
         userToken.setSessionId(request.getSession().getId());
-        RedisUtil.set(token,userToken);
+        RedisUtil.set(token,userToken, LOGIN_EXPIRE_TIME);
+
+        // 记录在线用户
+        OnlineUser onlineUser = new OnlineUser();
+        onlineUser.setAccount(manager.getAccount());
+        onlineUser.setLoginTime(new Date());
+        onlineUser.setIp(HttpServletUtil.getIpAddress(request)
+                .equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : HttpServletUtil.getIpAddress(request));
+        onlineUser.setName(manager.getName());
+        RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + userToken.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
 
         return RespResult.success(userToken);
     }

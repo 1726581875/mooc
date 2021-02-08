@@ -1,6 +1,8 @@
 package cn.edu.lingnan.authorize.controller.reception;
 
 import cn.edu.lingnan.authorize.entity.LoginParam;
+import cn.edu.lingnan.authorize.entity.UserToken;
+import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.service.reception.ReceptionLoginService;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
@@ -8,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,12 +22,13 @@ import javax.validation.Valid;
  */
 @Slf4j
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class ReceptionLoginController {
 
     @Autowired
     private ReceptionLoginService receptionLoginService;
-
+    @Autowired
+    private AuthorizeService authorizeService;
     /**
      * 前台用户登录方法
      * @param loginParam
@@ -55,7 +55,41 @@ public class ReceptionLoginController {
         return respResult;
     }
 
+    @GetMapping("/loginOut")
+    public RespResult loginOut(HttpServletRequest request){
+        // 1、获取请求头携带的token
+        String token = request.getHeader("Authorization");
+        if(token == null){
+            RespResult.success("登出成功");
+        }
+        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        if(token == null || userToken == null){
+            RespResult.fail("token失效");
+        }
+        // 删除token/在线信息
+        authorizeService.delRedisTokenOnline(userToken.getAccount());
+        return RespResult.success("登出成功");
+    }
 
+    /**
+     * 判断用户是否是登录状态
+     * @param request
+     * @return
+     */
+    @GetMapping("/isLogin")
+    public RespResult isLogin(HttpServletRequest request){
+
+        // 1、获取请求头携带的token
+        String token = request.getHeader("Authorization");
+        if(token == null){
+            return RespResult.success(false);
+        }
+        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        if(token == null || userToken == null){
+            return RespResult.success(false);
+        }
+        return RespResult.success(true);
+    }
 
 
 }
