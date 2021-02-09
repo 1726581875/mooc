@@ -265,6 +265,7 @@ CREATE TABLE `mooc_user`
     `account`     varchar(20)   NOT NULL COMMENT '登录账号',
     `password`    varchar(1048) NOT NULL COMMENT '登录密码',
     `user_type`   varchar(4)    NOT NULL COMMENT '类型，教师/普通用户',
+    `motto` varchar(64) default NULL COMMENT '用户格言/座右铭',
     `status`      tinyint       NOT NULL DEFAULT 1 COMMENT '用户状态| 1正常，2禁用，3已删除',
     `login_time`  datetime               DEFAULT NULL COMMENT '最近登录时间',
     `create_time` datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -273,21 +274,22 @@ CREATE TABLE `mooc_user`
     UNIQUE KEY `uk_account` (`account`)
 ) ENGINE = INNODB
   DEFAULT charset = utf8 COMMENT ='普通用户表';
-insert into `mooc_user`(user_image, name, account, password, user_type)
-values ('/file/default.png', '张三丰', 'zhangsanfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+-- 插入用户表，密码为root
+insert into `mooc_user`(id,user_image, name, account, password, user_type)
+values (1,'/file/default.png', '张三丰', 'zhangsanfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', '张四丰', 'zhangsifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (2,'/file/default.png', '张四丰', 'zhangsifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', '张五丰', 'zhangwufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (3,'/file/default.png', '张五丰', 'zhangwufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', '张一丰', 'zhangyifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (4,'/file/default.png', '张一丰', 'zhangyifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', '张六丰', 'zhangliufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (5,'/file/default.png', '张六丰', 'zhangliufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', '张二丰', 'zhangerfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (6,'/file/default.png', '张二丰', 'zhangerfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '普通用户'),
-       ('/file/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', '教师'),
-       ('/file/default.png', '以父之名', 'yifuzhiming', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
+       (7,'/file/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', '教师'),
+       (8,'/file/default.png', '以父之名', 'yifuzhiming', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
         '教师');
 
 -- 系统管理员表
@@ -306,7 +308,7 @@ CREATE TABLE `mooc_manager`
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='系统管理员表';
 
--- 密码是root
+-- 插入管理员，密码是root
 insert into mooc_manager(name, account, password)
 values ('张三', 'zhangsan', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
        ('李四', 'lisi', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
@@ -327,11 +329,12 @@ CREATE TABLE `role`
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='系统角色表';
 
--- 角色表插入数据
-insert into role (name)
-values ('课程管理'),
-       ('人员管理'),
-       ('一般管理员');
+-- 角色表插入数据,初始化一个教师角色id为1
+insert into role (id,name)
+values (1,'教师角色'),
+       (2,'课程管理'),
+       (3,'人员管理'),
+       (4,'一般管理员');
 
 -- 管理员与角色关联表
 DROP TABLE IF EXISTS `manager_role_rel`;
@@ -368,6 +371,7 @@ CREATE TABLE `mooc_resource`
 
 
 -- 角色资源关联表
+-- 暂时不用
 DROP TABLE IF EXISTS `role_resource_rel`;
 CREATE TABLE `role_resource_rel`
 (
@@ -450,38 +454,44 @@ CREATE TABLE `role_menu_rel`
 ) ENGINE = INNODB
   DEFAULT charset = utf8mb4 COMMENT ='管理员与菜单关联表';
 
--- 1为课程管理员，2为人员管理员，3一般管理员
+-- 1为教师角色， 2为课程管理员，3为人员管理员，4一般管理员
 insert into role_menu_rel(role_id, menu_id)
 values
--- 1有课程权限，没有删除课程的权限
+-- 1有课程管理，章节管理，报表统计
 (1, 1),
-(1, 11),
-(1, 12),
-(1, 13),
+(1, 2),
+(1, 21),
+(1, 22),
+(1, 6),
+-- 1有课程权限，没有删除课程的权限
+(2, 1),
+(2, 11),
+(2, 12),
+(2, 13),
 
 -- 2 有用户权限，没有新增人员的权限
-(2, 2),
-(2, 21),
-(2, 23),
-(2, 24),
-(2, 211),
-(2, 212),
-
--- 3 有用户、课程、报表权限
-(3, 1),
-(3, 11),
-(3, 12),
-(3, 13),
-(3, 14),
-(3, 15),
 (3, 2),
 (3, 21),
-(3, 22),
 (3, 23),
 (3, 24),
-(3, 25),
-(3, 3),
-(3, 31);
+(3, 211),
+(3, 212),
+
+-- 3 有用户、课程、报表权限
+(4, 1),
+(4, 11),
+(4, 12),
+(4, 13),
+(4, 14),
+(4, 15),
+(4, 2),
+(4, 21),
+(4, 22),
+(4, 23),
+(4, 24),
+(4, 25),
+(4, 3),
+(4, 31);
    
 DROP TABLE IF EXISTS `login_amount_count`;
 CREATE TABLE `login_amount_count`

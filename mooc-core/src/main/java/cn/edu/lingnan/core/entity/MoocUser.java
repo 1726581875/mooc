@@ -30,6 +30,11 @@ public class MoocUser{
     private String userType;
     // 用户状态| 1正常，2禁用，3已删除   
     private Integer status;
+    /**
+     * 个人座右铭、格言
+     */
+    private String motto;
+
     // 最近登录时间   
     private Date loginTime;
     // 创建时间   

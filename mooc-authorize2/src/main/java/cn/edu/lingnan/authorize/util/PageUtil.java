@@ -1,9 +1,7 @@
 package cn.edu.lingnan.authorize.util;
 
-import cn.edu.lingnan.authorize.entity.OnlineUser;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 
-import java.util.Collection;
 import java.util.List;
 
 /**

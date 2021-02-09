@@ -23,6 +23,10 @@ public class UserDetailVO {
     private String name;
     // 登录账号
     private String account;
+    /**
+     * 个人座右铭、格言
+     */
+    private String motto;
     // 类型，教师/普通用户
     private String userType;
 

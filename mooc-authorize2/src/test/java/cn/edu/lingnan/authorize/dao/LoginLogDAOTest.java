@@ -1,7 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.dao.LoginLogDAO;
-import cn.edu.lingnan.authorize.entity.LoginLog;
+import cn.edu.lingnan.authorize.model.LoginLog;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

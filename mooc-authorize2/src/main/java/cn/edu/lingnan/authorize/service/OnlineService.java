@@ -1,7 +1,7 @@
 package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.constant.UserConstant;
-import cn.edu.lingnan.authorize.entity.OnlineUser;
+import cn.edu.lingnan.authorize.model.OnlineUser;
 import cn.edu.lingnan.authorize.util.PageUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;

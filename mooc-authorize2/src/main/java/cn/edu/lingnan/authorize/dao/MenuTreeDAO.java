@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.entity.MenuTree;
+import cn.edu.lingnan.authorize.model.MenuTree;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 

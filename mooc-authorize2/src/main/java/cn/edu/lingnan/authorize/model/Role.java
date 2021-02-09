@@ -1,4 +1,4 @@
-package cn.edu.lingnan.authorize.entity;
+package cn.edu.lingnan.authorize.model;
 
 /**
  * @author xmz

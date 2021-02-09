@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.entity.Role;
+import cn.edu.lingnan.authorize.model.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

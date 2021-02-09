@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.service;
 
-import cn.edu.lingnan.authorize.entity.OnlineUser;
+import cn.edu.lingnan.authorize.model.OnlineUser;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

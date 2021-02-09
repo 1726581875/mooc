@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.entity.LoginLog;
+import cn.edu.lingnan.authorize.model.LoginLog;
 import org.springframework.stereotype.Repository;
 
 /**

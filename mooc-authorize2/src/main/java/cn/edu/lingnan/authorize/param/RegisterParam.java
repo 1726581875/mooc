@@ -24,4 +24,8 @@ public class RegisterParam {
     //验证码
     @NotBlank(message = "验证码为空")
     private String code;
+    /**
+     * 用户类型，教师/普通用户
+     */
+    private String userType;
 }

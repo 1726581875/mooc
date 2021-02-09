@@ -1,7 +1,8 @@
 package cn.edu.lingnan.authorize.controller.reception;
 
 import cn.edu.lingnan.authorize.param.LoginParam;
-import cn.edu.lingnan.authorize.entity.UserToken;
+import cn.edu.lingnan.authorize.model.UserToken;
+import cn.edu.lingnan.authorize.param.RegisterParam;
 import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.service.reception.ReceptionLoginService;
 import cn.edu.lingnan.authorize.util.RedisUtil;
@@ -55,8 +56,9 @@ public class ReceptionLoginController {
     }
 
     @PostMapping("/register")
-    public RespResult register(){
-        return RespResult.success();
+    public RespResult register(@RequestBody RegisterParam registerParam){
+
+        return receptionLoginService.register(registerParam);
     }
 
 

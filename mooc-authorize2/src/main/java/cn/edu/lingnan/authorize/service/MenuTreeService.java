@@ -2,8 +2,8 @@ package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
-import cn.edu.lingnan.authorize.entity.MenuTree;
-import cn.edu.lingnan.authorize.entity.MenuTreeDTO;
+import cn.edu.lingnan.authorize.model.MenuTree;
+import cn.edu.lingnan.authorize.model.MenuTreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +23,25 @@ public class MenuTreeService {
     private MenuTreeDAO menuTreeDAO;
     @Autowired
     private RoleDAO roleDAO;
+
+    /**
+     * 获取教师菜单树
+     * @return
+     */
+    public List<MenuTreeDTO> getTeacherMenuTree(){
+
+        List<Long> teacherRoleId = new ArrayList();
+        //固定角色id=1为教师角色
+        teacherRoleId.add(1L);
+        List<MenuTree> menuList = menuTreeDAO.findMenuList(teacherRoleId);
+        List<MenuTree> teacherMenuList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
+        List<MenuTreeDTO> menuTreeDTOList = teacherMenuList.stream().filter(menu -> menu.getParentId().equals(0L))
+                .map(this::convertMenuTreeToDTO).collect(Collectors.toList());
+
+        // 递归设置子菜单
+        getTree(menuTreeDTOList,teacherMenuList);
+        return menuTreeDTOList;
+    }
 
     /**
      * 获取菜单树

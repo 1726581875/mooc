@@ -3,7 +3,8 @@ package cn.edu.lingnan.authorize.service;
 import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
-import cn.edu.lingnan.authorize.entity.*;
+import cn.edu.lingnan.authorize.dao.UserDAO;
+import cn.edu.lingnan.authorize.model.*;
 import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
@@ -43,6 +44,8 @@ public class AuthorizeService {
     private MenuTreeDAO menuTreeDAO;
     @Autowired
     private MenuTreeService menuTreeService;
+    @Autowired
+    private UserDAO userDAO;
 
     @Value("${mooc.superAdmin.username:admin}")
     private String superAdminUsername;
@@ -55,16 +58,22 @@ public class AuthorizeService {
         MoocManager manager = new MoocManager();
         // 如果是超管
         if(superAdminUsername.equals(loginParam.getUsername())){
-            manager.setAccount(superAdminUsername);
-            manager.setId(0L);
-            manager.setStatus(1);
-            manager.setName(superAdminUsername);
-            manager.setPassword(BCrypt.hashpw(superAdminPassword,BCrypt.gensalt()));
+            manager = this.createSuperManager();
         }else {
             // 否则就是分管，根据输入账号查询数据库
             manager = managerDAO.findManagerByAccount(loginParam.getUsername());
+            // 如果管理员表没有(则可能是教师，查询用户表)
             if (manager == null) {
-                return RespResult.fail("账号不存在");
+                MoocUser moocUser = userDAO.findUserByAccount(loginParam.getUsername());
+                if(moocUser == null){
+                    return RespResult.fail("账号不存在");
+                }
+                //类型是教师才授权
+                if("教师".equals(moocUser.getUserType())){
+                    manager = createTeacherManager(moocUser);
+                }else {
+                    return RespResult.fail("账号不存在");
+                }
             }
         }
 
@@ -81,6 +90,24 @@ public class AuthorizeService {
             return RespResult.fail("密码不正确");
         }
 
+        //todo 写法冗余，需要去优化
+        //是教师
+        if(manager.getAccount().startsWith("teacher-")) {
+            List<Long> teacherRoleId = new ArrayList();
+            teacherRoleId.add(1L);
+            List<MenuTree> menuList = menuTreeDAO.findMenuList(teacherRoleId);
+            List<MenuTree> teacherMenuList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
+            // 拼接权限字符串
+            String permissionStr = teacherMenuList.stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
+            //生成token,设置redis
+            String token = UUID.randomUUID().toString();
+            setRedisTokenOnline(manager,permissionStr,request,token);
+
+            // 构造登录成功返回对象
+            LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,menuTreeService.getTeacherMenuTree());
+            return RespResult.success(loginSuccessVO,"登录成功");
+        }
+
        // 拼接权限字符串
         String permissionStr = menuTreeService.getPermission(manager.getId())
                 .stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
@@ -94,6 +121,37 @@ public class AuthorizeService {
 
         return RespResult.success(loginSuccessVO,"登录成功");
     }
+
+    /**
+     * 构造一个超管信息
+     * @return
+     */
+    private MoocManager createSuperManager(){
+        MoocManager manager = new MoocManager();
+        manager.setAccount(superAdminUsername);
+        manager.setId(0L);
+        manager.setStatus(1);
+        manager.setName(superAdminUsername);
+        manager.setPassword(BCrypt.hashpw(superAdminPassword,BCrypt.gensalt()));
+        return manager;
+    }
+
+    /**
+     * 创建一个教师管理员
+     * 为了做区分，教师账号以teacher-前缀开头
+     * @param user
+     * @return
+     */
+    private MoocManager createTeacherManager(MoocUser user){
+        MoocManager manager = new MoocManager();
+        manager.setAccount("teacher-" + user.getAccount());
+        manager.setId(Long.valueOf(user.getId()));
+        manager.setStatus(1);
+        manager.setName(user.getName());
+        manager.setPassword(user.getPassword());
+        return manager;
+    }
+
 
     /**
      *登录成功设置redis
@@ -174,7 +232,6 @@ public class AuthorizeService {
         //去重
         return menuPermissionList.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
     }
-
 
 
 

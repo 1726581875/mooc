@@ -1,14 +1,8 @@
 package cn.edu.lingnan.authorize.service;
 
-import cn.edu.lingnan.authorize.entity.MenuTree;
-import cn.edu.lingnan.authorize.entity.MenuTreeDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author xmz

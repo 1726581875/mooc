@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.entity.MoocManager;
+import cn.edu.lingnan.authorize.model.MoocManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;

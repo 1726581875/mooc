@@ -1,8 +1,7 @@
-package cn.edu.lingnan.authorize.entity;
+package cn.edu.lingnan.authorize.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 

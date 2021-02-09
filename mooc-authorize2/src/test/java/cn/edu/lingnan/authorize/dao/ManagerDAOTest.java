@@ -1,8 +1,6 @@
 package cn.edu.lingnan.authorize.dao;
 
-import cn.edu.lingnan.authorize.dao.ManagerDAO;
-import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
-import cn.edu.lingnan.authorize.entity.MoocManager;
+import cn.edu.lingnan.authorize.model.MoocManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
