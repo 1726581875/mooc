@@ -33,4 +33,11 @@ public class UserUtil {
         return user.get().getUserId().intValue();
     }
 
+    /**
+     * 使用完记得remove,防止内存泄露
+     */
+    public static void remove(){
+        user.remove();
+    }
+
 }

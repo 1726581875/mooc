@@ -99,7 +99,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
+        //最后要释放ThreadLocal,防止内存泄露
+        UserUtil.remove();
     }
 
 

@@ -4,6 +4,7 @@ import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
 import cn.edu.lingnan.authorize.entity.*;
+import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
@@ -141,6 +142,10 @@ public class AuthorizeService {
 
     }
 
+    /**
+     * 登出
+     * @param account
+     */
     public void delRedisTokenOnline(String account){
         // 删除用户在线息
         RedisUtil.delete(UserConstant.ONLINE_USER_PREFIX + account);

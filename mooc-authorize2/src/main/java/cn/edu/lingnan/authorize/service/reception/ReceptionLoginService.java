@@ -2,7 +2,7 @@ package cn.edu.lingnan.authorize.service.reception;
 
 import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
-import cn.edu.lingnan.authorize.entity.LoginParam;
+import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.entity.MoocManager;
 import cn.edu.lingnan.authorize.entity.OnlineUser;
 import cn.edu.lingnan.authorize.entity.UserToken;
@@ -12,7 +12,6 @@ import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,8 @@ public class ReceptionLoginService {
         userToken.setUserId(manager.getId());
         userToken.setSessionId(request.getSession().getId());
         RedisUtil.set(token,userToken, LOGIN_EXPIRE_TIME);
-
+        //设置账号与token关系
+        RedisUtil.set(userToken.getAccount(),token, LOGIN_EXPIRE_TIME);
         // 记录在线用户
         OnlineUser onlineUser = new OnlineUser();
         onlineUser.setAccount(manager.getAccount());

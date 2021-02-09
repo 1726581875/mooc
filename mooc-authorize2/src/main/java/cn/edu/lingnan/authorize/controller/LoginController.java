@@ -1,9 +1,8 @@
 package cn.edu.lingnan.authorize.controller;
 
-import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.entity.UserToken;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.authorize.entity.LoginParam;
+import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.authorize.util.VerificationCode;

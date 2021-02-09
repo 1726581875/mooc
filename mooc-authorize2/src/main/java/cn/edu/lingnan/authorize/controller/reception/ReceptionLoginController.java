@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.controller.reception;
 
-import cn.edu.lingnan.authorize.entity.LoginParam;
+import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.entity.UserToken;
 import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.service.reception.ReceptionLoginService;
@@ -8,7 +8,6 @@ import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,16 +54,22 @@ public class ReceptionLoginController {
         return respResult;
     }
 
+    @PostMapping("/register")
+    public RespResult register(){
+        return RespResult.success();
+    }
+
+
     @GetMapping("/loginOut")
     public RespResult loginOut(HttpServletRequest request){
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
         if(token == null){
-            RespResult.success("登出成功");
+            return RespResult.success("登出成功");
         }
         UserToken userToken = RedisUtil.get(token, UserToken.class);
         if(token == null || userToken == null){
-            RespResult.fail("token失效");
+            return RespResult.fail("token失效");
         }
         // 删除token/在线信息
         authorizeService.delRedisTokenOnline(userToken.getAccount());
