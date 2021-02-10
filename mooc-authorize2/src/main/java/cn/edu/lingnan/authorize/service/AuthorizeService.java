@@ -62,6 +62,8 @@ public class AuthorizeService {
         }else {
             // 否则就是分管，根据输入账号查询数据库
             manager = managerDAO.findManagerByAccount(loginParam.getUsername());
+            //todo 管理员和教师分别在不同的两张表，如果教师账号和管理员账号相同，则教师登录不了
+
             // 如果管理员表没有(则可能是教师，查询用户表)
             if (manager == null) {
                 MoocUser moocUser = userDAO.findUserByAccount(loginParam.getUsername());

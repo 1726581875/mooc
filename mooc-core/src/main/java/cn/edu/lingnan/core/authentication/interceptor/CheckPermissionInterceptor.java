@@ -33,14 +33,14 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
         //todo 为了方便开发
         //构造超管用户
-        UserToken superMan = new UserToken();
+/*        UserToken superMan = new UserToken();
         superMan.setUserId(0L);
         superMan.setAccount("admin");
-        UserUtil.setUserToken(superMan);
+        UserUtil.setUserToken(superMan);*/
         //所有请求都放行
-        if(true){
+/*        if(true){
             return true;
-        }
+        }*/
 
 
         // TODO 获取ip地址
@@ -61,6 +61,9 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"无效token");
             return false;
         }
+        //设置用户信息
+        UserUtil.setUserToken(userToken);
+
         // 3、获取到用户权限
         String userTokenPermission = userToken.getPermission();
 

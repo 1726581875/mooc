@@ -1,8 +1,7 @@
 package cn.edu.lingnan.core.service;
 
-import cn.edu.lingnan.core.entity.CourseTagRel;
-import cn.edu.lingnan.core.entity.MonitorRecord;
-import cn.edu.lingnan.core.entity.Tag;
+import cn.edu.lingnan.core.authentication.util.UserUtil;
+import cn.edu.lingnan.core.entity.*;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.repository.CourseRepository;
@@ -13,8 +12,8 @@ import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.reception.ReceptionCourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.core.entity.Course;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +45,8 @@ public class CourseService {
     private MonitorRecordRepository monitorRecordRepository;
     @Resource
     private CourseTagRelRepository courseTagRelRepository;
+    @Autowired
+    private MoocUserService moocUserService;
 
     /**
      *
@@ -133,6 +134,10 @@ public class CourseService {
      */
     public PageVO<CourseVO> findPage(Course matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
+        //如果是教师，只查询该教师的课程
+        if(UserUtil.getUserToken().getAccount().startsWith("teacher-")){
+            matchObject.setTeacherId(UserUtil.getUserId());
+        }
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withMatcher("name", match -> match.contains());//startsWith右模糊(name%)/contains全模糊(%name%)
@@ -143,12 +148,12 @@ public class CourseService {
         List<Course> courseList = coursePage.getContent();
 
         List<CourseVO> courseVOList = new ArrayList<>();
+        List<Integer> teacherIdList = courseList.stream().map(Course::getTeacherId).collect(Collectors.toList());
         // 获取教师名字map
-        Map<Integer,String> teacherNameMap = new HashMap<>();
-        teacherNameMap.put(1,"肖明章");
+        Map<Integer, MoocUser> teacherMap = moocUserService.getUserMap(teacherIdList);
 
         // courseList -> courseVOList
-        courseList.forEach(course -> courseVOList.add(createCourseVO(course,teacherNameMap)));
+        courseList.forEach(course -> courseVOList.add(createCourseVO(course, teacherMap)));
 
         /* 4. 封装到自定义分页结果 */
         PageVO<CourseVO> pageVO = new PageVO<>();
@@ -159,11 +164,12 @@ public class CourseService {
         return pageVO;
     }
 
-    private CourseVO createCourseVO(Course course,Map<Integer,String> teacherNameMap){
+    private CourseVO createCourseVO(Course course,Map<Integer, MoocUser> teacherMap){
         // 基本信息
         CourseVO courseVO = CopyUtil.copy(course, CourseVO.class);
         // 设置教师名
-        courseVO.setTeacherName(teacherNameMap.getOrDefault(1,"未知老师"));
+        MoocUser moocUser = teacherMap.getOrDefault(course.getTeacherId(), new MoocUser());
+        courseVO.setTeacherName(moocUser.getName() == null ? "未知教师" : moocUser.getName() );
         // 转换状态为文本
         courseVO.setStatus(CourseEnum.getText(course.getStatus()));
         return courseVO;

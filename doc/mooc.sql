@@ -26,25 +26,25 @@ CREATE TABLE `course`
   DEFAULT charset = utf8mb4 COMMENT ='课程表';
 
 insert into course (name, teacher_id, summary, duration, image,create_time)
-values ('spring cloud入门实践', 1, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
-       ('spring boot快速开始', 1, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
-       ('初探spring', 1, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
-       ('java是初恋', 1, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
+values ('spring cloud入门实践',7, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
+       ('spring boot快速开始', 7, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
+       ('初探spring', 7, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
+       ('java是初恋', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
 
-       ('spring cloud入门实践1', 1, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
-       ('spring boot快速开始1', 1, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
-       ('初探spring1', 1, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
-       ('java是初恋1', 1, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
+       ('spring cloud入门实践1', 8, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
+       ('spring boot快速开始1', 8, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
+       ('初探spring1', 8, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
+       ('java是初恋1', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
 
-       ('spring cloud入门实践2', 1, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
-       ('spring boot快速开始2', 1, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
-       ('初探spring2', 1, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
-       ('java是初恋2', 1, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
+       ('spring cloud入门实践2', 7, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
+       ('spring boot快速开始2', 8, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
+       ('初探spring2', 8, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
+       ('java是初恋2', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
 
-       ('spring cloud入门实践3', 1, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
-       ('spring boot快速开始3', 1, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
-       ('初探spring3', 1, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
-       ('java是初恋3', 1, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12');
+       ('spring cloud入门实践3', 7, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
+       ('spring boot快速开始3', 7, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
+       ('初探spring3', 7, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
+       ('java是初恋3', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12');
 
 
 DROP TABLE IF EXISTS `category`;
