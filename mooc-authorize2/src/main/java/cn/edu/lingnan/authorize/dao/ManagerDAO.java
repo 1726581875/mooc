@@ -57,7 +57,7 @@ public class ManagerDAO extends BaseDAO {
        try {
            moocManager = jdbcTemplate.queryForObject(sql, new Object[]{account}, new ManagerMapper());
         }catch (Exception e){
-           log.warn("数据库查询该账户失败，可能该用户不存在，msg={}",e.getMessage());
+           log.warn("数据库查询该账户失败，account={}，msg={}",account, e.getMessage());
        }
         return moocManager;
     }
@@ -77,9 +77,20 @@ public class ManagerDAO extends BaseDAO {
                 ,manager.getPassword(),manager.getStatus());
     }
 
-    public MoocManager findById(){
-        String sql = "";
-        return null;
+    /**
+     * 根据id查找
+     * @param managerId
+     * @return
+     */
+    public MoocManager findById(Integer managerId){
+        String sql = "select * from mooc_manager where id = ?";
+        MoocManager moocManager = null;
+        try {
+            moocManager = jdbcTemplate.queryForObject(sql, new Object[]{managerId}, new ManagerMapper());
+        }catch (Exception e){
+            log.warn("数据库查询该账户失败，id={}，msg={}",managerId,e.getMessage());
+        }
+        return moocManager;
     }
 
 

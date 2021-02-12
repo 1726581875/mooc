@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.controller.model;
+package cn.edu.lingnan.mooc.model;
 
 import lombok.Data;
 import lombok.ToString;

@@ -45,7 +45,24 @@ public class UserDAO extends BaseDAO {
         try {
             moocUser = jdbcTemplate.queryForObject(sql, new Object[]{account}, new ManagerMapper());
         }catch (Exception e){
-            log.warn("数据库查询该账户失败，可能该用户不存在，msg={}",e.getMessage());
+            log.warn("数据库查询该账户失败，可能该用户不存在,account={}，msg={}",account,e.getMessage());
+        }
+        return moocUser;
+    }
+
+    /**
+     * 根据id查找用户
+     *  @param userId
+     * @return
+     */
+    public MoocUser findUserById(Integer userId){
+
+        String sql = "select * from mooc_user where id = ?";
+        MoocUser moocUser = null;
+        try {
+            moocUser = jdbcTemplate.queryForObject(sql, new Object[]{userId}, new ManagerMapper());
+        }catch (Exception e){
+            log.warn("数据库查询该账户失败,userId={}，msg={}",userId,e.getMessage());
         }
         return moocUser;
     }

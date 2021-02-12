@@ -1,24 +1,20 @@
 package cn.edu.lingnan.mooc.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.controller.model.LoginParam;
+import cn.edu.lingnan.mooc.model.LoginParam;
 import cn.edu.lingnan.mooc.util.RsaUtil;
 import cn.edu.lingnan.mooc.util.VerificationCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * @author xmz
