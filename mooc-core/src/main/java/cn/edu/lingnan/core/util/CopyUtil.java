@@ -77,7 +77,7 @@ public class CopyUtil {
 
         Class<?> sourceClass = source.getClass();
         Class<?> targetClass = target.getClass();
-        //获取source类的所有声明的属性全部
+        //获取source类的所有声明的属性
         Field[] sourceFields = sourceClass.getDeclaredFields();
         for (Field sField : sourceFields) {
             Field tgField = null;

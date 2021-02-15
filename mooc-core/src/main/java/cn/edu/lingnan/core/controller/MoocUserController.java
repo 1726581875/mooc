@@ -1,6 +1,7 @@
 package cn.edu.lingnan.core.controller;
 
 import cn.edu.lingnan.core.entity.MoocUser;
+import cn.edu.lingnan.core.param.UserParam;
 import cn.edu.lingnan.core.service.MoocUserService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,32 +52,16 @@ public class MoocUserController {
      * 更新moocUser接口
      * 请求方法: put
      * url: /admin/moocUsers/{id}
-     * @param moocUser
+     * @param user
      * @return
      */
     @PutMapping("/{id}")
-    public RespResult update(@RequestBody MoocUser moocUser) {
-        Integer flag = moocUserService.update(moocUser);
+    public RespResult update(@RequestBody UserParam user) {
+        Integer flag = moocUserService.update(user);
         if (flag == 0) {
             return RespResult.fail("更新MoocUser失败");
         }
         return RespResult.success("更新MoocUser成功");
-    }
-
-    /**
-     * 插入或更新moocUser
-     * 请求方法: post
-     * url: /admin/moocUsers/moocUser
-     * @param moocUser
-     * @return
-     */
-    @PostMapping("/moocUser")
-    public RespResult insertOrUpdate(@RequestBody MoocUser moocUser) {
-        Integer flag = moocUserService.insertOrUpdate(moocUser);
-        if (flag == 0) {
-            return RespResult.fail("新增MoocUser失败");
-        }
-        return RespResult.success("新增MoocUser成功");
     }
 
     /**

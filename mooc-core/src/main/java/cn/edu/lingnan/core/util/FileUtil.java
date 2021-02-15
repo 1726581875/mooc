@@ -28,7 +28,7 @@ public class FileUtil {
     public static boolean compressImg(String sourcePath, String targetPath, long limitSize) {
 
         File sourceFile = new File(sourcePath);
-        try( FileInputStream fis = new FileInputStream(sourceFile);
+        try(FileInputStream fis = new FileInputStream(sourceFile);
              FileOutputStream fos = new FileOutputStream(new File(targetPath))) {
             long fileSize = sourceFile.length() / 1024;
             log.info("===============原图片{}大小为{}kb===============", sourcePath, fileSize);

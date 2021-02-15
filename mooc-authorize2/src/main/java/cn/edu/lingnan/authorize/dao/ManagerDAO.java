@@ -57,7 +57,7 @@ public class ManagerDAO extends BaseDAO {
        try {
            moocManager = jdbcTemplate.queryForObject(sql, new Object[]{account}, new ManagerMapper());
         }catch (Exception e){
-           log.warn("数据库查询该账户失败，account={}，msg={}",account, e.getMessage());
+           log.warn("根据账号户查询失败，account={}，msg={}",account, e.getMessage());
        }
         return moocManager;
     }

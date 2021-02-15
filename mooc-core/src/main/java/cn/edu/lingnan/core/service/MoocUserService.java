@@ -1,6 +1,7 @@
 package cn.edu.lingnan.core.service;
 
 import cn.edu.lingnan.core.entity.MoocUser;
+import cn.edu.lingnan.core.param.UserParam;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -127,31 +128,13 @@ public class MoocUserService {
         return newMoocUser == null ? 0 : 1;
     }
 
-    /**
-     * 插入或更新数据
-     * 说明:如果参数带id表示是更新，否则就是插入
-     * @param moocUser
-     * @return 返回成功数
-     */
-    public Integer insertOrUpdate(MoocUser moocUser){
-        if (moocUser == null) {
-            throw new IllegalArgumentException("插入表的对象不能为null");
-        }
-        // id不为空，表示更新操作
-        if(moocUser.getId() != null){
-          return this.update(moocUser);
-        }
-        MoocUser newMoocUser = moocUserRepository.save(moocUser);
-        return newMoocUser == null ? 0 : 1;
-    }
-
 
     /**
      *  选择性更新
      * @param moocUser
      * @return 返回成功条数
      */
-    public Integer update(MoocUser moocUser){
+    public Integer update(UserParam moocUser){
         // 入参校验
         if(moocUser == null || moocUser.getId() == null){
             throw new IllegalArgumentException("更新的对象不能为null");

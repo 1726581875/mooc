@@ -437,8 +437,8 @@ values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/mon
        (73, '系统日志', 'log', null, 7, 'log:select', '/system/log', 0),
        (731, '查询', null, null, 73, 'role:select', null, 1),
        (732, '导出', null, null, 73, 'role:export', null, 1),
-       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 0),
-       (76, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 0);
+       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 1),
+       (76, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 1);
 
 
 -- 管理员与角色关联表

@@ -29,7 +29,8 @@ public class UserDAO extends BaseDAO {
                     .setAccount(resultSet.getString("account"))
                     .setPassword(resultSet.getString("password"))
                     .setUserType(resultSet.getString("user_type"))
-                    .setStatus(resultSet.getInt("status"));
+                    .setStatus(resultSet.getInt("status"))
+                    .setUserImage(resultSet.getString("user_image"));
         }
     }
 
@@ -73,13 +74,14 @@ public class UserDAO extends BaseDAO {
      */
     public void save(MoocUser user){
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO mooc_user(name,account,password,status,user_type) ");
+        sql.append("INSERT INTO mooc_user(name,account,password,status,user_type,user_image) ");
         sql.append("VALUES ");
-        sql.append("(?,?,?,?,?) ");
+        sql.append("(?,?,?,?,?,?) ");
         sql.append("ON DUPLICATE KEY ");
         sql.append("UPDATE password=?,status=? ");
         jdbcTemplate.update(sql.toString(),user.getName(),user.getAccount(),user.getPassword(),user.getStatus()
-                ,user.getPassword(),user.getStatus(),user.getUserType());
+                ,user.getUserType(),user.getUserImage(),
+                user.getPassword(),user.getStatus());
     }
 
 }

@@ -5,6 +5,7 @@ import cn.edu.lingnan.mooc.file.authentication.annotation.Check;
 import cn.edu.lingnan.mooc.file.authentication.entity.UserToken;
 import cn.edu.lingnan.mooc.file.authentication.util.RedisUtil;
 import cn.edu.lingnan.mooc.file.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,18 +34,28 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
         //todo 为了方便开发
         //构造超管用户
-        UserToken superMan = new UserToken();
+/*        UserToken superMan = new UserToken();
         superMan.setUserId(0L);
         superMan.setAccount("admin");
         UserUtil.setUserToken(superMan);
         //所有请求都放行
         if(true){
             return true;
-        }
+        }*/
 
 
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
+
+        //TODO 放行图片URI,不知是否存在安全问题，待完善 需要防止URI?join=/file/
+        String requestURI = request.getRequestURI();
+        String downVideoUrl = "/download/";
+        if(requestURI.contains(FileConstant.MAPPING_PATH) || requestURI.contains(downVideoUrl)){
+            return true;
+        }
+
+
+
 
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");

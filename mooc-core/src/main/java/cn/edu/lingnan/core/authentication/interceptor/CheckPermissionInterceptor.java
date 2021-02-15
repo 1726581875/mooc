@@ -3,6 +3,7 @@ package cn.edu.lingnan.core.authentication.interceptor;
 import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.authentication.entity.UserToken;
 import cn.edu.lingnan.core.authentication.util.UserUtil;
+import cn.edu.lingnan.core.constant.Constant;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,12 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
+
+       //TODO 放行图片URI,不知是否存在安全问题，待完善
+        String requestURI = request.getRequestURI();
+        if(requestURI.contains(Constant.LOGO_MAPPING_PATH)){
+            return true;
+        }
 
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
