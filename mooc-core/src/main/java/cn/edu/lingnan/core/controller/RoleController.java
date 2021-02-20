@@ -20,7 +20,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @Check("role:add")
+   // @Check("role:add")
     @GetMapping("/{id}")
     public RespResult findRoleById(@PathVariable Integer id){
         return RespResult.success(roleService.findById(id));
