@@ -18,6 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -28,6 +32,22 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private static Set<String> whiteUrlSet = new HashSet<>();
+
+    static {
+        whiteUrlSet = whiteUrl(
+                Constant.LOGO_MAPPING_PATH,
+                "/file/",
+                "/admin/categorys/all",
+                "/admin/courses/getByTag"
+                //,"/courses/"
+                );
+    }
+
+    private static Set<String> whiteUrl(String ...urls){
+        return new HashSet<>(Arrays.stream(urls).collect(Collectors.toList()));
+    };
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -47,10 +67,13 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
 
-       //TODO 放行图片URI,不知是否存在安全问题，待完善
+       //TODO URI,不知是否存在安全问题，待完善
         String requestURI = request.getRequestURI();
-        if(requestURI.contains(Constant.LOGO_MAPPING_PATH)){
-            return true;
+        //判断url是否在白名单url里，若存在则不需要token验证
+        for (String url : whiteUrlSet) {
+            if(requestURI.contains(url)){
+                return true;
+            }
         }
 
         // 1、获取请求头携带的token

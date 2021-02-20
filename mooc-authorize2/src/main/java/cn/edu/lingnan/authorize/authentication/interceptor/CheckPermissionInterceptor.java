@@ -47,7 +47,10 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         String ipAddress = getIpAddress(request);
 
         String requestURI = request.getRequestURI();
-        if(requestURI.contains("/mooc/admin/login") || requestURI.contains("/mooc/admin/code/image")){
+        if(requestURI.contains("/mooc/admin/login")
+                || requestURI.contains("/mooc/admin/code/image")
+                || requestURI.contains("/user/login")
+                || requestURI.contains("/user/isLogin")){
             return true;
         }
 
