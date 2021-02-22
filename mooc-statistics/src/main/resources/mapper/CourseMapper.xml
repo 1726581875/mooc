@@ -23,5 +23,12 @@
 		GROUP BY c.id;
 	</select>
 
+
+	<select id="countNewAddCourseNum" resultType="java.util.Map">
+		select date_format(create_time, '%Y-%m-%d') data, count(*) count
+		from course
+		group by date_format(create_time, '%Y-%m-%d');
+	</select>
+
 </mapper>
  

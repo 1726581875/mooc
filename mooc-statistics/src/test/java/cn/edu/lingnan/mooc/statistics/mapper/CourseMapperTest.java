@@ -29,6 +29,13 @@ public class CourseMapperTest {
                 .forEach(map -> {
                     map.forEach((k, v)->System.out.println("k=" + k + ",v=" + v));
                 });
+
+        System.out.println("===============sql 4===============");
+        courseMapper.countNewAddCourseNum()
+                .forEach(map -> {
+                    map.forEach((k, v)->System.out.println("k=" + k + ",v=" + v));
+                });
+
     }
 
 

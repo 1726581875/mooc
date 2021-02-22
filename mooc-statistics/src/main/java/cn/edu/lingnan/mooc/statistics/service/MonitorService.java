@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.statistics.entity.mysql.LoginAmountCount;
+import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
 import cn.edu.lingnan.mooc.statistics.repository.LoginAmountCountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
@@ -20,6 +21,7 @@ import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -36,6 +38,8 @@ public class MonitorService {
     private RestHighLevelClient restHighLevelClient;
     @Autowired
     private LoginAmountCountRepository loginAmountCountRepository;
+    @Resource
+    private CourseMapper courseMapper;
 
     /**
      * 获取一周前的新建课程数
@@ -108,24 +112,38 @@ public class MonitorService {
         // 执行查询
         SearchResponse response = initSearchRequestWithAgg(boolQueryBuilder, dateAgg,
                 "mooc_course", "_doc", 0, 0);
-        Histogram histogram = response.getAggregations().get("dateAgg");
-        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("MM-dd");
-        for (Histogram.Bucket entry : histogram.getBuckets()) {
-            // 获取key
-            String utcTimeStr = entry.getKeyAsString();
-            Date date = null;
-            try {
-                // 转换时间格式
-                date = simpleDateFormat1.parse(utcTimeStr);
-            } catch (ParseException e) {
-                log.error("=====parse error=====",e);
+        if(response != null) {
+            Histogram histogram = response.getAggregations().get("dateAgg");
+            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("MM-dd");
+            for (Histogram.Bucket entry : histogram.getBuckets()) {
+                // 获取key
+                String utcTimeStr = entry.getKeyAsString();
+                Date date = null;
+                try {
+                    // 转换时间格式
+                    date = simpleDateFormat1.parse(utcTimeStr);
+                } catch (ParseException e) {
+                    log.error("=====parse error=====", e);
+                }
+                String dateStr = simpleDateFormat2.format(date);
+                dailyCountMap.put(dateStr, entry.getDocCount());
             }
-            String dateStr = simpleDateFormat2.format(date);
-            dailyCountMap.put(dateStr,entry.getDocCount());
-        }
+        }else {
+            //去mysql查
+            List<Map<String, Object>> mapList = courseMapper.countNewAddCourseNum();
+            //遍历查询结果
+            mapList.forEach(map -> {
+                    //遍历返回结果，赋值
+                    dailyCountMap.forEach((data,num) -> {
+                        if(map.get("data").toString().contains(data)){
+                            dailyCountMap.put(data,(Long) map.get("count"));
+                        }
+                    });
 
-        dailyCountMap.forEach((k,v) -> System.out.println(k + " : " + v));
+            });
+
+        }
         return dailyCountMap;
     }
     /**
@@ -200,7 +218,7 @@ public class MonitorService {
         // 设置开始时间为7天前
         Calendar begin = Calendar.getInstance();
         begin.setTime(new Date());
-        begin.set(Calendar.DATE, begin.get(Calendar.DATE) - 7);
+        begin.set(Calendar.DATE, begin.get(Calendar.DATE) - 6);
         Long beginTime = begin.getTimeInMillis();
         // 结束时间为今天
         Calendar end = Calendar.getInstance();

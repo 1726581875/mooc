@@ -26,10 +26,10 @@ CREATE TABLE `course`
   DEFAULT charset = utf8mb4 COMMENT ='课程表';
 
 insert into course (name, teacher_id, summary, duration, image,create_time)
-values ('spring cloud入门实践',7, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
-       ('spring boot快速开始', 7, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
-       ('初探spring', 7, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-01-01'),
-       ('java是初恋', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2020-10-12'),
+values ('spring cloud入门实践',7, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2021-02-19'),
+       ('spring boot快速开始', 7, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2021-02-17'),
+       ('初探spring', 7, 'spring框架是当前比较最流行的java框架，普遍应用于企业web开发', 6201, "/file/default.png",'2021-02-20'),
+       ('java是初恋', 7, '第一眼看到java就知道自己离不开它，它是世界上最好的语言', 17242, "/file/default.png",'2021-02-21'),
 
        ('spring cloud入门实践1', 8, '这是一门很好的课程，spring cloud入门实践，学习微服务架构', 9230, "/file/default.png",'2020-12-03'),
        ('spring boot快速开始1', 8, '这是一门学习spring boot的入门课程，牛牛', 8260, "/file/default.png",'2020-11-03'),
