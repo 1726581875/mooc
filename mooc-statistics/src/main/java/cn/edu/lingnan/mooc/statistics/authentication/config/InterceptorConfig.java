@@ -1,6 +1,5 @@
-package cn.edu.lingnan.mooc.file.authentication.config;
+package cn.edu.lingnan.mooc.statistics.authentication.config;
 
-import cn.edu.lingnan.mooc.file.authentication.interceptor.CheckPermissionInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
-    private CheckPermissionInterceptor CheckPermissionInterceptor;
+    private cn.edu.lingnan.mooc.statistics.authentication.interceptor.CheckPermissionInterceptor CheckPermissionInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(CheckPermissionInterceptor);
@@ -39,5 +38,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+
 
 }

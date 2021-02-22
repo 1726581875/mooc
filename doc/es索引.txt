@@ -1,3 +1,4 @@
+#课程信息索引
 PUT /mooc_course
 {
   "settings": {
@@ -42,4 +43,31 @@ PUT /mooc_course/_doc/1?pretty=true
 GET /mooc_course/_doc/_search
 {
 
+}
+
+
+#课程统计信息索引 collection_num收藏人数、view_num观看人数
+PUT /course_record
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "courseId": {
+        "type": "integer"
+      },
+      "collectionNum": {
+        "type": "integer"
+      },
+      "viewNum": {
+        "type": "integer"
+      },
+      "createTime": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      }
+    }
+  }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.lingnan.mooc.statistics.mapper.CourseMapper">
+
+	<select id="selectAll" resultType="cn.edu.lingnan.mooc.statistics.entity.mysql.Course">
+		select * from course
+	</select>
+
+	<select id="countAllCourseCategory" resultType="java.util.Map">
+		SELECT c.name AS name, COUNT(*) AS value
+		FROM category c,tag t,course_tag_rel ct
+		WHERE c.id = t.category_id AND ct.tag_id = t.id
+		GROUP BY c.id;
+	</select>
+
+	<select id="countCourseCategoryByUserId" resultType="java.util.Map">
+		SELECT c.name AS name, COUNT(*) AS value
+		FROM category c,tag t,course_tag_rel ct
+		WHERE c.id = t.category_id AND ct.tag_id = t.id
+		AND ct.course_id in (select id from course where teacher_id = #{userId})
+		GROUP BY c.id;
+	</select>
+
+</mapper>
+ 
