@@ -1,8 +1,10 @@
 package cn.edu.lingnan.mooc.statistics.mapper;
 
 import cn.edu.lingnan.mooc.statistics.entity.mysql.Course;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +29,5 @@ public interface CourseMapper {
       * 统计新增课程数
       * @return
       */
-     List<Map<String,Object>> countNewAddCourseNum();
+     List<Map<String,Object>> countNewAddCourseNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 }

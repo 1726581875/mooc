@@ -27,6 +27,7 @@
 	<select id="countNewAddCourseNum" resultType="java.util.Map">
 		select date_format(create_time, '%Y-%m-%d') data, count(*) count
 		from course
+		where create_time >= #{beginTime} and create_time &lt;= #{endTime}
 		group by date_format(create_time, '%Y-%m-%d');
 	</select>
 

@@ -131,7 +131,7 @@ public class MonitorService {
             }
         }else {
             //去mysql查
-            List<Map<String, Object>> mapList = courseMapper.countNewAddCourseNum();
+            List<Map<String, Object>> mapList = courseMapper.countNewAddCourseNum(new Date(beginTime),new Date(endTime));
             //遍历查询结果
             mapList.forEach(map -> {
                     //遍历返回结果，赋值
