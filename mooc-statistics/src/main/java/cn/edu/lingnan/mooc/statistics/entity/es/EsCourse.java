@@ -36,7 +36,7 @@ public class EsCourse {
      * 讲师id
      */
     @Field(type = FieldType.Integer)
-    private Integer teachId;
+    private Integer teacherId;
     /**
      * 修改时间
      */

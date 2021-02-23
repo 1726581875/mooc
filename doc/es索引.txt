@@ -16,7 +16,7 @@ PUT /mooc_course
       "summery": {
         "type": "text"
       },
-      "teachId": {
+      "teacherId": {
         "type": "integer"
       },
       "updateTime": {
@@ -35,7 +35,7 @@ PUT /mooc_course/_doc/1?pretty=true
 {
   "name" : "测试课程",
   "summery": "这是一门测试课程",
-  "teachId": 1,
+  "teacherId": 1,
   "createTime": "2021-01-01",
   "updateTime": "2021-01-01"
 }
@@ -58,6 +58,9 @@ PUT /course_record
       "courseId": {
         "type": "integer"
       },
+     "teacherId": {
+        "type": "integer"
+      },
       "collectionNum": {
         "type": "integer"
       },
@@ -70,4 +73,40 @@ PUT /course_record
       }
     }
   }
+}
+
+POST /course_record
+{
+  "courseId" : 1,
+  "teacherId": 1,
+  "collectionNum": 10,
+  "viewNum": 100
+  "createTime": "2021-02-22"
+}
+
+POST /course_record
+{
+  "courseId" : 2,
+  "teacherId": 1,
+  "collectionNum": 20,
+  "viewNum": 120
+  "createTime": "2021-02-22"
+}
+
+POST /course_record
+{
+  "courseId" : 2,
+  "teacherId": 1,
+  "collectionNum": 20,
+  "viewNum": 120
+  "createTime": "2021-02-23"
+}
+
+POST /course_record
+{
+  "courseId" : 1,
+  "teacherId": 1,
+  "collectionNum": 10,
+  "viewNum": 100
+  "createTime": "2021-02-23"
 }

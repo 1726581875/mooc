@@ -95,7 +95,7 @@ public class EsCourseRepositoryTest {
         esCourse.setId(course.getId());
         esCourse.setName(course.getName());
         esCourse.setSummary(course.getSummary());
-        esCourse.setTeachId(course.getTeacherId());
+        esCourse.setTeacherId(course.getTeacherId());
         esCourse.setCreateTime(course.getCreateTime());
         esCourse.setUpdateTime(course.getUpdateTime());
         return esCourse;

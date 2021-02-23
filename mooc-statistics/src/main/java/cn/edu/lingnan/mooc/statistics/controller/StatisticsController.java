@@ -20,10 +20,31 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
+    /**
+     * 统计课程分类情况
+     * @return
+     */
     @GetMapping("/classification")
     public RespResult classificationStatistics(){
         return RespResult.success(statisticsService.getClassificationStatistics());
     }
 
+    /**
+     * 课程收藏人数趋势
+     * @return
+     */
+    @GetMapping("/collection")
+    public RespResult collection(){
+        return RespResult.success(statisticsService.getCourseCollectionStatistics());
+    }
+
+    /**
+     * 课程观看人数趋势
+     * @return
+     */
+    @GetMapping("/view")
+    public RespResult view(){
+        return RespResult.success(statisticsService.getCourseCollectionStatistics());
+    }
 
 }
