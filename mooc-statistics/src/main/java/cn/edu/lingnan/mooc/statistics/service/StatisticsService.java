@@ -132,7 +132,7 @@ public class StatisticsService {
      * @param timeType
      * @return
      */
-    public Map<String, Object> getCollectionAndViewTend(String timeType) {
+    public Map<String, Object> getCollectionAndViewTrend(String timeType) {
         // 判断时间参数。开始时间根据参数取1天前、1周前或1个月前的最早毫秒时间戳，结束时间取昨天最晚的毫秒时间戳
         if (StringUtils.isBlank(timeType)) {
             throw new RuntimeException("时间为空");
