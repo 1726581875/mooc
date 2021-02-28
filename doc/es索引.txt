@@ -74,39 +74,39 @@ PUT /course_record
     }
   }
 }
-
-POST /course_record
+#初始化数据
+POST /course_record/_doc
 {
   "courseId" : 1,
   "teacherId": 1,
   "collectionNum": 10,
-  "viewNum": 100
+  "viewNum": 100,
   "createTime": "2021-02-22"
 }
 
-POST /course_record
+POST /course_record/_doc
 {
   "courseId" : 2,
   "teacherId": 1,
   "collectionNum": 20,
-  "viewNum": 120
+  "viewNum": 120,
   "createTime": "2021-02-22"
 }
 
-POST /course_record
+POST /course_record/_doc
 {
   "courseId" : 2,
   "teacherId": 1,
   "collectionNum": 20,
-  "viewNum": 120
+  "viewNum": 120,
   "createTime": "2021-02-23"
 }
 
-POST /course_record
+POST /course_record/_doc
 {
   "courseId" : 1,
   "teacherId": 1,
   "collectionNum": 10,
-  "viewNum": 100
+  "viewNum": 100,
   "createTime": "2021-02-23"
 }

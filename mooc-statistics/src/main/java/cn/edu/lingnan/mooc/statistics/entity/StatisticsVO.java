@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.statistics.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @Author: Carlson
@@ -10,7 +11,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class StatisticsOverviewDailyCountVO {
+@ToString
+public class StatisticsVO {
     /**
      * 日期
      */

@@ -3,10 +3,7 @@ package cn.edu.lingnan.mooc.statistics.controller;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.statistics.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author xmz
@@ -30,16 +27,17 @@ public class StatisticsController {
     }
 
     /**
-     * 课程收藏人数趋势
+     * 课程收藏人数趋势 and 观看人数趋势
+     * @param type 时间区间
      * @return
      */
-    @GetMapping("/collection")
-    public RespResult collection(){
-        return RespResult.success(statisticsService.getCourseCollectionStatistics());
+    @GetMapping("/collectionAndView")
+    public RespResult collection(@RequestParam(value = "type",defaultValue = "lastWeek") String type){
+        return RespResult.success(statisticsService.getCollectionAndViewTrend(type));
     }
 
     /**
-     * 课程观看人数趋势
+     * 课程
      * @return
      */
     @GetMapping("/view")

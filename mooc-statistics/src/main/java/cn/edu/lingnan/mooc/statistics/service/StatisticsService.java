@@ -1,10 +1,11 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.statistics.authentication.entity.UserToken;
 import cn.edu.lingnan.mooc.statistics.authentication.util.UserUtil;
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsOverviewDailyCountVO;
+import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
+import cn.edu.lingnan.mooc.statistics.entity.StatisticsVO;
 import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -21,12 +22,10 @@ import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInter
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.metrics.ParsedSingleValueNumericMetricsAggregation;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTimeZone;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
@@ -132,13 +131,13 @@ public class StatisticsService {
      * @param timeType
      * @return
      */
-    public Map<String, Object> getCollectionAndViewTrend(String timeType) {
+    public Map<String, List<StatisticsVO>> getCollectionAndViewTrend(String timeType) {
         // 判断时间参数。开始时间根据参数取1天前、1周前或1个月前的最早毫秒时间戳，结束时间取昨天最晚的毫秒时间戳
         if (StringUtils.isBlank(timeType)) {
             throw new RuntimeException("时间为空");
         }
-        int mapSize = 3;
-        Map<String, Object> trendData = new HashMap<>(mapSize);
+        int mapSize = 2;
+        Map<String, List<StatisticsVO>> trendData = new HashMap<>(mapSize);
 
         long beginTime = getBeginTimeByTimeType(timeType);
         long endTime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MAX).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
@@ -148,66 +147,40 @@ public class StatisticsService {
         if (getCache){
             return trendData;
         }
-        // 判断有权限的人员
-        List<String> accountList = new ArrayList<>();
-        if (!Constant.SUPER_DSF_USER_ID.equals(dsfUserId)) {
-            // 先查询是否有根部门的权限
-            Boolean isAdminPermission = addressbookService.isOwnTopDeptIdByAdminId(dsfUserId);
-            if (!isAdminPermission) {
-                // 如果有根部门权限，走超管逻辑；没有根部门权限，再获取有权限的人员
-                ResultMessage<List<String>> accountListResult = logAuditFeign.listPermissionAccount(TokenUtils.createRequestToken(), dsfUserId);
-                accountList = accountListResult.getData();
-                if (CollectionUtils.isEmpty(accountList)) {
-                    return getEmptyCustomerContactTrend(beginTime, endTime);
-                }
-            }
-        }
-        // 白名单
-        ResultMessage<List<String>> whiteAccountResult = logAuditFeign.listWhiteAccount(TokenUtils.createRequestToken());
-        List<String> whiteAccount = whiteAccountResult.getData();*/
-        // 按时间分组
+*/
 
         CountDownLatch countDownLatch = new CountDownLatch(mapSize);
         executor.execute(() -> {
             try{
-                // 1.每天的发起申请数
+                // 1.每天的总收藏数
                 String key = "logaudit:statistics:countUserDailyChatRecordByField:";
-                List<StatisticsOverviewDailyCountVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,"collection", "sum");
+                List<StatisticsVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,EsConstant.COLLECTION_NUM);
                 //cacheStatisticsList(key, statisticsList, STATISTICS_CACHE_EXPIRE_MINUTES);
-                trendData.put("dailyNewApplyCnt", statisticsList);
+                trendData.put("collectionCnt", statisticsList);
             }catch (Exception e){
                 log.error("====================每天的发起申请数，多线程查询异常====================", e);
+            }finally {
+                countDownLatch.countDown();
             }
-            countDownLatch.countDown();
         });
         executor.execute(() -> {
             try{
-                // 2.每天的新增客户数
+                // 2.每天的观看数
                 String key = "logaudit:statistics:countUserDailyChatRecordByField:";
-                List<StatisticsOverviewDailyCountVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,"view", "sum");
+                List<StatisticsVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,EsConstant.VIEW_NUM);
                // cacheStatisticsList(key, statisticsList, STATISTICS_CACHE_EXPIRE_MINUTES);
-                trendData.put("dailyNewContactCnt", statisticsList);
+                trendData.put("viewCnt", statisticsList);
             }catch (Exception e){
                 log.error("====================每天的新增客户数，多线程查询异常====================", e);
+            }finally {
+                countDownLatch.countDown();
             }
-            countDownLatch.countDown();
-        });
-        executor.execute(() -> {
-            try{
-                // 3.每天的删除/拉黑客户数
-                String key = "logaudit:statistics:countUserDailyChatRecordByField:";
-                List<StatisticsOverviewDailyCountVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,"view", "sum");
-                //cacheStatisticsList(key, statisticsList, STATISTICS_CACHE_EXPIRE_MINUTES);
-                trendData.put("dailyNegativeFeedbackCnt", statisticsList);
-            }catch (Exception e){
-                log.error("====================每天的删除/拉黑客户数，多线程查询异常====================", e);
-            }
-            countDownLatch.countDown();
+
         });
         try {
             countDownLatch.await();
         } catch (Exception e) {
-            log.error("====================统计时间段内客户联系趋势数据，多线程查询异常====================", e);
+            log.error("====================统计时间段内课程收藏、观看趋势数据，多线程查询异常====================", e);
         }
         return trendData;
     }
@@ -231,18 +204,22 @@ public class StatisticsService {
     }
 
 
-    public List<StatisticsOverviewDailyCountVO> countUserDailyChatRecordByField(Long beginTime,Long endTime, String countField, String countType) {
+    public List<StatisticsVO> countUserDailyChatRecordByField(Long beginTime,Long endTime, String countField) {
         log.info("===========统计时间段内每天的发起申请数 或 新增客户数 或 删除/拉黑客户数===========begin===========");
         Map<String, Long> dailyCount = initDailyCount(beginTime, endTime);
         // 构造agg
-        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram("dateAgg").field("statTime").timeZone(DateTimeZone.forOffsetHours(8));
+        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram(EsConstant.DATA_AGG).field(EsConstant.CREATE_TIME).timeZone(DateTimeZone.forOffsetHours(8));
         dateAgg.dateHistogramInterval(DateHistogramInterval.days(1));
-        dateAgg.subAggregation(AggregationBuilders.sum("countAgg").field(countField));
+        dateAgg.subAggregation(AggregationBuilders.sum(EsConstant.COUNT_AGG).field(countField));
 
         //构造boolQuery条件
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        queryBuilder.must(QueryBuilders.termQuery("userId", "xiaomingzhang"));
-        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("statTime");
+        //超管管理员全部，教师查自己的课程
+        if(UserUtil.isTeacher()) {
+            queryBuilder.must(QueryBuilders.termQuery(EsConstant.TEACHER_ID, String.valueOf(UserUtil.getUserId())));
+        }
+
+        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(EsConstant.CREATE_TIME);
         if (beginTime != null) {
             rangeQueryBuilder.gte(beginTime);
         }
@@ -251,31 +228,30 @@ public class StatisticsService {
         }
         queryBuilder.must(rangeQueryBuilder);
 
-        // 模糊查询匹配的索引
-        String[] esIndexNameArray = new String[]{"index"};
+        // 索引
+        String[] esIndexNameArray = new String[]{"course_record"};
 
         SearchResponse searchResponse = initSearchRequestWithAgg(queryBuilder, dateAgg, esIndexNameArray, "_doc", 0, 0);
         SearchResponse response = searchResponse;
-        Histogram histogram = response.getAggregations().get("dateAgg");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
+        Histogram histogram = response.getAggregations().get(EsConstant.DATA_AGG);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd");
         for (Histogram.Bucket entry : histogram.getBuckets()) {
-            // 转换时区，如2020-03-23T00:00:00.000+08:00
-            String utcTimeStr = entry.getKeyAsString();
+            String timeStr = entry.getKeyAsString();
             Date date;
             try {
-                date = sdf.parse(utcTimeStr);
+                date = sdf.parse(timeStr);
             } catch (ParseException e) {
-                log.error("=====parse error=====");
+                log.error("=====parse error=====",e);
                 throw new RuntimeException("=====parse error=====");
             }
             String dateStr = sdf2.format(date);
-            Aggregation aggResponse = entry.getAggregations().get("countAgg");
+            Aggregation aggResponse = entry.getAggregations().get(EsConstant.COUNT_AGG);
             ParsedSingleValueNumericMetricsAggregation countAggValue = ((ParsedSingleValueNumericMetricsAggregation) aggResponse);
             double count = countAggValue.value();
             dailyCount.put(dateStr, Double.isInfinite(count) ? 0 : ((Double)count).longValue());
         }
-        log.info("===========统计时间段内每天的发起申请数 或 新增客户数 或 删除/拉黑客户数===========end===========");
+        log.info("===========统计时间段内每天的课程收藏人数 或 观看人数===========end===========");
         return buildDailyCountVOList(dailyCount);
     }
     /**
@@ -284,9 +260,9 @@ public class StatisticsService {
      * @param dailyCount
      * @return
      */
-    private List<StatisticsOverviewDailyCountVO> buildDailyCountVOList(Map<String, Long> dailyCount) {
-        List<StatisticsOverviewDailyCountVO> dailyCountVOList = dailyCount.keySet().stream().map(key -> {
-            StatisticsOverviewDailyCountVO dailyCountVO = new StatisticsOverviewDailyCountVO();
+    private List<StatisticsVO> buildDailyCountVOList(Map<String, Long> dailyCount) {
+        List<StatisticsVO> dailyCountVOList = dailyCount.keySet().stream().map(key -> {
+            StatisticsVO dailyCountVO = new StatisticsVO();
             dailyCountVO.setDate(key);
             dailyCountVO.setCount(dailyCount.get(key));
             return dailyCountVO;
@@ -318,7 +294,7 @@ public class StatisticsService {
             searchSourceBuilder.from(offset);
             searchSourceBuilder.size(size);
             //排序
-            searchSourceBuilder.sort("id", SortOrder.ASC);
+            //searchSourceBuilder.sort("id", SortOrder.ASC);
         }
         SearchResponse searchResponse = null;
         try {
