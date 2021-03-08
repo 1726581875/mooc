@@ -33,6 +33,20 @@ public class UserUtil {
         return user.get().getUserId().intValue();
     }
 
+    public static boolean isTeacher(){
+        UserToken userToken = user.get();
+        //防止空子针报错，直接返回false
+        if(userToken == null){
+            return false;
+        }
+        if(userToken.getAccount().startsWith("teacher-")){
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * 使用完记得remove,防止内存泄露
      */

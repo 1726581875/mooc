@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.LoginLog;
 import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.MoocUser;
@@ -60,12 +61,19 @@ public class MonitorRecordService {
         if(null == endTimeStr || endTimeStr.equals("")){
             endTimeStr = formatter.format(new Date());
         }
+
+        //如果是教师登录，查询当前教师的监控记录信息
+        Integer teacherId = null;
+        if(UserUtil.isTeacher()){
+            teacherId = UserUtil.getUserId();
+        }
+
         // 构造查询参数
         Date startTime = ConvertTimeUtil.getTime(startTimeStr);
         Date endTime = ConvertTimeUtil.getEndTime(endTimeStr);
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
         // 调用分页条件查询方法
-        Page<MonitorRecord> monitorRecordPage = monitorRecordRepository.findMonitorRecordByCondition(nameOrAccount, recordType ,startTime, endTime, pageable);
+        Page<MonitorRecord> monitorRecordPage = monitorRecordRepository.findMonitorRecordByCondition(nameOrAccount, recordType ,teacherId, startTime, endTime, pageable);
         //获取page对象里的list
         List<MonitorRecord> monitorRecordList = monitorRecordPage.getContent();
         // 转化为VO对象

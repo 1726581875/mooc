@@ -3,9 +3,11 @@ package cn.edu.lingnan.core.service.reception;
 import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.constant.RedisPrefixConstant;
 import cn.edu.lingnan.core.entity.Course;
+import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.MoocUser;
 import cn.edu.lingnan.core.entity.reception.Collection;
 import cn.edu.lingnan.core.repository.CourseRepository;
+import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.repository.reception.CollectionRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
@@ -46,6 +48,8 @@ public class ReceptionCourseService {
     private CollectionRepository collectionRepository;
     @Autowired
     private ReceptionChapterService receptionChapterService;
+    @Autowired
+    private MonitorRecordRepository monitorRecordRepository;
 
     /**
      *  课程的收藏或者取消收藏
@@ -72,6 +76,8 @@ public class ReceptionCourseService {
             collectionRepository.save(collection);
             //缓存的收藏数量加1
             RedisUtil.getRedisTemplate().opsForValue().increment(collectionNumKey, 1L);
+            //记录达到监控记录
+            this.insertMonitorRecord(courseId,UserUtil.getUserId(),"收藏");
         }else {
             //如果已经存在，表示是取消收藏操作
             collection = collectionOptional.get();
@@ -79,10 +85,39 @@ public class ReceptionCourseService {
             //缓存的收藏数量减1
             if(RedisUtil.get(collectionNumKey,Integer.class) > 0){
             RedisUtil.getRedisTemplate().opsForValue().increment(collectionNumKey, -1L);
-        }
+            //记录达到监控记录
+            this.insertMonitorRecord(courseId,UserUtil.getUserId(),"取消收藏");
+         }
         }
 
     }
+
+
+    public void insertMonitorRecord(Integer courseId,Integer userId,String type){
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if(!courseOptional.isPresent()){
+            log.error("插入监控记录失败，点赞的课程不存在，courseId={}",courseId);
+            return;
+        }
+        Optional<MoocUser>userOptional = moocUserRepository.findById(courseId);
+        if(!userOptional.isPresent()){
+            log.error("插入监控记录失败，用户不存在，userId={}",userId);
+            return;
+        }
+
+        Course course = courseOptional.get();
+        MoocUser user = userOptional.get();
+        // 保存监控记录
+        MonitorRecord monitorRecord = new MonitorRecord();
+        monitorRecord.setCourseId(course.getId());
+        monitorRecord.setRecordType("课程收藏");
+        monitorRecord.setCreateTime(course.getCreateTime());
+        monitorRecord.setMessage(user.getName() + " "+ type +"了课程《" + course.getName() +"》");
+        monitorRecord.setTeacherId(course.getTeacherId());
+        monitorRecord.setIp("127.0.0.1");
+        monitorRecordRepository.save(monitorRecord);
+    }
+
 
     /**
      * 获取缓存里的课程收藏数

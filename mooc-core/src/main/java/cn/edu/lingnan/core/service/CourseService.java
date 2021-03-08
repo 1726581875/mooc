@@ -181,7 +181,7 @@ public class CourseService {
      * @param course
      * @return 返回成功数
      */
-    public Integer insert(Course course){
+    public Course insert(Course course){
         if (course == null) {
             throw new IllegalArgumentException("插入表的对象不能为null");
         }
@@ -197,7 +197,7 @@ public class CourseService {
         monitorRecord.setTeacherId(newCourse.getTeacherId());
         monitorRecord.setIp("127.0.0.1");
         monitorRecordRepository.save(monitorRecord);
-        return newCourse == null ? 0 : 1;
+        return newCourse;
     }
 
 
@@ -234,7 +234,7 @@ public class CourseService {
         }
 
         //插入课程、课程标签关系
-        Course newCourse = courseRepository.save(course);
+        Course newCourse = this.insert(course);
         if(!CollectionUtils.isEmpty(tagList)){
             List<CourseTagRel> tagRelList = tagList.stream().map(tag -> new CourseTagRel(newCourse.getId(),tag.getId())).collect(Collectors.toList());
             courseTagRelRepository.saveAll(tagRelList);
