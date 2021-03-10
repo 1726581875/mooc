@@ -3,18 +3,19 @@ package cn.edu.lingnan.mooc.file.controller;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import cn.edu.lingnan.mooc.file.entity.MoocFile;
+import cn.edu.lingnan.mooc.file.model.FileExport;
 import cn.edu.lingnan.mooc.file.service.MoocFileService;
+import com.alibaba.excel.EasyExcel;
+import com.sun.deploy.net.URLEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.time.LocalDate;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +51,24 @@ public class FileManageController {
 
         return RespResult.success(moocFileService.findPage(matchObject, pageIndex, pageSize));
     }
+
+
+
+    @GetMapping("/export")
+    public void exportExcel(MoocFile matchObject, HttpServletResponse response) throws IOException {
+        List<FileExport> fileExportList = moocFileService.findAllByCondition(matchObject);
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码
+        String fileName = URLEncoder.encode("文件列表"+ new SimpleDateFormat("yyyy-MM-dd").format(new Date()), "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        EasyExcel.write(response.getOutputStream(), FileExport.class).sheet("sheet1").doWrite(fileExportList);
+    }
+
+
+
+
 
     /**
      * 更新moocFile接口

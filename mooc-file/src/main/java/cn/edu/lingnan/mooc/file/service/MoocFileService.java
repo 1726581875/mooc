@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.file.service;
 
 import cn.edu.lingnan.mooc.file.entity.MoocFile;
+import cn.edu.lingnan.mooc.file.model.FileExport;
 import cn.edu.lingnan.mooc.file.repository.MoocFileRepository;
 import cn.edu.lingnan.mooc.file.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -112,8 +113,21 @@ public class MoocFileService {
      * @param matchObject
      * @return
      */
-    public List<MoocFile> findAllByCondition(MoocFile matchObject){
-        return moocFileRepository.findAll(Example.of(matchObject));
+    public List<FileExport> findAllByCondition(MoocFile matchObject){
+        List<MoocFile> moocFileList = moocFileRepository.findAll(Example.of(matchObject));
+        // 获取课程id list 和 用户id list
+        List<Integer> courseIdList = moocFileList.stream().map(MoocFile::getCourseId).collect(Collectors.toList());
+        List<Integer> userIdList = moocFileList.stream().map(MoocFile::getUserId).collect(Collectors.toList());
+        Map<Integer, String> userNameMap = this.getUserNameMap(userIdList);
+        Map<Integer, String> courseNameMap = this.getCourseNameMap(courseIdList);
+        // 复制基本属性到VO对象
+        List<FileExport> fileExportList = CopyUtil.copyList(moocFileList, FileExport.class);
+        fileExportList.forEach(file -> {
+            file.setUserName(userNameMap.getOrDefault(file.getUserId(),"未知用户"));
+            file.setCourseName(courseNameMap.getOrDefault(file.getCourseId(),"未知课程"));
+        });
+
+        return fileExportList;
     }
 
     /**

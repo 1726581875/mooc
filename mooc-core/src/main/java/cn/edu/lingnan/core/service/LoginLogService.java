@@ -1,12 +1,15 @@
 package cn.edu.lingnan.core.service;
 
 import cn.edu.lingnan.core.entity.LoginLog;
+import cn.edu.lingnan.core.model.export.LoginLogExport;
 import cn.edu.lingnan.core.param.LoginLogParam;
 import cn.edu.lingnan.core.repository.LoginLogRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.util.ConvertTimeUtil;
 import cn.edu.lingnan.core.vo.LoginLogVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import com.alibaba.excel.EasyExcel;
+import com.sun.deploy.net.URLEncoder;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.SimpleFormatter;
@@ -31,6 +36,13 @@ public class LoginLogService {
     private LoginLogRepository loginLogRepository;
 
 
+    /**
+     * 登录日志查询
+     * @param logParam
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     public PageVO<LoginLogVO> findLoginLogByCondition(LoginLogParam logParam,Integer pageIndex,Integer pageSize){
 
         String matchStr = logParam.getMatchStr();
@@ -66,6 +78,52 @@ public class LoginLogService {
         pageVO.setPageCount(loginLogPage.getTotalPages()); //页数
         return pageVO;
     }
+
+
+    /**
+     * 登录日志导出
+     * @param logParam
+     * @return
+     */
+    public void exportByCondition(LoginLogParam logParam, HttpServletResponse response) throws IOException {
+
+        String matchStr = logParam.getMatchStr();
+        if(matchStr == null ||  matchStr.equals("")){
+            matchStr = null;
+        }
+        //如果不传时间，默认查30天前
+        String startTimeStr = logParam.getStartTime();
+        String endTimeStr = logParam.getEndTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if(null == startTimeStr || startTimeStr.equals("")){
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE,-30);
+            startTimeStr = formatter.format(calendar.getTime());
+        }
+        if(null == endTimeStr || endTimeStr.equals("")){
+            endTimeStr = formatter.format(new Date());
+        }
+        // 构造查询参数
+        Date startTime = ConvertTimeUtil.getTime(startTimeStr);
+        Date endTime = ConvertTimeUtil.getEndTime(endTimeStr);
+
+        // 调用分页条件查询方法
+        List<LoginLog> loginLogList = loginLogRepository.findLoginLogByCondition(matchStr, startTime, endTime);
+
+        List<LoginLogExport> loginLogExportList = CopyUtil.copyList(loginLogList,LoginLogExport.class);
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码
+        String fileName = URLEncoder.encode(startTimeStr + "至" + endTime + "的登录日志", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        EasyExcel.write(response.getOutputStream(), LoginLogExport.class).sheet("sheet1").doWrite(loginLogExportList);
+    }
+
+
+
 
     /**
      * 条件分页查询
