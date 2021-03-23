@@ -34,7 +34,7 @@ public class MonitorRecordRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC,"create_time");
 
         Page<MonitorRecord> monitorRecordPage = monitorRecordRepository
-                .findMonitorRecordByCondition("go",null, time, new Date(), pageable);
+                .findMonitorRecordByCondition("go",null,1, time, new Date(), pageable);
         List<MonitorRecord> content = monitorRecordPage.getContent();
         content.forEach(System.out::println);
 

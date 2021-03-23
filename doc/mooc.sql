@@ -439,8 +439,9 @@ values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/mon
        (73, '系统日志', 'log', null, 7, 'log:select', '/system/log', 0),
        (731, '查询', null, null, 73, 'role:select', null, 1),
        (732, '导出', null, null, 73, 'role:export', null, 1),
-       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 1),
-       (76, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 1);
+       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 0),
+       (76, 'IP黑名单管理', 'ipBlacklist', null, 7, 'ipBlacklist:select', '/ipBlacklist', 0),
+       (77, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 0);
 
 
 -- 管理员与角色关联表
@@ -544,5 +545,19 @@ CREATE TABLE `collection` (
 insert into collection(course_id, user_id)
 values (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),
 (1,2),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2);
+
+-- IP黑名单表，一定程度主动防护DDos攻击
+DROP TABLE IF EXISTS `mooc_ip_blacklist`;
+CREATE TABLE `mooc_ip_blacklist` (
+                              `id`  int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                              `name` varchar(50) COMMENT '名称',
+                              `ip`   varchar(255) NOT NULL COMMENT '禁用ip',
+                              `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                              `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                              PRIMARY KEY (`id`),
+                              UNIQUE INDEX `uk_id` (`ip`)
+)ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='用户收藏表';
+insert into mooc_ip_blacklist(name, ip)
+values ('DDoS攻击者2','127.0.0.2'),('DDoS攻击者3','127.0.0.3'),('DDoS攻击者4','127.0.0.4');
 
 

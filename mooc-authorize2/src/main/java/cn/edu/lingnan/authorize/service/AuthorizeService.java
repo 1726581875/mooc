@@ -240,7 +240,6 @@ public class AuthorizeService {
 
     public void insertManager(MoocManager manager){
         managerDAO.save(manager);
-
     }
 
 
