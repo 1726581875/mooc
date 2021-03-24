@@ -1,3 +1,4 @@
+#配置服务端口
 server:
   port: 9001
 #  servlet:
@@ -7,7 +8,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8888/eureka/
-
+#配置服务名
 spring:
   application:
     name: mooc-core
