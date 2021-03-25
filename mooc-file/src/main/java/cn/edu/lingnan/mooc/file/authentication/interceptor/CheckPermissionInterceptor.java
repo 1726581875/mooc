@@ -72,6 +72,9 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"无效token");
             return false;
         }
+        //设置用户token
+        UserUtil.setUserToken(userToken);
+
         // 3、获取到用户权限
         String userTokenPermission = userToken.getPermission();
 

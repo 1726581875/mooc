@@ -89,6 +89,8 @@ public class SectionService {
      */
     public List<SectionVO> findAllByCondition(Section matchObject) {
         List<Section> sectionList = sectionRepository.findAll(Example.of(matchObject));
+        //按照sort字段升序排序
+        sectionList.sort(Comparator.comparingInt(Section::getSort));
         return CopyUtil.copyList(sectionList, SectionVO.class);
     }
 

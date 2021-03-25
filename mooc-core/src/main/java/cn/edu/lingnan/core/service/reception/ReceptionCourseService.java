@@ -157,9 +157,19 @@ public class ReceptionCourseService {
             //1、获取课程基本信息
             Course course = courseOptional.get();
             CourseDetailVO courseDetailVO = CopyUtil.copy(course, CourseDetailVO.class);
-            //从缓存里获取收藏数
+            //从缓存里获取收藏数/观看数
             Integer collectionNum = this.getCollectionNumByCache(courseId);
             courseDetailVO.setCollectionNum(collectionNum);
+            //设置观看数
+            if(RedisUtil.isExist(RedisPrefixConstant.VIEW_NUM_PRE + courseId)) {
+                Long learningNum = RedisUtil.getRedisTemplate().opsForValue()
+                        .increment(RedisPrefixConstant.VIEW_NUM_PRE + courseId,1L);
+                courseDetailVO.setLearningNum(Integer.valueOf(Math.toIntExact(learningNum)));
+            }else {
+                //缓存两天
+                RedisUtil.set(RedisPrefixConstant.VIEW_NUM_PRE + courseId, course.getCollectionNum(),RedisPrefixConstant.CACHE_DAY_NUM, TimeUnit.DAYS);
+            }
+
             //2、获取教师基本信息,设置到VO对象
             Optional<MoocUser> teacherOptional = moocUserRepository.findById(course.getTeacherId());
             courseDetailVO.setTeacher(teacherOptional.get());
