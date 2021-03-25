@@ -11,17 +11,35 @@ import java.util.Date;
 @DynamicInsert
 @Entity(name = "mooc_ip_blacklist")
 public class IpBlacklist{
-    // 主键id   
+    /**
+     * 主键id
+     */
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    // 名称   
+    /**
+     * 名称
+     */
     private String name;
-    // 禁用ip   
+    /**
+     * 禁用ip
+     */
     private String ip;
-    // 创建时间   
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    // 修改时间   
+    /**
+     *  修改时间
+     */
     private Date updateTime;
+
+
+    public IpBlacklist(){}
+
+    public IpBlacklist(String name,String ip){
+        this.name = name;
+        this.ip = ip;
+    }
     
 }

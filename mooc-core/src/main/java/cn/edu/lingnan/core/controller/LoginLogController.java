@@ -49,13 +49,12 @@ public class LoginLogController {
 
 
     @GetMapping("/export")
-    public void exportExcel(LoginLogParam logParam, HttpServletResponse response) throws IOException {
+    public void exportExcel(LoginLogParam logParam, HttpServletResponse response){
         try {
             loginLogService.exportByCondition(logParam,response);
         }catch (Exception e){
             log.error("导出登录日志发生异常：",e);
         }
-
     }
 
 }

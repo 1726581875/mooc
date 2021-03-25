@@ -53,7 +53,12 @@ public class FileManageController {
     }
 
 
-
+    /**
+     * 导出文件列表
+     * @param matchObject
+     * @param response
+     * @throws IOException
+     */
     @GetMapping("/export")
     public void exportExcel(MoocFile matchObject, HttpServletResponse response) throws IOException {
         List<FileExport> fileExportList = moocFileService.findAllByCondition(matchObject);

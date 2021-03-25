@@ -1,16 +1,35 @@
 package cn.edu.lingnan.core.controller;
 
 import cn.edu.lingnan.core.entity.IpBlacklist;
+import cn.edu.lingnan.core.model.excelImport.IpBlacklistImport;
+import cn.edu.lingnan.core.model.excelImport.IpBlacklistListener;
+import cn.edu.lingnan.core.model.export.IpBlacklistExport;
+import cn.edu.lingnan.core.model.export.LoginLogExport;
+import cn.edu.lingnan.core.repository.IpBlacklistRepository;
 import cn.edu.lingnan.core.service.IpBlacklistService;
+import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import com.alibaba.excel.EasyExcel;
+import com.sun.deploy.net.URLEncoder;
+import com.sun.javafx.binding.StringFormatter;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author xmz
  * @date: 2021/03/23
  */
+@Slf4j
 @RestController
 @RequestMapping("/admin/ipBlacklists")
 @CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
@@ -18,6 +37,44 @@ public class IpBlacklistController {
 
     @Autowired
     private IpBlacklistService ipBlacklistService;
+
+    @Autowired
+    private IpBlacklistRepository ipBlacklistRepository;
+
+    /**
+     * Ip黑名单导入
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/import")
+    public RespResult importExcel(MultipartFile file){
+        try{
+            EasyExcel.read(file.getInputStream(), IpBlacklistImport.class, new IpBlacklistListener(ipBlacklistRepository)).sheet().doRead();
+        }catch (Exception e){
+            log.error("====== 导入Excel 发生异常:",e);
+            return RespResult.fail("导入黑名单IP失败");
+        }
+        return RespResult.success("导入成功");
+    }
+
+
+
+    @GetMapping("/export")
+    public void exportExcel(IpBlacklist matchObject, HttpServletResponse response) throws IOException {
+
+        //查询数据
+        List<IpBlacklist> ipBlacklistList = ipBlacklistService.findAllByCondition(matchObject);
+        //设置请求头
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码
+        String fileName = URLEncoder.encode("IP黑名单_" + System.currentTimeMillis(), "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        //使用EasyExcel导出excel
+        EasyExcel.write(response.getOutputStream(), IpBlacklistExport.class).sheet("sheet1").doWrite( CopyUtil.copyList(ipBlacklistList, IpBlacklistExport.class));
+    }
+
 
     /**
      * 分页查询ipBlacklist接口

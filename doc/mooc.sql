@@ -555,7 +555,7 @@ CREATE TABLE `mooc_ip_blacklist` (
                               `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                               `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
                               PRIMARY KEY (`id`),
-                              UNIQUE INDEX `uk_id` (`ip`)
+                              UNIQUE INDEX `uk_ip` (`ip`)
 )ENGINE = INNODB DEFAULT charset=utf8mb4 COMMENT='用户收藏表';
 insert into mooc_ip_blacklist(name, ip)
 values ('DDoS攻击者2','127.0.0.2'),('DDoS攻击者3','127.0.0.3'),('DDoS攻击者4','127.0.0.4');
