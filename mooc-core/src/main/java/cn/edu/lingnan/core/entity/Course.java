@@ -38,7 +38,7 @@ public class Course{
      */
     private Integer collectionNum;
 
-    // 状态|0草稿/1发布/2禁用/3已删除   
+    // 状态|0未审核/1已审核/2禁用/3已删除
     private Integer status;
     // 创建时间   
     private Date createTime;

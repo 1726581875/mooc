@@ -135,12 +135,13 @@ public class CourseService {
     public PageVO<CourseVO> findPage(Course matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
         //如果是教师，只查询该教师的课程
-        if(UserUtil.getUserToken().getAccount().startsWith("teacher-")){
+        if(UserUtil.isTeacher()){
             matchObject.setTeacherId(UserUtil.getUserId());
         }
-         // 1.1 设置匹配策略，name属性模糊查询
+         // 1.1 设置匹配策略，name属性模糊查询,startsWith右模糊(name%)/contains全模糊(%name%)
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.contains());//startsWith右模糊(name%)/contains全模糊(%name%)
+                .withMatcher("name", match -> match.contains());
+
          // 1.2 构造匹配条件Example对象
         Example<Course> example = Example.of(matchObject,matcher);
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
