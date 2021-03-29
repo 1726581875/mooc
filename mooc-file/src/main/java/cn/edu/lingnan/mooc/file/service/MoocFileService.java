@@ -138,6 +138,7 @@ public class MoocFileService {
      * @return
      */
     public PageVO<FileVO> findPage(MoocFile matchObject, Integer pageIndex, Integer pageSize){
+        PageVO<FileVO> pageVO = new PageVO<>();
         // 1、构造条件
          // 1.1 设置匹配策略，name属性模糊查询
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -149,6 +150,9 @@ public class MoocFileService {
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         // 3、 传入条件、分页参数，调用方法
         Page<MoocFile> moocFilePage = moocFileRepository.findAll(example, pageable);
+        if(moocFilePage.getNumberOfElements() == 0){
+            return pageVO;
+        }
         //获取page对象里的list
         List<MoocFile> moocFileList = moocFilePage.getContent();
         // 获取课程id list 和 用户id list
@@ -163,7 +167,7 @@ public class MoocFileService {
             file.setCourseName(courseNameMap.getOrDefault(file.getCourseId(),"未知课程"));
         });
         /* 4. 封装到自定义分页结果 */
-        PageVO<FileVO> pageVO = new PageVO<>();
+
         pageVO.setContent(fileVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
@@ -215,7 +219,8 @@ public class MoocFileService {
         // 是否存在
         Optional<MoocFile> optional = moocFileRepository.findById(moocFile.getId());
         if(!optional.isPresent()){
-            throw new RuntimeException("找不到id为"+ moocFile.getId() +"的MoocFile");
+            log.error("更新文件失败 找不到id为{} 的MoocFile",moocFile.getId());
+            return null;
         }
         MoocFile dbMoocFile = optional.get();
         //把不为null的属性拷贝到dbMoocFile

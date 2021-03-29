@@ -89,8 +89,6 @@ public class MonitorRecordService {
         // 封装返回结果
         PageVO<MonitorRecordVO> pageVO = new PageVO<>();
         pageVO.setContent(monitorRecordVOList);
-        // 数据总条数
-        pageVO.setPageTotal((int) monitorRecordPage.getTotalElements());
         pageVO.setPageSize(pageSize);
         pageVO.setPageIndex(pageIndex);
         //页数

@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
+import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.Category;
 import cn.edu.lingnan.core.param.CategoryParam;
@@ -27,6 +28,7 @@ public class CategoryController {
      * 分查询所有分类信息
      * @return
      */
+    @Check("category:select")
     @GetMapping("/all")
     public RespResult findAllCategory() {
         return RespResult.success(categoryService.findAll());

@@ -30,6 +30,6 @@ public interface MonitorRecordRepository extends JpaRepository<MonitorRecord, In
             + " and if(?1 is null , 1=1 ,(u.account = ?1 or u.name like CONCAT('%',?1,'%')))"
             + " and if(?2 is null , 1=1 ,r.record_type = ?2) "
             + " and if(?3 is null , 1=1 ,r.teacher_id = ?3) "
-            ,countQuery = "select count(1) from login_log",nativeQuery=true)
+            ,nativeQuery=true)
     Page<MonitorRecord> findMonitorRecordByCondition(String nameOrAccount,String recordType,Integer teacherId,Date startTime, Date endTime, Pageable pageable);
 }

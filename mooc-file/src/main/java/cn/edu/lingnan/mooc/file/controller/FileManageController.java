@@ -99,10 +99,7 @@ public class FileManageController {
     @PostMapping("/save")
     public RespResult insertOrUpdate(@RequestBody MoocFile moocFile) {
         MoocFile update = moocFileService.insertOrUpdate(moocFile);
-        if (update == null) {
-            return RespResult.fail("新增MoocFile失败");
-        }
-        return RespResult.success("新增MoocFile成功");
+        return RespResult.success("成功");
     }
 
     /**
@@ -163,6 +160,7 @@ public class FileManageController {
         response.setHeader("Content-Disposition", "attachment;filename=" + filename);
         // 实现文件下载
         byte[] buffer = new byte[1024];
+        //创建输入流
         try (FileInputStream fileInputStream = new FileInputStream(file);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
             OutputStream os = response.getOutputStream();
@@ -172,7 +170,7 @@ public class FileManageController {
                 i = bufferedInputStream.read(buffer);
             }
         } catch (Exception e) {
-            log.error("文件下载发生异常，文件路径不存在，文件Id为：{} ，文件路径：{}",fileId,filename,filepath);
+            log.error("文件下载发生异常，文件路径不存在，文件Id为：{} ，文件路径：{},异常",fileId,filename,filepath,e);
         }
 
 

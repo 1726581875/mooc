@@ -102,13 +102,12 @@ public class MonitorService {
         // 构造时间聚合
         DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram("dateAgg").field("createTime").timeZone(DateTimeZone.forOffsetHours(8));
         dateAgg.dateHistogramInterval(DateHistogramInterval.days(1));
-        // 构造条件
+        // 构造bool条件
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("createTime");
         rangeQueryBuilder.gte(beginTime);
         rangeQueryBuilder.lte(endTime);
         boolQueryBuilder.must(rangeQueryBuilder);
-
         // 执行查询
         SearchResponse response = initSearchRequestWithAgg(boolQueryBuilder, dateAgg,
                 "mooc_course", "_doc", 0, 0);

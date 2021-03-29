@@ -58,7 +58,7 @@ public class LoginUserCountJob {
         loginAmountCount.setAmount(count);
         loginAmountCount.setUpdateTime(new Date());
         loginAmountCount.setCreateTime(new Date());
-        loginAmountCount.setCountTime(beginTime);
+        loginAmountCount.setCountTime(simpleDateFormat.format(beginTime));
         loginAmountCountRepository.save(loginAmountCount);
     }
 
@@ -80,7 +80,7 @@ public class LoginUserCountJob {
         Date beginTime = calendar.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         LoginAmountCount loginAmountCount = new LoginAmountCount();
-        loginAmountCount.setCountTime(beginTime);
+        loginAmountCount.setCountTime(simpleDateFormat.format(beginTime));
         Optional<LoginAmountCount> amountCount = loginAmountCountRepository.findOne(Example.of(loginAmountCount));
         if(!amountCount.isPresent()){
             this.countLoginPersonAmount();
