@@ -5,8 +5,8 @@ package cn.edu.lingnan.core.enums;
  * @date: 2020/12/03
  */
 public enum CourseEnum {
-    // 状态|0草稿/1发布/2禁用/3已删除
-    DRAFT(0,"草稿"),
+    // 状态|0未审核/1发布/2禁用/3已删除
+    DRAFT(0,"未审核"),
     NORMAL(1,"正常"),
     DISABLE(2,"禁用"),
     DELETED(3,"已删除")

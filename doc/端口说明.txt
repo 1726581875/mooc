@@ -5,3 +5,4 @@ mooc-scheduled-job 定时任务服务 9003
 mooc-message 消息服务 9004
 mooc-statistics 统计报表服务 9005
 mooc-gateway 网关服务 9090
+mooc-authorize 权限服务 10000

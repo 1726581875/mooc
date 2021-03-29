@@ -39,7 +39,6 @@ public class CourseController {
         return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
                 queryCourseParam.getPageIndex(),queryCourseParam.getPageSize()));
     }
-
     /**
      * 分页查询course接口
      * get请求
