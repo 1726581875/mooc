@@ -24,8 +24,10 @@ public class CourseComment {
 
     private Integer commentStar;
 
-    private Integer commentStatus;
+    private Integer status;
 
     private Date createTime;
+
+    private Date updateTime;
 
 }
