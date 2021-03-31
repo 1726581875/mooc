@@ -211,7 +211,7 @@ public class AuthorizeService {
         RedisUtil.delete(UserConstant.ONLINE_USER_PREFIX + account);
         String token = RedisUtil.get(account);
         if(token != null){
-            // 删除用户登录信息
+            // 删除用户token, 登录信息
             RedisUtil.delete(token);
         }
         // 删除账户、token关联

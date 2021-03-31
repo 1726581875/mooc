@@ -51,7 +51,7 @@ public class MenuTreeService {
      * @param menuTreeDTOList
      */
     private void setTreeNode(List<MenuTree> menuList, List<MenuTreeDTO> menuTreeDTOList){
-
+        //构造菜单权限树
         menuTreeDTOList.forEach(menuDTO -> {
             List<MenuTreeDTO> childrenList = new ArrayList<>();
             menuList.forEach(menu -> {
@@ -64,7 +64,6 @@ public class MenuTreeService {
                 //递归
                 this.setTreeNode(menuList,childrenList);
             }
-
         });
     }
 

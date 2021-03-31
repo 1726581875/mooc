@@ -28,7 +28,8 @@ public interface LoginLogRepository extends JpaRepository<LoginLog, Integer>,Jpa
      */
     @Query(value="select * from login_log where create_time >= ?2 and create_time <= ?3 "
             + " and if(?1 is null , 1=1 ,(account = ?1 or log_name = ?1))"
-            ,countQuery = "select count(1) from login_log",nativeQuery=true)
+            ,countQuery = "select count(1) from login_log  where create_time >= ?2 and create_time <= ?3 "
+            + " and if(?1 is null , 1=1 ,(account = ?1 or log_name = ?1))",nativeQuery=true)
     Page<LoginLog> findLoginLogByCondition(String matchStr, Date startTime, Date endTime, Pageable pageable);
 
 
@@ -41,7 +42,7 @@ public interface LoginLogRepository extends JpaRepository<LoginLog, Integer>,Jpa
      */
     @Query(value="select * from login_log where create_time >= ?2 and create_time <= ?3 "
             + " and if(?1 is null , 1=1 ,(account = ?1 or log_name = ?1)) "
-            + " order create_time desc "
+            + " order by create_time desc "
             ,nativeQuery=true)
     List<LoginLog> findLoginLogByCondition(String matchStr, Date startTime, Date endTime);
 }

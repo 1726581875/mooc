@@ -24,6 +24,9 @@ public class MonitorControllerTest extends BaseMvcTest {
         System.out.println(monthResultJson);
     }
 
+    /**
+     * 测试获取周/月人数
+     */
     @Test
     public void countWeekOrMonthCourseTest(){
         System.out.println("=====测试获取最近一周新增课程数接口=====");

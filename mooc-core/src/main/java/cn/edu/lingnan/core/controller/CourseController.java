@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
+import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.param.reception.QueryCourseParam;
 import cn.edu.lingnan.mooc.common.model.RespResult;

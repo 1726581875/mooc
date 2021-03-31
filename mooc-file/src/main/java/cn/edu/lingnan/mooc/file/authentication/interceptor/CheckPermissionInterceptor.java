@@ -50,7 +50,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         //TODO 放行图片URI,不知是否存在安全问题，待完善 需要防止URI?join=/file/
         String requestURI = request.getRequestURI();
         String downVideoUrl = "/download/";
-        if(requestURI.contains(FileConstant.MAPPING_PATH) || requestURI.contains(downVideoUrl)){
+        if(requestURI.contains(FileConstant.MAPPING_PATH)
+                || requestURI.contains(downVideoUrl) || requestURI.equals("/error")){
             return true;
         }
 

@@ -16,6 +16,9 @@ public class CourseMapperTest {
     @Resource
     private CourseMapper courseMapper;
 
+    /**
+     * mysql统计课程分类测试
+     */
     @Test
     public void selectAllTest(){
         courseMapper.selectAll().forEach(System.out::println);

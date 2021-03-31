@@ -67,6 +67,9 @@ public class EsCourseRepositoryTest {
         esCourseRepository.findAll().forEach(System.out::println);
     }
 
+    /**
+     * 测试根据课程名和课程简介检索课程
+     */
     @Test
     public void testFindByQuery(){
         String keyword = "spring";

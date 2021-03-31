@@ -64,10 +64,17 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         }
 
 
-        // TODO 获取ip地址
+        // 获取ip地址
         String ipAddress = getIpAddress(request);
+        //判断是否在Redis里
+        if(RedisUtil.isExist("IpBlacklist:" + ipAddress)){
+            //返回403
+            responseMsg(response,HttpStatus.FORBIDDEN.value(),"你的IP已经被禁止");
+            //禁止通行
+            return false;
+        }
 
-       //TODO URI,不知是否存在安全问题，待完善
+        //TODO URI,不知是否存在安全问题，待完善
         String requestURI = request.getRequestURI();
         //判断url是否在白名单url里，若存在则不需要token验证
         for (String url : whiteUrlSet) {
@@ -78,7 +85,6 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
-
         if(token == null){
             responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"你还没有登录");
             return false;
@@ -91,11 +97,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         }
         //设置用户信息
         UserUtil.setUserToken(userToken);
-
         // 3、获取到用户权限
         String userTokenPermission = userToken.getPermission();
-
-
         // 4、权限校验，获取controller方法上的@Check注解判断是否有权限
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -108,9 +111,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
                 return true;
             }
             Check checkAnnotation = method.getAnnotation(Check.class);
+            //获取注解的值
             String permission = checkAnnotation.value();
-            System.out.println("permission=" + permission);
-
             // 判断是否是超管,如果没有权限
             boolean isSuperManager = userToken.getUserId().equals(0L) ? true : false;
             if(!isSuperManager &&!userTokenPermission.contains(permission)){
