@@ -47,7 +47,7 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
     private static Set<String> whiteUrl(String ...urls){
         return new HashSet<>(Arrays.stream(urls).collect(Collectors.toList()));
-    };
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

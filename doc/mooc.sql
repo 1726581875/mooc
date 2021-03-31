@@ -561,3 +561,51 @@ insert into mooc_ip_blacklist(name, ip)
 values ('DDoS攻击者2','127.0.0.2'),('DDoS攻击者3','127.0.0.3'),('DDoS攻击者4','127.0.0.4');
 
 
+
+DROP TABLE IF EXISTS `course_comment`;
+-- 创建评论表
+CREATE TABLE `course_comment`(
+`id` int NOT NULL AUTO_INCREMENT COMMENT '评论id',
+`user_id` int NOT NULL COMMENT '评论者id',
+`course_id` int NOT NULL COMMENT '对应课程id',
+`comment_content` varchar(512) NOT NULL COMMENT '评论内容',
+`comment_star` int DEFAULT 0 COMMENT '点赞数',
+`comment_status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
+`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+PRIMARY KEY(`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
+
+-- article_comment表插入数据
+insert into course_comment(user_id,course_id,comment_content)
+values
+(3,1,"不错,写的什么玩意,成功浪费我几分钟"),
+(2,1,"很好啊"),
+(1,1,"不错,写的什么玩意,成功浪费我几分钟"),
+(2,2,"很好啊"),
+(1,2,"不错,写的什么玩意,成功浪费我几分钟"),
+(2,3,"很好啊");
+
+
+DROP TABLE IF EXISTS `comment_reply`;
+-- 创建评论回复表
+CREATE TABLE `comment_reply`(
+`id` int NOT NULL AUTO_INCREMENT COMMENT '回复表主键',
+`comment_id` int NOT NULL COMMENT '对应的评论id',
+`user_id` int NOT NULL COMMENT '回复者id',
+`to_user_id` int NOT NULL COMMENT '回复对象id',
+`reply_content` varchar(512) NOT NULL COMMENT '评论内容',
+`reply_star` int DEFAULT 0 COMMENT '回复点赞数',
+`reply_status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
+`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+PRIMARY KEY(`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论回复表';
+
+-- comment_reply表插入数据
+insert into comment_reply(comment_id,to_user_id,user_id,reply_content)
+values
+(1,3,1,"哈哈"),
+(1,1,3,"呵呵"),
+(1,3,1,"傻子"),
+(1,1,3,"你才是傻子"),
+(1,3,1,"牛逼，咋不上天"),
+(1,3,1,"哈哈");
