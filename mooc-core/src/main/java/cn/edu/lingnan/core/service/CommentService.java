@@ -48,7 +48,7 @@ public class CommentService {
         //获取用户信息map
         Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
         //获取回复Map
-        Map<Integer, List<ReplyerDTO>> replyMap = new HashMap<>();
+        Map<Integer, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
 
         //courseCommentList -> CommentAndReplyVO
         courseCommentList.forEach(comment -> courseVOList.add(createCommentAndReplyVO(comment, userMap, replyMap)));
