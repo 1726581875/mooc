@@ -570,8 +570,9 @@ CREATE TABLE `course_comment`(
 `course_id` int NOT NULL COMMENT '对应课程id',
 `comment_content` varchar(512) NOT NULL COMMENT '评论内容',
 `comment_star` int DEFAULT 0 COMMENT '点赞数',
-`comment_status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
+`status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+`update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
 
@@ -595,8 +596,9 @@ CREATE TABLE `comment_reply`(
 `to_user_id` int NOT NULL COMMENT '回复对象id',
 `reply_content` varchar(512) NOT NULL COMMENT '评论内容',
 `reply_star` int DEFAULT 0 COMMENT '回复点赞数',
-`reply_status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
+`status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+`update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论回复表';
 
