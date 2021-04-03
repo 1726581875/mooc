@@ -1,6 +1,8 @@
 package cn.edu.lingnan.core.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,11 +13,13 @@ import java.util.Date;
  */
 @Entity
 @Data
+@DynamicInsert
+@DynamicUpdate
 public class CommentReply {
     
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Integer replyId;
+	private Integer id;
 	
 	private Integer commentId;
 	

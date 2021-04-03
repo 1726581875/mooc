@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.core.entity.MoocFile;
 import cn.edu.lingnan.core.repository.MoocFileRepository;
@@ -26,6 +27,7 @@ public class MoocFileService {
      * @return 如果找不到返回null
      */
     public MoocFile findById(Integer id){
+
         Optional<MoocFile> optional = moocFileRepository.findById(id);
         if(!optional.isPresent()){
             return null;

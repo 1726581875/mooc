@@ -1,5 +1,6 @@
 package cn.edu.lingnan.core.controller;
 
+import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.param.MonitorRecordParam;
 import cn.edu.lingnan.core.service.MonitorRecordService;
