@@ -1,6 +1,8 @@
 package cn.edu.lingnan.core.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,8 @@ import java.util.Date;
 
 @Data
 @Entity
+@DynamicInsert
+@DynamicUpdate
 public class CourseComment {
 
     @Id

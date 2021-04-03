@@ -11,10 +11,13 @@ import cn.edu.lingnan.core.vo.CommentAndReplyVO;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.ReplyerDTO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +50,7 @@ public class CommentService {
         List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
         //获取用户信息map
         Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
-        //获取回复Map
+        //获取评论回复Map
         Map<Integer, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
 
         //courseCommentList -> CommentAndReplyVO
@@ -73,9 +76,10 @@ public class CommentService {
                                                       Map<Integer, MoocUser> userMap, Map<Integer, List<ReplyerDTO>> replyMap){
         CommentAndReplyVO commentAndReplyVO = CopyUtil.copy(comment,CommentAndReplyVO.class);
         commentAndReplyVO.setCommentId(comment.getId());
-        commentAndReplyVO.setUserName(userMap.get(comment.getId()).getName());
-        commentAndReplyVO.setUserImage(userMap.get(comment.getId()).getUserImage());
+        commentAndReplyVO.setUserName(userMap.get(comment.getUserId()).getName());
+        commentAndReplyVO.setUserImage(userMap.get(comment.getUserId()).getUserImage());
         commentAndReplyVO.setReplyList(replyMap.getOrDefault(comment.getId(),new ArrayList<>()));
+        //commentAndReplyVO.setStar(true);
         return commentAndReplyVO;
     }
 
@@ -102,7 +106,7 @@ public class CommentService {
 
         //按照时间排序
         replyListMap.forEach((k,v) -> {
-            v.sort((o1,o2) -> (int) (o1.getCreateTime().getTime() - o2.getCreateTime().getTime()));
+            v.sort(Comparator.comparing(ReplyerDTO::getCreateTime));
         });
         return replyListMap;
     }
@@ -114,9 +118,36 @@ public class CommentService {
         replyerDTO.setReplyerImage(userMap.get(reply.getUserId()).getUserImage());
         replyerDTO.setToUserName(userMap.get(reply.getToUserId()).getName());
         replyerDTO.setToUserImage(userMap.get(reply.getToUserId()).getUserImage());
+        replyerDTO.setReplyId(reply.getId());
         return replyerDTO;
     }
 
 
+    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer userId, Integer toUserId, String content) {
 
+        //判断是不是要插入回复，toUserId不为null就说明是回复
+        if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
+            CommentReply reply = new CommentReply();
+            reply.setCommentId(commentId);
+            reply.setUserId(userId);
+            reply.setToUserId(toUserId);
+            reply.setReplyContent(content);
+            CommentReply commentReply = replyRepository.save(reply);
+            if(commentReply == null){
+                return false;
+            }
+            return true;
+        }
+
+        //插入课程评论
+        CourseComment comment = new CourseComment();
+        comment.setCourseId(courseId);
+        comment.setUserId(userId);
+        comment.setCommentContent(content);
+        CourseComment articleComment = commentRepository.save(comment);
+        if(articleComment == null){
+            return false;
+        }
+        return true;
+    }
 }

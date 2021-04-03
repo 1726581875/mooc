@@ -577,14 +577,14 @@ PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
 
 -- article_comment表插入数据
-insert into course_comment(user_id,course_id,comment_content)
+insert into course_comment(user_id,course_id,comment_content,create_time)
 values
-(3,1,"不错,写的什么玩意,成功浪费我几分钟"),
-(2,1,"很好啊"),
-(1,1,"不错,写的什么玩意,成功浪费我几分钟"),
-(2,2,"很好啊"),
-(1,2,"不错,写的什么玩意,成功浪费我几分钟"),
-(2,3,"很好啊");
+(3,1,"不错,写的什么玩意,成功浪费我几分钟",'2021-03-18 06:17'),
+(2,1,"很好啊",'2021-03-18 06:18'),
+(1,1,"不错,写的什么玩意,成功浪费我几分钟",'2021-03-18 08:17'),
+(2,2,"很好啊",'2021-03-19 06:17'),
+(1,2,"不错,写的什么玩意,成功浪费我几分钟",'2021-03-18 15:17'),
+(2,3,"很好啊",'2021-03-10 06:17');
 
 
 DROP TABLE IF EXISTS `comment_reply`;
@@ -603,11 +603,11 @@ PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论回复表';
 
 -- comment_reply表插入数据
-insert into comment_reply(comment_id,to_user_id,user_id,reply_content)
+insert into comment_reply(comment_id,to_user_id,user_id,reply_content,create_time)
 values
-(1,3,1,"哈哈"),
-(1,1,3,"呵呵"),
-(1,3,1,"傻子"),
-(1,1,3,"你才是傻子"),
-(1,3,1,"牛逼，咋不上天"),
-(1,3,1,"哈哈");
+(1,3,1,"哈哈",'2021-03-10 06:28'),
+(1,1,3,"呵呵",'2021-03-10 07:28'),
+(1,3,1,"傻子",'2021-04-10 07:28'),
+(1,1,3,"你才是傻子",'2021-04-10 13:28'),
+(1,3,1,"牛逼，咋不上天",'2021-04-10 13:29'),
+(1,3,1,"哈哈",'2021-04-10 14:29');
