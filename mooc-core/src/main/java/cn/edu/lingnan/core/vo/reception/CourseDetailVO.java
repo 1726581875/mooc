@@ -27,7 +27,6 @@ public class CourseDetailVO {
     /**
      * 课程名称
      */
-
     private String name;
     /**
      * 讲师id
@@ -53,6 +52,10 @@ public class CourseDetailVO {
      * 收藏人数
      */
     private Integer collectionNum;
+    /**
+     * 评论人数
+     */
+    private Integer commentNum;
 
     /**
      * 创建时间

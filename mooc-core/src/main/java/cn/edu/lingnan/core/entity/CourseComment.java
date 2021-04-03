@@ -25,8 +25,14 @@ public class CourseComment {
     private Integer courseId;
 
     private String commentContent;
-
+    /**
+     * 点赞数
+     */
     private Integer commentStar;
+    /**
+     * 回复数
+     */
+    private Integer replyNum;
 
     private Integer status;
 

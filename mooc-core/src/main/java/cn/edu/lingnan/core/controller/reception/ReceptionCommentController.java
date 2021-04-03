@@ -1,9 +1,7 @@
 package cn.edu.lingnan.core.controller.reception;
 
-import cn.edu.lingnan.core.entity.CommentReply;
 import cn.edu.lingnan.core.service.CommentService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +55,28 @@ public class ReceptionCommentController {
         return success ? RespResult.success() : RespResult.failUnKnownError();
     }
 
+
+    /**
+     * 根据用户id查询评论
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/listByUserId")
+    public RespResult listCommentByUserId(Integer userId,
+                                            @RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
+                                            @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
+
+        return RespResult.success(commentService.findAllCommentByCourseId(userId,pageIndex,pageSize));
+    }
+
+    @GetMapping("/listAll")
+    public RespResult listAllComment(@RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
+                                     @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
+
+        return RespResult.success(commentService.findAllCommentList(pageIndex,pageSize));
+    }
 
 
 }

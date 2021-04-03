@@ -1,15 +1,19 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.constant.RedisPrefixConstant;
 import cn.edu.lingnan.core.entity.CommentReply;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.entity.CourseComment;
 import cn.edu.lingnan.core.entity.MoocUser;
 import cn.edu.lingnan.core.repository.CommentRepository;
+import cn.edu.lingnan.core.repository.CourseRepository;
 import cn.edu.lingnan.core.repository.ReplyRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.util.RedisUtil;
 import cn.edu.lingnan.core.vo.CommentAndReplyVO;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.ReplyerDTO;
+import cn.edu.lingnan.core.vo.reception.CommentListVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +41,16 @@ public class CommentService {
     private ReplyRepository replyRepository;
     @Autowired
     private MoocUserService moocUserService;
+    @Autowired
+    private CourseRepository courseRepository;
 
+    /**
+     * 根据课程courseId查询评论
+     * @param courseId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     public PageVO<CommentAndReplyVO> findAllCommentByCourseId(Integer courseId,Integer pageIndex, Integer pageSize){
 
         CourseComment courseComment = new CourseComment();
@@ -45,7 +59,7 @@ public class CommentService {
         Page<CourseComment> courseCommentPage = commentRepository.findAll(Example.of(courseComment), pageable);
         List<CourseComment> courseCommentList = courseCommentPage.getContent();
 
-        List<CommentAndReplyVO> courseVOList = new ArrayList<>();
+        List<CommentAndReplyVO> courseCommentVOList = new ArrayList<>();
         List<Integer> commentIdList = courseCommentList.stream().map(CourseComment::getId).collect(Collectors.toList());
         List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
         //获取用户信息map
@@ -54,11 +68,11 @@ public class CommentService {
         Map<Integer, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
 
         //courseCommentList -> CommentAndReplyVO
-        courseCommentList.forEach(comment -> courseVOList.add(createCommentAndReplyVO(comment, userMap, replyMap)));
+        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentAndReplyVO(comment, userMap, replyMap)));
 
         /* 4. 封装到自定义分页结果 */
         PageVO<CommentAndReplyVO> pageVO = new PageVO<>();
-        pageVO.setContent(courseVOList);
+        pageVO.setContent(courseCommentVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(courseCommentPage.getTotalPages());
@@ -125,21 +139,34 @@ public class CommentService {
 
     public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer userId, Integer toUserId, String content) {
 
-        //判断是不是要插入回复，toUserId不为null就说明是回复
+        //1、判断是不是要插入回复，toUserId不为null就说明是回复
         if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
             CommentReply reply = new CommentReply();
             reply.setCommentId(commentId);
             reply.setUserId(userId);
             reply.setToUserId(toUserId);
             reply.setReplyContent(content);
+            //插入回复信息
             CommentReply commentReply = replyRepository.save(reply);
             if(commentReply == null){
                 return false;
             }
+            //评论回复数+1,加锁避免多线程下回复数混乱
+            synchronized (CommentService.class) {
+                Optional<CourseComment> commentOptional = commentRepository.findById(commentId);
+                if (commentOptional.isPresent()) {
+                    CourseComment comment = commentOptional.get();
+                    //评论的回复数数加一，并保存到数据库
+                    comment.setReplyNum(comment.getReplyNum() + 1);
+                    commentRepository.save(comment);
+                } else {
+                    log.error("====== 获取课程信息评论信息失败，评论不存在courseId={}, commentId={} ====", courseId, commentId);
+                }
+            }
             return true;
         }
 
-        //插入课程评论
+        //2、插入课程评论
         CourseComment comment = new CourseComment();
         comment.setCourseId(courseId);
         comment.setUserId(userId);
@@ -148,6 +175,68 @@ public class CommentService {
         if(articleComment == null){
             return false;
         }
+
+        //评论数+1，缓存里没有就设置到缓存
+        if(RedisUtil.isExist(RedisPrefixConstant.COMMENT_NUM_PRE + courseId)) {
+            //评论数+1
+            RedisUtil.getRedisTemplate().opsForValue().increment(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,1L);
+        }else {
+            //缓存两天
+            Optional<Course> optional = courseRepository.findById(courseId);
+            if(optional.isPresent()) {
+                Course course = optional.get();
+                RedisUtil.setIfAbsent(RedisPrefixConstant.COMMENT_NUM_PRE + courseId, course.getCommentNum().toString());
+                //评论数+1
+                RedisUtil.getRedisTemplate().opsForValue().increment(RedisPrefixConstant.COMMENT_NUM_PRE + courseId, 1L);
+            }else {
+                log.error("====== 获取课程信息失败，课程不存在 courseId={} ====",courseId);
+            }
+        }
+        
         return true;
     }
+
+
+
+    /**
+     * 根据课程courseId查询评论
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public PageVO<CommentListVO> findAllCommentList(Integer pageIndex, Integer pageSize){
+
+        CourseComment courseComment = new CourseComment();
+
+        Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
+        Page<CourseComment> courseCommentPage = commentRepository.findAll(Example.of(courseComment), pageable);
+        List<CourseComment> courseCommentList = courseCommentPage.getContent();
+
+        List<CommentListVO> courseCommentVOList = new ArrayList<>();
+
+        //获取用户信息map
+        List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
+        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
+
+        //courseComment -> CommentListVO
+        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentListVO(comment,userMap)));
+
+        /* 4. 封装到自定义分页结果 */
+        PageVO<CommentListVO> pageVO = new PageVO<>();
+        pageVO.setContent(courseCommentVOList);
+        pageVO.setPageIndex(pageIndex);
+        pageVO.setPageSize(pageSize);
+        pageVO.setPageCount(courseCommentPage.getTotalPages());
+        return pageVO;
+    }
+
+    private CommentListVO createCommentListVO(CourseComment comment,Map<Integer, MoocUser> userMap){
+        CommentListVO commentListVO = CopyUtil.copy(comment,CommentListVO.class);
+        commentListVO.setUserName(userMap.get(comment.getUserId()).getName());
+        commentListVO.setUserImage(userMap.get(comment.getUserId()).getUserImage());
+        return commentListVO;
+    }
+
+
+
 }

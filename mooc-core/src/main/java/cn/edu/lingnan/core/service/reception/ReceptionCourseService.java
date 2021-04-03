@@ -157,10 +157,10 @@ public class ReceptionCourseService {
             //1、获取课程基本信息
             Course course = courseOptional.get();
             CourseDetailVO courseDetailVO = CopyUtil.copy(course, CourseDetailVO.class);
-            //从缓存里获取收藏数/观看数
+            //从缓存里获取收藏数/观看数（redis缓存）
             Integer collectionNum = this.getCollectionNumByCache(courseId);
             courseDetailVO.setCollectionNum(collectionNum);
-            //设置观看数
+            //设置观看数（redis缓存）
             if(RedisUtil.isExist(RedisPrefixConstant.VIEW_NUM_PRE + courseId)) {
                 Long learningNum = RedisUtil.getRedisTemplate().opsForValue()
                         .increment(RedisPrefixConstant.VIEW_NUM_PRE + courseId,1L);
@@ -168,6 +168,14 @@ public class ReceptionCourseService {
             }else {
                 //缓存两天
                 RedisUtil.set(RedisPrefixConstant.VIEW_NUM_PRE + courseId, course.getCollectionNum(),RedisPrefixConstant.CACHE_DAY_NUM, TimeUnit.DAYS);
+             }
+            //设置评论数(缓存)
+            if(RedisUtil.setIfAbsent(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,String.valueOf(course.getCommentNum()),
+                    RedisPrefixConstant.CACHE_DAY_NUM, TimeUnit.DAYS)){
+                courseDetailVO.setCommentNum(course.getCommentNum());
+            }else{
+                //去缓存中拿
+                courseDetailVO.setCommentNum(RedisUtil.get(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,Integer.class));
             }
 
             //2、获取教师基本信息,设置到VO对象
