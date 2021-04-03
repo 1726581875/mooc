@@ -41,4 +41,32 @@ public interface EsConstant {
      */
     String COUNT_AGG = "countAgg";
 
+    /**
+     * 聚合字段groupAgg
+     */
+    String GROUP_BY_AGG = "groupByAgg";
+    /**
+     * 聚合字段order by
+     */
+    String ORDER_BY_AGG = "orderByAgg";
+
+    /**
+     * es字段courseId
+     */
+    String COURSE_ID = "courseId";
+
+    /**
+     * 读取key
+     */
+    String KEY = "_key";
+
+    /**
+     * 收藏数agg
+     */
+    String COLLECTION_NUM_AGG = "collectionNumCountAgg";
+    /**
+     * 观看人数agg
+     */
+    String VIEW_NUM_AGG = "collectionNumCountAgg";
+
 }
