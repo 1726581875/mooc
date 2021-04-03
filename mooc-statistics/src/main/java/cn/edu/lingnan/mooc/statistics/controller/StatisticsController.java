@@ -37,12 +37,12 @@ public class StatisticsController {
     }
 
     /**
-     * 课程
+     * 课程评论数统计
      * @return
      */
-    @GetMapping("/view")
-    public RespResult view(){
-        return RespResult.success(statisticsService.getCourseCollectionStatistics());
+    @GetMapping("/comment")
+    public RespResult comment(){
+        return RespResult.success(statisticsService.getCourseCommentStatistics());
     }
 
 }

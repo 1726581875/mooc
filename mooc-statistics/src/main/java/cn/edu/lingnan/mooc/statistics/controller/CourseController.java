@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/courses")
 @CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class CourseController {
-
     @Autowired
     private CourseService courseService;
-
-
-
 
 }

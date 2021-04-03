@@ -62,17 +62,31 @@ public class StatisticsService {
        return RespResult.success();
     }
 
-
+    /**
+     * 获取用户分类统计数据
+     *  1、查询缓存
+     * @return map <分类名，课程数量>
+     */
+    public List<Map<String,Object>> getClassificationStatistics() {
+        //如果是教师，只统计当前教师
+        if(UserUtil.isTeacher()){
+            Integer userId = UserUtil.getUserId();
+            return courseMapper.countCourseCategoryByUserId(userId);
+        }
+        //否则就是管理员，统计全部
+        return courseMapper.countAllCourseCategory();
+    }
 
     /**
      * 获取收藏数统计
      * @return
      */
-    public Map<String,Integer> getCourseCollectionStatistics(){
-
-
-
-
+    public Map<String,Integer> getCourseCommentStatistics(){
+        //如果是教师，只统计当前教师
+        if(UserUtil.isTeacher()){
+            Integer userId = UserUtil.getUserId();
+            return null;
+        }
         return null;
     }
 
@@ -333,20 +347,8 @@ public class StatisticsService {
     }
 
 
-    /**
-     * 获取用户分类统计数据
-     *  1、查询缓存
-     * @return map <分类名，课程数量>
-     */
-    public List<Map<String,Object>> getClassificationStatistics() {
-        String account = UserUtil.getUserToken().getAccount();
-        //如果是教师，只统计当前教师
-        if( account.startsWith("teacher-")){
-            Integer userId = UserUtil.getUserId();
-            return courseMapper.countCourseCategoryByUserId(userId);
-        }
-        //否则就是管理员，统计全部
-        return courseMapper.countAllCourseCategory();
 
-    }
+
+
+
 }

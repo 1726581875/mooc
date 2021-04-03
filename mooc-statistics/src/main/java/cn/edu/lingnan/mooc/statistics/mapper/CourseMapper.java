@@ -30,4 +30,14 @@ public interface CourseMapper {
       * @return
       */
      List<Map<String,Object>> countNewAddCourseNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
+
+     /**
+      * 统计评论数
+      * @param teacherId
+      * @param beginTime
+      * @param endTime
+      * @return
+      */
+     List<Map<String,Object>> countCommentGroupByTime(@Param("teacherId")Integer teacherId,@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
+
 }

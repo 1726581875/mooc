@@ -31,5 +31,15 @@
 		group by date_format(create_time, '%Y-%m-%d');
 	</select>
 
+	<select id="countCommentGroupByTime" resultType="java.util.Map">
+		select DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') date,count(*) value
+		from course_comment
+		where create_time >= #{beginTime} and create_time &lt;= #{endTime}
+		<if test="teacherId != null">
+			and teacher_id = #{teacherId}
+		</if>
+		group by date;
+	</select>
+
 </mapper>
  
