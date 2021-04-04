@@ -50,6 +50,8 @@ public class StatisticsService {
     private CourseMapper courseMapper;
     @Resource(name = "asyncPromiseExecutor")
     private Executor executor;
+    @Autowired
+    private MonitorService monitorService;
     /**
      * 获取统计数据
      * @return
@@ -78,16 +80,34 @@ public class StatisticsService {
     }
 
     /**
-     * 获取收藏数统计
+     * 获取评论数统计
      * @return
      */
-    public Map<String,Integer> getCourseCommentStatistics(){
+    public Map<String,Long> getCourseCommentStatistics(){
         //如果是教师，只统计当前教师
+        Integer teacherId = null;
         if(UserUtil.isTeacher()){
-            Integer userId = UserUtil.getUserId();
-            return null;
+            teacherId = UserUtil.getUserId();
         }
-        return null;
+        //开始时间,统计七天前
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_WEEK, -7);
+        Date startTime = calendar.getTime();
+        //初始化返回的map
+        Map<String, Long> commentCountMap = monitorService.initDailyCount(startTime.getTime(), new Date().getTime());
+        //数据库获取统计数据
+        List<Map<String, Object>> mapList = courseMapper.countCommentGroupByTime(teacherId, startTime, new Date());
+        //遍历返回结果集，赋值
+        mapList.forEach(map -> {
+            commentCountMap.forEach((date,num) -> {
+                if(map.get("date").toString().contains(date)){
+                    commentCountMap.put(date,(Long) map.get("count"));
+                }
+            });
+
+        });
+        return commentCountMap;
     }
 
 
@@ -170,7 +190,7 @@ public class StatisticsService {
                 String key = "logaudit:statistics:countUserDailyChatRecordByField:";
                 List<StatisticsVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,EsConstant.COLLECTION_NUM);
                 //cacheStatisticsList(key, statisticsList, STATISTICS_CACHE_EXPIRE_MINUTES);
-                trendData.put("collectionCnt", statisticsList);
+                trendData.put("collectionCount", statisticsList);
             }catch (Exception e){
                 log.error("====================每天的发起申请数，多线程查询异常====================", e);
             }finally {
@@ -183,7 +203,7 @@ public class StatisticsService {
                 String key = "logaudit:statistics:countUserDailyChatRecordByField:";
                 List<StatisticsVO> statisticsList = countUserDailyChatRecordByField(beginTime,endTime,EsConstant.VIEW_NUM);
                // cacheStatisticsList(key, statisticsList, STATISTICS_CACHE_EXPIRE_MINUTES);
-                trendData.put("viewCnt", statisticsList);
+                trendData.put("viewCount", statisticsList);
             }catch (Exception e){
                 log.error("====================每天的新增客户数，多线程查询异常====================", e);
             }finally {

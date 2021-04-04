@@ -33,35 +33,19 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static Set<String> whiteUrlSet = new HashSet<>();
-
-    static {
-        whiteUrlSet = whiteUrl(
-                Constant.LOGO_MAPPING_PATH,
-                "/file/",
-                "/admin/categorys/all",
-                "/admin/courses/getByTag"
-                //,"/courses/"
-                );
-    }
-
-    private static Set<String> whiteUrl(String ...urls){
-        return new HashSet<>(Arrays.stream(urls).collect(Collectors.toList()));
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         //todo 为了方便开发
         //构造超管用户
-        UserToken superMan = new UserToken();
+/*        UserToken superMan = new UserToken();
         superMan.setUserId(0L);
         superMan.setAccount("admin");
         UserUtil.setUserToken(superMan);
         //所有请求都放行
         if(true){
             return true;
-        }
+        }*/
 
 
         // 获取ip地址
@@ -72,15 +56,6 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             responseMsg(response,HttpStatus.FORBIDDEN.value(),"你的IP已经被禁止");
             //禁止通行
             return false;
-        }
-
-        //TODO URI,不知是否存在安全问题，待完善
-        String requestURI = request.getRequestURI();
-        //判断url是否在白名单url里，若存在则不需要token验证
-        for (String url : whiteUrlSet) {
-            if(requestURI.contains(url)){
-                return true;
-            }
         }
 
         // 1、获取请求头携带的token

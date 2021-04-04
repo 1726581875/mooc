@@ -9,6 +9,9 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author xmz
  * @date: 2021/02/07
@@ -20,7 +23,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private cn.edu.lingnan.mooc.statistics.authentication.interceptor.CheckPermissionInterceptor CheckPermissionInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(CheckPermissionInterceptor);
+        List<String> excludePathList = new ArrayList<>();
+        excludePathList.add("/download/*");
+        excludePathList.add("/file/");
+        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**");
     }
 
     /**

@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.file.authentication.config;
 
 import cn.edu.lingnan.mooc.file.authentication.interceptor.CheckPermissionInterceptor;
+import cn.edu.lingnan.mooc.file.constant.FileConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xmz
@@ -19,9 +23,14 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
     private CheckPermissionInterceptor CheckPermissionInterceptor;
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(CheckPermissionInterceptor);
+        List<String> excludePathList = new ArrayList<>();
+        excludePathList.add("/download/*");
+        excludePathList.add("/file/");
+        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**").excludePathPatterns(excludePathList);
     }
 
     /**

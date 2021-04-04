@@ -135,7 +135,7 @@ public class MonitorService {
             mapList.forEach(map -> {
                     //遍历返回结果，赋值
                     dailyCountMap.forEach((data,num) -> {
-                        if(map.get("data").toString().contains(data)){
+                        if(map.get("date").toString().contains(data)){
                             dailyCountMap.put(data,(Long) map.get("count"));
                         }
                     });
@@ -151,7 +151,7 @@ public class MonitorService {
      * @param beginTime
      * @param endTime
      */
-    private Map<String, Long> initDailyCount(Long beginTime, Long endTime) {
+    public Map<String, Long> initDailyCount(Long beginTime, Long endTime) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         Map<String, Long> dailyCount = new LinkedHashMap<>();
         // 起始时间
@@ -227,14 +227,19 @@ public class MonitorService {
         // 初始化统计的日期对应登录人数map
         Map<String, Long> dailyCountMap = initDailyCount(beginTime, endTime);
         // 查询出对应时间的登录人数
-        List<LoginAmountCount> loginAmountCountList = loginAmountCountRepository
-                .findLoginAmountCountByTime(begin.getTime(), end.getTime());
-
+        List<LoginAmountCount> loginAmountCountList = loginAmountCountRepository.findLoginAmountCountByTime(begin.getTime(), end.getTime());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
         // 构造需要返回的map
         Map<String,Long> countMap = new HashMap<>(loginAmountCountList.size());
         loginAmountCountList.forEach(e -> {
-            String formatDate = simpleDateFormat.format(e.getCountTime());
+            Date date =null;
+            try {
+                 date = simpleDateFormat2.parse(e.getCountTime());
+            } catch (ParseException parseException) {
+                log.error("===== String to Date Error ====",e);
+            }
+            String formatDate = simpleDateFormat.format(date);
             dailyCountMap.computeIfPresent(formatDate,(k,v)-> v + Long.valueOf(e.getAmount()));
         });
         return dailyCountMap;

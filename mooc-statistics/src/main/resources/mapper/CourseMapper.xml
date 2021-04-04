@@ -25,18 +25,18 @@
 
 
 	<select id="countNewAddCourseNum" resultType="java.util.Map">
-		select date_format(create_time, '%Y-%m-%d') data, count(*) count
+		select date_format(create_time, '%Y-%m-%d') date, count(*) count
 		from course
 		where create_time >= #{beginTime} and create_time &lt;= #{endTime}
-		group by date_format(create_time, '%Y-%m-%d');
+		group by date;
 	</select>
 
 	<select id="countCommentGroupByTime" resultType="java.util.Map">
-		select DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') date,count(*) value
+		select DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') date,count(*) count
 		from course_comment
 		where create_time >= #{beginTime} and create_time &lt;= #{endTime}
 		<if test="teacherId != null">
-			and teacher_id = #{teacherId}
+			and course_id in (select id from course where teacher_id = #{teacherId})
 		</if>
 		group by date;
 	</select>
