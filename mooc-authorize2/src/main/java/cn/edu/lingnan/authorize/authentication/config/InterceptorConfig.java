@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author xmz
  * @date: 2021/02/07
@@ -13,11 +16,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
+
     @Autowired
     private cn.edu.lingnan.authorize.authentication.interceptor.CheckPermissionInterceptor CheckPermissionInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(CheckPermissionInterceptor);
+        //不需要拦截的路径
+        List<String> excludePathList = new ArrayList<>();
+        excludePathList.add("/mooc/admin/login");
+        excludePathList.add("/mooc/admin/code/image");
+        excludePathList.add("/user/login");
+        excludePathList.add("/user/isLogin");
+
+        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**").excludePathPatterns(excludePathList);
     }
 
 }

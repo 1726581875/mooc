@@ -43,6 +43,8 @@ public class CommentService {
     private MoocUserService moocUserService;
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private CourseService courseService;
 
     /**
      * 根据课程courseId查询评论
@@ -217,9 +219,13 @@ public class CommentService {
         //获取用户信息map
         List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
         Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
+        //获取课程名
+        List<Integer> courseIdList = courseCommentList.stream().map(CourseComment::getCourseId).collect(Collectors.toList());
+        Map<Integer, String> courseNameMap = courseService.getCourseNameMap(courseIdList);
+
 
         //courseComment -> CommentListVO
-        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentListVO(comment,userMap)));
+        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentListVO(comment,userMap,courseNameMap)));
 
         /* 4. 封装到自定义分页结果 */
         PageVO<CommentListVO> pageVO = new PageVO<>();
@@ -230,10 +236,16 @@ public class CommentService {
         return pageVO;
     }
 
-    private CommentListVO createCommentListVO(CourseComment comment,Map<Integer, MoocUser> userMap){
+    private CommentListVO createCommentListVO(CourseComment comment,Map<Integer, MoocUser> userMap,Map<Integer, String> courseNameMap){
         CommentListVO commentListVO = CopyUtil.copy(comment,CommentListVO.class);
+        commentListVO.setCommentId(comment.getId());
+        commentListVO.setStarNum(comment.getCommentStar());
+        //设置用户信息
         commentListVO.setUserName(userMap.get(comment.getUserId()).getName());
         commentListVO.setUserImage(userMap.get(comment.getUserId()).getUserImage());
+        //设置课程信息
+        commentListVO.setCourseName(courseNameMap.getOrDefault(comment.getCourseId(),"未知课程"));
+        commentListVO.setCourseId(comment.getCourseId());
         return commentListVO;
     }
 

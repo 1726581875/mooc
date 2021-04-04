@@ -42,4 +42,12 @@ public class CommentListVO {
      * 是否已经点赞
      */
     private boolean isStar;
+    /**
+     * 课程id
+     */
+    private Integer courseId;
+    /**
+     * 课程名
+     */
+    private String courseName;
 }

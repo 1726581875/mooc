@@ -71,6 +71,12 @@ public class ReceptionCommentController {
         return RespResult.success(commentService.findAllCommentByCourseId(userId,pageIndex,pageSize));
     }
 
+    /**
+     * 查询评论列表
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/listAll")
     public RespResult listAllComment(@RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
                                      @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){

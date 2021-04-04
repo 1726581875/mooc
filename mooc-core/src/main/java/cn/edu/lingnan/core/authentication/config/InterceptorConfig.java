@@ -26,9 +26,22 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/file/**");
         excludePathList.add("/logoImage/**");
         excludePathList.add("/admin/categorys/all");
+        //用户端，放行
+        //根据分类查询课程
         excludePathList.add("/admin/courses/getByTag");
+        //分类
+        excludePathList.add("/admin/categorys/all");
+        //查询课程详情
+        excludePathList.add("/courses/*");
+        //查询课程评论
+        excludePathList.add("/comment/list");
+        excludePathList.add("/comment/listAll");
+        //查询用户信息
+        excludePathList.add("/admin/moocUsers/*");
 
-        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**").excludePathPatterns();
+        registry.addInterceptor(CheckPermissionInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(excludePathList);
     }
 
 }

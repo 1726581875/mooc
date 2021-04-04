@@ -46,14 +46,6 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         // TODO 获取ip地址
         String ipAddress = getIpAddress(request);
 
-        String requestURI = request.getRequestURI();
-        if(requestURI.contains("/mooc/admin/login")
-                || requestURI.contains("/mooc/admin/code/image")
-                || requestURI.contains("/user/login")
-                || requestURI.contains("/user/isLogin")){
-            return true;
-        }
-
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
         if(token == null){
