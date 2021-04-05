@@ -1,6 +1,8 @@
 package cn.edu.lingnan.mooc.statistics.authentication.util;
 
 import cn.edu.lingnan.mooc.statistics.authentication.entity.UserToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author xmz
@@ -10,6 +12,7 @@ public class UserUtil {
 
     private static ThreadLocal<UserToken> user = new ThreadLocal<>();
 
+    private static final Logger log = LoggerFactory.getLogger(UserUtil.class);
 
     public static void setUserToken(UserToken userToken){
         user.set(userToken);
@@ -30,7 +33,12 @@ public class UserUtil {
      * @return
      */
     public static Integer getUserId(){
-        return user.get().getUserId().intValue();
+        UserToken userToken = user.get();
+        if(userToken == null){
+            log.error("==== 用户还没有登录，拿不到用户id ====");
+            return null;
+        }
+        return userToken.getUserId().intValue();
     }
 
     public static boolean isTeacher(){

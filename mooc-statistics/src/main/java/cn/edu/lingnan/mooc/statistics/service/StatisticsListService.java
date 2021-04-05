@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
+import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.statistics.authentication.util.UserUtil;
 import cn.edu.lingnan.mooc.statistics.constant.Constant;
 import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
@@ -45,12 +46,12 @@ public class StatisticsListService {
     private RestHighLevelClient restHighLevelClient;
 
 
-    public Object getCourseStatisticsList(StatisticsListViewQuery query) {
+    public PageVO<CourseRecordStatisticsVO> getCourseStatisticsList(StatisticsListViewQuery query) {
 
         log.info("===========课程统计报表===========start===========");
         Map<Integer, CourseRecordStatisticsVO> CourseRecordVOMap = new HashMap<>();
-
-        Integer dsfUserId = UserUtil.getUserId();
+        //获取用户id
+        Integer userId = UserUtil.getUserId();
 
         List<String> accountList = null;
         // 查询关键字
@@ -90,19 +91,19 @@ public class StatisticsListService {
         }
 
         // 模糊查询匹配的索引
-        String[] esIndexNameArray = new String[]{"elasticSerchPropertis.getUserDailyChatRecordIndex() + Constant.INDEX_NAME_POSTFIX"};
+        String[] esIndexNameArray = new String[]{"course_record"};
 
         log.info("===========课程统计报表===========查询总数===========");
         // 查询总数
         long countBeginTime = System.currentTimeMillis();
         //获取boolQuery条件
-        BoolQueryBuilder boolQueryAgg = this.getCourseRecordBoolQueryAgg(new ArrayList<>(), beginTime, endTime);
+        BoolQueryBuilder boolQueryAgg = this.getCourseRecordBoolQueryAgg(userId, beginTime, endTime);
         Integer totalCount = countCourseRecordGroupByCourseId(esIndexNameArray, boolQueryAgg);
         long countEndTime = System.currentTimeMillis();
         log.info("==========查询总数耗时:{}===========", countEndTime - countBeginTime);
 
         if (totalCount == null || totalCount < 1) {
-            return null;
+            return new PageVO<>(1,10,0,0,null);
         }
         // 总页数
         Integer pageSize = query.getPageSize();
@@ -149,7 +150,7 @@ public class StatisticsListService {
             CourseRecordVOMap.put(courseId, courseRecordVO);
         });
         if (CourseRecordVOMap.size() == 0) {
-            return null;
+            return new PageVO<>(1,10,0,0,null);
         }
         //获取课程idList
         List<Integer> courseIdList = new ArrayList<>(CourseRecordVOMap.keySet());
@@ -159,7 +160,7 @@ public class StatisticsListService {
         long agg2BeginTime = System.currentTimeMillis();
 
         //构造boolQuery,根据课程Id聚合
-        BoolQueryBuilder boolQueryAgg2 = this.getCourseRecordBoolQueryAgg(courseIdList, beginTime, endTime);
+        BoolQueryBuilder boolQueryAgg2 = this.getCourseRecordBoolQueryAgg(userId, beginTime, endTime);
 
         SearchResponse detailSearchResponse = this.initSearchRequestWithAgg(boolQueryAgg2, detailAgg, esIndexNameArray , "_doc", 0, 0);
         long agg2EndTime = System.currentTimeMillis();
@@ -181,6 +182,7 @@ public class StatisticsListService {
                 ParsedSum collectionAgg = bucket.getAggregations().get(EsConstant.COLLECTION_NUM_AGG);
                 courseRecordVO.setCollectionNum(((Double)collectionAgg.getValue()).intValue());
             }
+
         });
 
 
@@ -206,22 +208,31 @@ public class StatisticsListService {
 
 
         log.info("===========课程统计报表===========end===========");
-        return null;
+        List<CourseRecordStatisticsVO> recordStatisticsVOList = new ArrayList<>(CourseRecordVOMap.values());
+        PageVO<CourseRecordStatisticsVO> pageVO = new PageVO<>();
+        //内容
+        pageVO.setContent(recordStatisticsVOList);
+        //页数
+        pageVO.setPageCount(totalPage);
+        pageVO.setPageIndex(currPage);
+        pageVO.setPageSize(pageSize);
+        pageVO.setPageTotal(totalCount);
+        return pageVO;
     }
 
     /**
      * 获取课程记录boolQuery条件
-     * @param courseIdList
+     * @param teacherId
      * @param beginTime
      * @param endTime
      * @return
      */
-    private BoolQueryBuilder getCourseRecordBoolQueryAgg(List<Integer> courseIdList, Long beginTime, Long endTime){
+    private BoolQueryBuilder getCourseRecordBoolQueryAgg(Integer teacherId, Long beginTime, Long endTime){
         //1、构建查询条件boolQuery
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         //课程Id
-        if (!CollectionUtils.isEmpty(courseIdList)) {
-            boolQueryBuilder.must(QueryBuilders.termsQuery("courseId", courseIdList));
+        if (teacherId != null) {
+            boolQueryBuilder.must(QueryBuilders.termsQuery("courseId", teacherId));
         }
         //设置时间范围
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("createTime");
