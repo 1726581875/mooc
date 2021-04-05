@@ -38,6 +38,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/comment/listAll");
         //查询用户信息
         excludePathList.add("/admin/moocUsers/*");
+        //查询评论回复
+        excludePathList.add("/comment/listCommentDetail");
 
         registry.addInterceptor(CheckPermissionInterceptor)
                 .addPathPatterns("/**")

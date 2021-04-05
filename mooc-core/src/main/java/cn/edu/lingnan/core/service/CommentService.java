@@ -13,9 +13,11 @@ import cn.edu.lingnan.core.util.RedisUtil;
 import cn.edu.lingnan.core.vo.CommentAndReplyVO;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.ReplyerDTO;
+import cn.edu.lingnan.core.vo.reception.CommentDetailVO;
 import cn.edu.lingnan.core.vo.reception.CommentListVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,7 +141,7 @@ public class CommentService {
     }
 
 
-    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer userId, Integer toUserId, String content) {
+    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId, Integer userId, Integer toUserId, String content) {
 
         //1、判断是不是要插入回复，toUserId不为null就说明是回复
         if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
@@ -148,6 +150,9 @@ public class CommentService {
             reply.setUserId(userId);
             reply.setToUserId(toUserId);
             reply.setReplyContent(content);
+            if(replyId != null) {
+                reply.setParentId(replyId);
+            }
             //插入回复信息
             CommentReply commentReply = replyRepository.save(reply);
             if(commentReply == null){
@@ -249,6 +254,35 @@ public class CommentService {
         return commentListVO;
     }
 
+    public CommentDetailVO getCommentDetail(Integer commentId){
 
+        Optional<CourseComment> commentOptional = commentRepository.findById(commentId);
+        if(!commentOptional.isPresent()){
+            log.error("======该评论不存在commentId={} =====",commentId);
+            throw new RuntimeException("评论不存在");
+        }
+        CourseComment courseComment = commentOptional.get();
+        //获取用户信息map
+        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(Lists.newArrayList(courseComment.getUserId()));
+        //获取课程名
+        Map<Integer, String> courseNameMap = courseService.getCourseNameMap(Lists.newArrayList(courseComment.getCourseId()));
+        //获取评论的回复List
+        Map<Integer, List<ReplyerDTO>> replyListMap = this.getReplyListMapByCommentIdList(Lists.newArrayList(commentId));
+
+        //构造返回对象
+        CommentDetailVO commentDetailVO = CopyUtil.copy(courseComment,CommentDetailVO.class);
+        commentDetailVO.setCommentId(courseComment.getId());
+        commentDetailVO.setStarNum(courseComment.getCommentStar());
+        //设置用户信息
+        commentDetailVO.setUserName(userMap.get(courseComment.getUserId()).getName());
+        commentDetailVO.setUserImage(userMap.get(courseComment.getUserId()).getUserImage());
+        //设置课程信息
+        commentDetailVO.setCourseName(courseNameMap.getOrDefault(courseComment.getCourseId(),"未知课程"));
+        commentDetailVO.setCourseId(courseComment.getCourseId());
+        //设置回复List
+        commentDetailVO.setReplyList(replyListMap.getOrDefault(courseComment.getId(),Lists.newArrayList()));
+
+        return commentDetailVO;
+    }
 
 }

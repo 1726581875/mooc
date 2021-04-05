@@ -15,9 +15,11 @@ public class ReplyerDTO {
 
 	private Integer commentId;
 
+	private Integer parentId;
+
 	private Integer replyId;
 	
-	private Integer replyerId;
+	private Integer userId;
 	
 	private String replyerName;
 	

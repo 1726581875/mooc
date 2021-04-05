@@ -603,6 +603,7 @@ DROP TABLE IF EXISTS `comment_reply`;
 CREATE TABLE `comment_reply`(
 `id` int NOT NULL AUTO_INCREMENT COMMENT '回复表主键',
 `comment_id` int NOT NULL COMMENT '对应的评论id',
+`parent_id` int default 0 COMMENT '对应父回复id | 0表示回复对象是comment表下的回复',
 `user_id` int NOT NULL COMMENT '回复者id',
 `to_user_id` int NOT NULL COMMENT '回复对象id',
 `reply_content` varchar(512) NOT NULL COMMENT '评论内容',
@@ -614,11 +615,11 @@ PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论回复表';
 
 -- comment_reply表插入数据
-insert into comment_reply(comment_id,to_user_id,user_id,reply_content,create_time)
+insert into comment_reply(id,comment_id,to_user_id,user_id,reply_content,create_time,parent_id)
 values
-(1,3,1,"哈哈",'2021-03-10 06:28'),
-(1,1,3,"呵呵",'2021-03-10 07:28'),
-(1,3,1,"傻子",'2021-04-10 07:28'),
-(1,1,3,"你才是傻子",'2021-04-10 13:28'),
-(1,3,1,"牛逼，咋不上天",'2021-04-10 13:29'),
-(1,3,1,"哈哈",'2021-04-10 14:29');
+(1,1,3,1,"哈哈",'2021-03-10 06:28',0),
+(2,1,1,3,"呵呵",'2021-03-10 07:28',1),
+(3,1,3,1,"傻子",'2021-04-10 07:28',2),
+(4,1,1,3,"你才是傻子",'2021-04-10 13:28',3),
+(5,1,3,1,"牛逼，咋不上天",'2021-04-10 13:29',4),
+(6,1,3,1,"哈哈",'2021-04-10 14:29',2);

@@ -20,11 +20,19 @@ public class CommentReply {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	
+	/**
+	 * 对应评论表id
+	 */
 	private Integer commentId;
+	/**
+	 * 父回复id
+	 */
+	private Integer parentId;
 	
 	private Integer toUserId;
-	
+	/**
+	 * 用户id
+	 */
 	private Integer userId;
 	
 	private String replyContent;

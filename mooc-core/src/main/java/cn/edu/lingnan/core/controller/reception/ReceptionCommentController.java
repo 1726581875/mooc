@@ -1,7 +1,9 @@
 package cn.edu.lingnan.core.controller.reception;
 
 import cn.edu.lingnan.core.service.CommentService;
+import cn.edu.lingnan.core.vo.reception.CommentDetailVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,7 @@ public class ReceptionCommentController {
     @PostMapping("/insert")
     public Object insertComment(@RequestParam("courseId") Integer courseId,
                                 @RequestParam("commentId") Integer commentId,
+                                @RequestParam("replyId") Integer replyId,
                                 @RequestParam("userId") Integer userId,
                                 @RequestParam("toUserId") Integer toUserId,
                                 @RequestParam("content") String content){
@@ -51,7 +54,7 @@ public class ReceptionCommentController {
         if(StringUtils.isEmpty(content) || StringUtils.isEmpty(userId) || StringUtils.isEmpty(courseId)){
             return RespResult.parameterError();
         }
-        boolean success = commentService.insertCommentOrReply(courseId, commentId, userId, toUserId, content);
+        boolean success = commentService.insertCommentOrReply(courseId, commentId, replyId, userId, toUserId, content);
         return success ? RespResult.success() : RespResult.failUnKnownError();
     }
 
@@ -82,6 +85,19 @@ public class ReceptionCommentController {
                                      @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
 
         return RespResult.success(commentService.findAllCommentList(pageIndex,pageSize));
+    }
+
+    /**
+     * 查询评论的回复列表
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/listCommentDetail")
+    public RespResult listCommentReply(@RequestParam(value = "commentId") Integer commentId,
+                                     @RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
+                                     @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
+        return RespResult.success(commentService.getCommentDetail(commentId));
     }
 
 
