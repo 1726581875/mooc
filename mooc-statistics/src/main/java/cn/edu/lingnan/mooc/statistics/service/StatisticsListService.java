@@ -232,7 +232,7 @@ public class StatisticsListService {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         //课程Id
         if (teacherId != null) {
-            boolQueryBuilder.must(QueryBuilders.termsQuery("courseId", teacherId));
+            boolQueryBuilder.must(QueryBuilders.termsQuery("courseId", teacherId.toString()));
         }
         //设置时间范围
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("createTime");
@@ -277,6 +277,9 @@ public class StatisticsListService {
         TermsAggregationBuilder termsAggregationBuilder = AggregationBuilders.terms(EsConstant.GROUP_BY_AGG).field(EsConstant.COURSE_ID);
         termsAggregationBuilder.size(totalCount);
         String orderByAgg;
+        if(orderByField == null){
+            orderByField = EsConstant.COLLECTION_NUM;
+        }
         switch (orderByField){
             //观看数
             case EsConstant.VIEW_NUM:
@@ -350,7 +353,7 @@ public class StatisticsListService {
             searchSourceBuilder.from(offset);
             searchSourceBuilder.size(size);
             //排序
-            searchSourceBuilder.sort("id", SortOrder.ASC);
+            searchSourceBuilder.sort("courseId", SortOrder.ASC);
         }
         SearchResponse searchResponse = null;
         try {

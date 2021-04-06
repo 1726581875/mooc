@@ -29,6 +29,7 @@ public class StatisticsListServiceTest {
         statisticsListViewQuery.setIsAsc(false);
         statisticsListViewQuery.setCurrPage(1);
         statisticsListViewQuery.setPageSize(10);
+        statisticsListViewQuery.setOrderField("viewNum");
         //调用查询方法
         PageVO<CourseRecordStatisticsVO> courseStatisticsListPage = statisticsListService.getCourseStatisticsList(statisticsListViewQuery);
         List<CourseRecordStatisticsVO> courseRecordStatisticsVOList = courseStatisticsListPage.getContent();
