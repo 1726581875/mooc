@@ -1,13 +1,8 @@
 package cn.edu.lingnan.mooc.statistics.entity;
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * @Author: Carlson
- * @Date: 2020/3/11 11:47
- * 统计列表-客户联系/消息发送/敏感词命中报表查询参数
+ * @author xmz
+ * @date 2021/04/06
  */
 @Data
 public class StatisticsListViewQuery {
