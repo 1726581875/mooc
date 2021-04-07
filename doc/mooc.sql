@@ -17,6 +17,7 @@ CREATE TABLE `course`
     `learning_num` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '学习人数（观看视频人数）',
     `collection_num` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '收藏人数',
     `comment_num`  bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
+    `question_num`  bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '课程问答数',
     `status`       tinyint         NOT NULL DEFAULT 1 COMMENT '状态|0草稿/1发布/2禁用/3已删除',
     `create_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
@@ -572,6 +573,7 @@ CREATE TABLE `course_comment`(
 `reply_num` int DEFAULT 0 COMMENT '回复数',
 `comment_star` int DEFAULT 0 COMMENT '点赞数',
 `status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
+`type` int DEFAULT 0 COMMENT '0课程评论,1课程问答',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY(`id`)
@@ -596,6 +598,11 @@ values
 (2,2,"很好啊",'2021-03-19 06:17'),
 (1,2,"不错,写的什么玩意,成功浪费我几分钟",'2021-03-18 15:17'),
 (2,3,"很好啊",'2021-03-10 06:17');
+
+insert into course_comment(user_id,course_id,comment_content,create_time,type)
+values
+(3,1,"老师您好，请问什么是SpringCloud",'2021-03-18 06:17',1),
+(2,1,"老师您好,想问一下您在吗？",'2021-03-18 06:18',1);
 
 
 DROP TABLE IF EXISTS `comment_reply`;

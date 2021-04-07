@@ -30,8 +30,9 @@ public class ReceptionCommentController {
     @GetMapping("/list")
     public RespResult listCommentByCourseId(Integer courseId,
                                             @RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
-                                            @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
-        return RespResult.success(commentService.findAllCommentByCourseId(courseId,pageIndex,pageSize));
+                                            @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
+                                            @RequestParam("type")Integer type){
+        return RespResult.success(commentService.findAllCommentByCourseId(courseId,type,pageIndex,pageSize));
     }
 
     /**
@@ -49,12 +50,13 @@ public class ReceptionCommentController {
                                 @RequestParam("replyId") Integer replyId,
                                 @RequestParam("userId") Integer userId,
                                 @RequestParam("toUserId") Integer toUserId,
+                                @RequestParam("type") Integer type,
                                 @RequestParam("content") String content){
         //入参校验
         if(StringUtils.isEmpty(content) || StringUtils.isEmpty(userId) || StringUtils.isEmpty(courseId)){
             return RespResult.parameterError();
         }
-        boolean success = commentService.insertCommentOrReply(courseId, commentId, replyId, userId, toUserId, content);
+        boolean success = commentService.insertCommentOrReply(courseId, commentId, replyId, userId, toUserId, content,type);
         return success ? RespResult.success() : RespResult.failUnKnownError();
     }
 
@@ -69,9 +71,10 @@ public class ReceptionCommentController {
     @GetMapping("/listByUserId")
     public RespResult listCommentByUserId(Integer userId,
                                             @RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
-                                            @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
+                                            @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
+                                            @RequestParam("type")Integer type){
 
-        return RespResult.success(commentService.findAllCommentByCourseId(userId,pageIndex,pageSize));
+        return RespResult.success(commentService.findAllCommentByCourseId(userId,type, pageIndex,pageSize));
     }
 
     /**
@@ -82,9 +85,10 @@ public class ReceptionCommentController {
      */
     @GetMapping("/listAll")
     public RespResult listAllComment(@RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
-                                     @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
+                                     @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
+                                     @RequestParam("type")Integer type){
 
-        return RespResult.success(commentService.findAllCommentList(pageIndex,pageSize));
+        return RespResult.success(commentService.findAllCommentList(type,pageIndex,pageSize));
     }
 
     /**

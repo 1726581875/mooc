@@ -56,6 +56,10 @@ public class CourseDetailVO {
      * 评论人数
      */
     private Integer commentNum;
+    /**
+     * 课程问答人数
+     */
+    private Integer questionNum;
 
     /**
      * 创建时间

@@ -24,7 +24,8 @@ public class CommentServiceTest {
         Integer courseId = 1;
         Integer pageIndex = 1;
         Integer pageSize = 10;
-        PageVO<CommentAndReplyVO> page = commentService.findAllCommentByCourseId(courseId, pageIndex, pageSize);
+        Integer type = 0;
+        PageVO<CommentAndReplyVO> page = commentService.findAllCommentByCourseId(courseId, type,pageIndex, pageSize);
         System.out.println(page);
     }
 

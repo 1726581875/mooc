@@ -34,6 +34,10 @@ public class Course{
     // 评论数   
     private Integer commentNum;
     /**
+     * 课程问答数
+     */
+    private Integer questionNum;
+    /**
      * 收藏人数
      */
     private Integer collectionNum;

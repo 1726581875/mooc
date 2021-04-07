@@ -177,6 +177,13 @@ public class ReceptionCourseService {
                 //去缓存中拿
                 courseDetailVO.setCommentNum(RedisUtil.get(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,Integer.class));
             }
+            //设置课程问答数缓存
+            if(RedisUtil.setIfAbsent(RedisPrefixConstant.QUESTION_NUM_PRE + courseId,String.valueOf(course.getQuestionNum()))){
+                courseDetailVO.setQuestionNum(course.getQuestionNum());
+            }else{
+                //去缓存中拿
+                courseDetailVO.setQuestionNum(RedisUtil.get(RedisPrefixConstant.QUESTION_NUM_PRE + courseId,Integer.class));
+            }
 
             //2、获取教师基本信息,设置到VO对象
             Optional<MoocUser> teacherOptional = moocUserRepository.findById(course.getTeacherId());

@@ -26,5 +26,9 @@ public class RedisPrefixConstant {
      * 课程评论数缓存前缀
      */
     public final static String COMMENT_NUM_PRE = "course:comment:";
+    /**
+     * 课程问答数缓存前缀
+     */
+    public final static String QUESTION_NUM_PRE = "course:question:";
 
 }

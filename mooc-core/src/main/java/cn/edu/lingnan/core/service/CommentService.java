@@ -55,10 +55,11 @@ public class CommentService {
      * @param pageSize
      * @return
      */
-    public PageVO<CommentAndReplyVO> findAllCommentByCourseId(Integer courseId,Integer pageIndex, Integer pageSize){
+    public PageVO<CommentAndReplyVO> findAllCommentByCourseId(Integer courseId,Integer type, Integer pageIndex, Integer pageSize){
 
         CourseComment courseComment = new CourseComment();
         courseComment.setCourseId(courseId);
+        courseComment.setType(type);
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
         Page<CourseComment> courseCommentPage = commentRepository.findAll(Example.of(courseComment), pageable);
         List<CourseComment> courseCommentList = courseCommentPage.getContent();
@@ -80,6 +81,8 @@ public class CommentService {
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(courseCommentPage.getTotalPages());
+        //总数
+        pageVO.setPageTotal(((Long)courseCommentPage.getTotalElements()).intValue());
         return pageVO;
     }
 
@@ -141,7 +144,8 @@ public class CommentService {
     }
 
 
-    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId, Integer userId, Integer toUserId, String content) {
+    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId,
+                                        Integer userId, Integer toUserId, String content,Integer type) {
 
         //1、判断是不是要插入回复，toUserId不为null就说明是回复
         if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
@@ -178,23 +182,25 @@ public class CommentService {
         comment.setCourseId(courseId);
         comment.setUserId(userId);
         comment.setCommentContent(content);
+        comment.setType(type);
         CourseComment articleComment = commentRepository.save(comment);
         if(articleComment == null){
             return false;
         }
-
+        //判断是课程评论还是课程问答
+        String redisKey = type == 0 ? RedisPrefixConstant.COMMENT_NUM_PRE + courseId : RedisPrefixConstant.QUESTION_NUM_PRE + courseId;
         //评论数+1，缓存里没有就设置到缓存
-        if(RedisUtil.isExist(RedisPrefixConstant.COMMENT_NUM_PRE + courseId)) {
+        if(RedisUtil.isExist(redisKey)) {
             //评论数+1
-            RedisUtil.getRedisTemplate().opsForValue().increment(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,1L);
+            RedisUtil.getRedisTemplate().opsForValue().increment(redisKey,1L);
         }else {
-            //缓存两天
             Optional<Course> optional = courseRepository.findById(courseId);
             if(optional.isPresent()) {
                 Course course = optional.get();
-                RedisUtil.setIfAbsent(RedisPrefixConstant.COMMENT_NUM_PRE + courseId, course.getCommentNum().toString());
+                //缓存
+                RedisUtil.setIfAbsent(redisKey, course.getCommentNum().toString());
                 //评论数+1
-                RedisUtil.getRedisTemplate().opsForValue().increment(RedisPrefixConstant.COMMENT_NUM_PRE + courseId, 1L);
+                RedisUtil.getRedisTemplate().opsForValue().increment(redisKey, 1L);
             }else {
                 log.error("====== 获取课程信息失败，课程不存在 courseId={} ====",courseId);
             }
@@ -211,10 +217,10 @@ public class CommentService {
      * @param pageSize
      * @return
      */
-    public PageVO<CommentListVO> findAllCommentList(Integer pageIndex, Integer pageSize){
+    public PageVO<CommentListVO> findAllCommentList(Integer type, Integer pageIndex, Integer pageSize){
 
         CourseComment courseComment = new CourseComment();
-
+        courseComment.setType(type);
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"createTime");
         Page<CourseComment> courseCommentPage = commentRepository.findAll(Example.of(courseComment), pageable);
         List<CourseComment> courseCommentList = courseCommentPage.getContent();

@@ -35,6 +35,10 @@ public class CourseComment {
     private Integer replyNum;
 
     private Integer status;
+    /**
+     * 评论类型，0课程评论、1课程问答
+     */
+    private Integer type;
 
     private Date createTime;
 
