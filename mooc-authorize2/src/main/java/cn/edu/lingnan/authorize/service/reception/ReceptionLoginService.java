@@ -69,6 +69,7 @@ public class ReceptionLoginService {
         userToken.setToken(token);
         userToken.setAccount(user.getAccount());
         userToken.setUserId(Long.valueOf(user.getId()));
+        userToken.setType(1);
         userToken.setSessionId(request.getSession().getId());
         RedisUtil.set(token,userToken, LOGIN_EXPIRE_TIME);
         //设置账号与token关系

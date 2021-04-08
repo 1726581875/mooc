@@ -630,3 +630,19 @@ values
 (4,1,1,3,"你才是傻子",'2021-04-10 13:28',3),
 (5,1,3,1,"牛逼，咋不上天",'2021-04-10 13:29',4),
 (6,1,3,1,"哈哈",'2021-04-10 14:29',2);
+
+
+-- 创建通知表
+CREATE TABLE `notice`(
+`notice_id` int NOT NULL AUTO_INCREMENT COMMENT '通知id',
+`send_id` int NOT NULL  COMMENT '发送方的用户Id',
+`accept_id` int NOT NULL COMMENT '接收方的用户id或者班级id',
+`notice_content` varchar(64)  COMMENT '通知内容',
+`refuse_url` varchar(128)  COMMENT '拒绝',
+`accept_url` varchar(128)  COMMENT '接受',
+`notice_type` int NOT NULL COMMENT '1表示班级信息，2.个人信息，3.选择类通知',
+`notice_flag` int NOT NULL DEFAULT 0 COMMENT '0表示没有查看，1表示已看，3表示已拒绝，4表示已同意',
+`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',
+`update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+PRIMARY KEY (`notice_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通知表';

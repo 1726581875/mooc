@@ -18,9 +18,13 @@ import java.util.List;
 public class LoginSuccessVO {
 
     private String token;
+    /**
+     * 1、管理员  2教师
+     */
+    private Integer type;
+
+    private Integer userId;
 
     private List<MenuTreeDTO> menuList;
-
-
 
 }

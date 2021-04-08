@@ -92,6 +92,7 @@ public class AuthorizeService {
             return RespResult.fail("密码不正确");
         }
 
+
         //todo 写法冗余，需要去优化
         //是教师
         if(manager.getAccount().startsWith("teacher-")) {
@@ -103,10 +104,12 @@ public class AuthorizeService {
             String permissionStr = teacherMenuList.stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
             //生成token,设置redis
             String token = UUID.randomUUID().toString();
-            setRedisTokenOnline(manager,permissionStr,request,token);
+            //教师类型
+            Integer teacherType = 2;
+            setRedisTokenOnline(manager,teacherType, permissionStr,request,token);
 
-            // 构造登录成功返回对象
-            LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,menuTreeService.getTeacherMenuTree());
+            // 构造登录成功返回对象,教师type=2
+            LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,teacherType, manager.getId().intValue(), menuTreeService.getTeacherMenuTree());
             return RespResult.success(loginSuccessVO,"登录成功");
         }
 
@@ -116,10 +119,12 @@ public class AuthorizeService {
 
         //生成token,设置redis
         String token = UUID.randomUUID().toString();
-        setRedisTokenOnline(manager,permissionStr,request,token);
+        //管理员类型
+        Integer managerType = 1;
+        setRedisTokenOnline(manager,managerType, permissionStr,request,token);
 
-        // 构造登录成功返回对象
-        LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,menuTreeService.getMenuTree(manager.getId()));
+        // 构造登录成功返回对象,管理员type=1
+        LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,1,manager.getId().intValue(),menuTreeService.getMenuTree(manager.getId()));
 
         return RespResult.success(loginSuccessVO,"登录成功");
     }
@@ -168,7 +173,7 @@ public class AuthorizeService {
      * @param request
      * @param token
      */
-    private void setRedisTokenOnline(MoocManager manager, String permissionStr, HttpServletRequest request, String token){
+    private void setRedisTokenOnline(MoocManager manager, Integer type, String permissionStr, HttpServletRequest request, String token){
         // 登录信息存redis
         UserToken userToken = new UserToken();
         userToken.setUserId(manager.getId());
@@ -176,6 +181,7 @@ public class AuthorizeService {
         userToken.setToken(token);
         userToken.setPermission(permissionStr);
         userToken.setSessionId(request.getSession().getId());
+        userToken.setType(type);
         //设置用户UserToken（用户登录基本信息）
         RedisUtil.set(token,userToken,LOGIN_EXPIRE_TIME);
 
