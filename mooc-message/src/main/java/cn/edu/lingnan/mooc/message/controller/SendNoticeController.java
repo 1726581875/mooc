@@ -31,7 +31,7 @@ public class SendNoticeController {
     @PostMapping("/send/to/all")
     public void sendMessageToAll(String message){
         log.info("[通知服务]给所有在线用户发送信息，message======>{}",message);
-        myWebSoket.sendMessage(message);
+        //myWebSoket.sendMessage(message);
 
     }
 

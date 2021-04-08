@@ -1,8 +1,9 @@
 package cn.edu.lingnan.mooc.message.websock;
 
-import cn.edu.lingnan.mooc.message.authentication.entity.UserToken;
-import cn.edu.lingnan.mooc.message.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.message.authentication.util.SpringContextHolder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Component
-@ServerEndpoint(value="/webSocket/{userId}")
+@ServerEndpoint(value="/webSocket/{type}/{userId}")
 public class MyWebSocket {
 
     private Integer userId;
@@ -36,7 +37,10 @@ public class MyWebSocket {
 
     private static int onlineCount = 0;
 
-
+    /**
+     * 用于对象和字符串转换
+     */
+    private final static ObjectMapper objectMapper = SpringContextHolder.getBean(ObjectMapper.class);
 
     /**
      * 存储在线用户
@@ -47,22 +51,21 @@ public class MyWebSocket {
      * 建立连接会调用的方法
      */
     @OnOpen
-    public void onOpen(@PathParam("userId") Integer userId, Session session){
+    public void onOpen(@PathParam("userId") Integer userId,@PathParam("type") Integer type, Session session){
         this.session = session;
         this.userId = userId;
-
-        //this.type =
-        UserToken userToken = UserUtil.getUserToken();
-        if(userToken == null){
-            log.info("========userToken 为null=====");
-        }
-
+        this.type = type;
         //如果是管理员，加上前缀区分
         if(this.type == 1) {
             webSocketMap.put(MANAGER_PRE + userId, this);
+            WebSocketMessage message = new WebSocketMessage();
+            message.setType(1);
+            message.setContent("欢迎登陆慕课后台管理系统~~~");
+            sendMessageToManager(message,userId);
         }else {
             webSocketMap.put(String.valueOf(userId), this);
         }
+
         log.info("[websocket消息] 有新的用户登录，当前websocket连接数：{}",webSocketMap.size());
         log.info("[websocket消息] 连接用户为{} id===>{}",type == 1 ? "管理员" : "普通用户",userId);
     }
@@ -87,11 +90,11 @@ public class MyWebSocket {
      *  向客户端广播发送信息
      */
 
-    public void sendMessage(String message){
+    public void sendMessage(WebSocketMessage message){
 
         for (MyWebSocket webSocket : webSocketMap.values()) {
             try {
-                webSocket.session.getBasicRemote().sendText(message);
+                webSocket.session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
                 log.error("[websocket消息] 广播消息，message={},发生异常",message,e);
             }
@@ -107,11 +110,11 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToUser(String message, List<Integer> userIds){
+    public void sendMessageToUser(WebSocketMessage message, List<Integer> userIds){
         userIds.forEach(userId ->{
             if(webSocketMap.get(userId) != null) {
                 try {
-                    webSocketMap.get(userId).session.getBasicRemote().sendText(message);
+                    webSocketMap.get(userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向用户{} 推送信息：message={}",userId,message);
                 } catch (Exception exception) {
                     log.error("[websocket消息] 向用户{} 推送信息：message={} 异常：",userId,message,exception);
@@ -126,11 +129,11 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToManager(String message, List<Integer> userIds){
+    public void sendMessageToManager(WebSocketMessage message, List<Integer> userIds){
         userIds.forEach(userId ->{
             if(webSocketMap.get(MANAGER_PRE + userId) != null) {
                 try {
-                    webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(message);
+                    webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向管理员{} 推送信息：message={}",userId,message);
                 } catch (Exception exception) {
                     log.error("[websocket消息] 向管理员{} 推送信息：message={} 异常：",userId,message,exception);
@@ -143,21 +146,35 @@ public class MyWebSocket {
 
 
     /**
-     * 向某个人发通知
+     * 向某个用户发通知
      * @param message
      * @param toUserId
      */
-    public void sendMessageToUser(String message,Integer toUserId){
+    public void sendMessageToUser(WebSocketMessage message,Integer toUserId){
         if(webSocketMap!=null && webSocketMap.get(toUserId) != null){
             log.info("[websocket消息] 向{}发消息，message={}",toUserId,message);
             try {
-                webSocketMap.get(toUserId).session.getBasicRemote().sendText(message);
+                webSocketMap.get(toUserId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
                 log.error("[websocket消息] 向{}发消息，message={},发生异常",toUserId,message,e);
             }
         }
     }
 
-
+    /**
+     * 向某个管理员发通知
+     * @param message
+     * @param toUserId
+     */
+    public void sendMessageToManager(WebSocketMessage message,Integer toUserId){
+        if(webSocketMap!=null && webSocketMap.get(MANAGER_PRE + userId) != null){
+            log.info("[websocket消息] 向{}发消息，message={}",MANAGER_PRE + userId,message);
+            try {
+                webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+            } catch (Exception e) {
+                log.error("[websocket消息] 向{}发消息，message={},发生异常",MANAGER_PRE + userId,message,e);
+            }
+        }
+    }
 
 }
