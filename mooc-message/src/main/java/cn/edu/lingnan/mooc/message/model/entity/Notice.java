@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.message.pojo;
+package cn.edu.lingnan.mooc.message.model.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -16,21 +16,23 @@ public class Notice {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer noticeId;
+    private Integer id;
 
     private Integer sendId;
 
     private Integer acceptId;
 
-    private String noticeContent;
+    private Integer courseId;
 
-    private String refuseUrl;
+    private Integer replyId;
 
-    private String acceptUrl;
+    private String content;
 
     private Integer noticeType;
 
     private Integer noticeFlag;
+
+    private Date updateTime;
 
     private Date createTime;
 

@@ -1,147 +1,44 @@
 package cn.edu.lingnan.mooc.message.service;
 
-import cn.edu.lingnan.mooc.message.pojo.Notice;
+import cn.edu.lingnan.mooc.message.authentication.entity.UserToken;
+import cn.edu.lingnan.mooc.message.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.repository.NoticeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import javax.annotation.Resource;
 
+@Slf4j
 @Service
 public class NoticeService {
 
     @Autowired
     private NoticeRepository noticeRepository;
-    @Autowired
-    private MessageFactory messageFactory;
-
-    public List<Notice> findAll(){
-        return noticeRepository.findAll();
-    }
-
-    public Notice insert(Notice notice){
-        return  noticeRepository.save(notice);
-    }
-
-    public void deleteNotice(Integer noticeId){
-        noticeRepository.deleteById(noticeId);
-    }
-
+    @Resource
+    private NoticeMapper noticeMapper;
 
     /**
-     * 根据用户id查它的所有id
-     * @param acceptId
-     * @param page
+     * 获取未读消息数
      * @return
      */
-    public Page<Notice> findAllByAcceptId(Integer acceptId, Integer page){
-        //构造页面条件 ,第几页,每页大小
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC ,"createTime");
-
-        //lambda版简写
-        Specification<Notice> spec = (root , query , cb) -> cb.equal(root.get("acceptId"), acceptId);
-        //调用分页查询方法
-        return noticeRepository.findAll(spec,pageable);
-    }
-
-
-
-
-    /**
-     * 批量删除消息
-     * @param noticeIds
-     */
-    public void deleteNotice(List<Integer> noticeIds){
-       List<Notice> noticeList = noticeRepository.findAllById(noticeIds);
-       if(noticeList != null) {
-           noticeRepository.deleteInBatch(noticeList);
-       }
-    }
-
-
-    /**
-     * 批量插入
-     * @param sendId
-     * @param courseId
-     * @return
-     */
-    public  List<Notice> insertAll(Integer sendId , Integer courseId,String message){
-      //  List<Notice> workMessage = messageFactory.getHomeWorkMessage(sendId, courseId,message);
-        return noticeRepository.saveAll(null);
-    }
-
-    public int insertAllNotice(List<Notice> noticeList){
-        List<Notice> notices = noticeRepository.saveAll(noticeList);
-        return notices.size();
-    }
-
-    /**
-     * 设置通知为已同意
-     * @param noticeId
-     * @return
-     */
-    public boolean setNoticeResult(int noticeId){
-        Optional<Notice> optionalNotice = noticeRepository.findById(noticeId);
-        if(!optionalNotice.isPresent()){
-          /* throw new CommonException(CommonEnum.UNKONW_ERROR,"没有该通知");*/
+    public Integer getUnReadNoticeNum() {
+        UserToken userToken = UserUtil.getUserToken();
+        if(userToken == null){
+            log.error("====== 统计未读消息发生异常 用户还没有登录======");
+            return null;
         }
-        Notice notice = optionalNotice.get();
-        notice.setNoticeFlag(4);//设置成已同意
-        Notice resultNotice = noticeRepository.save(notice);
-        return resultNotice == null ? false : true;
-    }
-
-
-
-
-    /**
-     * 查找某个用户未读消息的数量
-     * @param userId
-     * @return
-     */
-    public int findUnReadNoticeAmount(Integer userId){
-        List<Notice> noticeList = noticeRepository.findAll(
-                Example.of(new Notice()
-                        .setAcceptId(userId).setNoticeFlag(0)));
-        return noticeList.size();
-    }
-
-    /**
-     * 把消息设置成已读
-     * @param noticeId
-     */
-    public void readMsgById(Integer noticeId) {
-        Optional<Notice> optionalNotice = noticeRepository.findById(noticeId);
-        if(optionalNotice.isPresent()){
-            Notice notice = optionalNotice.get();
-            notice.setNoticeFlag(1);
-            noticeRepository.save(notice);
+        //获取用户Id
+        Integer userId = userToken.getUserId().intValue();
+        if(UserUtil.isTeacher()){
+            return noticeMapper.countUnReadNoticeByUserId(userId);
         }
 
+        return noticeMapper.countUnReadNoticeByManagerId(userId);
     }
 
 
-    /**
-     * 根据用户id和消息flag查询通知
-     * @param userId
-     * @param flag
-     * @param page
-     * @return
-     */
-    public Page<Notice> findNoticeByUserIdAndFlag(Integer userId, Integer flag, Integer page){
-        //构造页面条件 ,第几页,每页大小
-        Pageable pageable = PageRequest.of(page -1, 10, Sort.Direction.DESC ,"createTime");
-
-        Notice notice = new Notice();
-        notice.setNoticeFlag(flag);
-        notice.setAcceptId(userId);
-
-        //调用分页查询方法
-        return noticeRepository.findAll(Example.of(notice),pageable);
-    }
 
 
 }

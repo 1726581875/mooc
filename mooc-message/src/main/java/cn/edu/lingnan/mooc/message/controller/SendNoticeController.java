@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.message.controller;
 
-import cn.edu.lingnan.mooc.message.service.MessageFactory;
+import cn.edu.lingnan.mooc.message.websock.MessageFactory;
 import cn.edu.lingnan.mooc.message.service.NoticeService;
 import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
 import lombok.extern.slf4j.Slf4j;

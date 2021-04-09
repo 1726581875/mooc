@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @EnableScheduling
 @SpringBootApplication
-@RestController
 @MapperScan("cn.edu.lingnan.mooc.statistics.mapper")
 public class StatisticsApplication {
 

@@ -3,7 +3,6 @@ package cn.edu.lingnan.mooc.message.websock;
 import cn.edu.lingnan.mooc.message.authentication.util.SpringContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -58,10 +57,9 @@ public class MyWebSocket {
         //如果是管理员，加上前缀区分
         if(this.type == 1) {
             webSocketMap.put(MANAGER_PRE + userId, this);
-            WebSocketMessage message = new WebSocketMessage();
-            message.setType(1);
-            message.setContent("欢迎登陆慕课后台管理系统~~~");
-            sendMessageToManager(message,userId);
+            //发送一条提示消息
+            MessageDTO message = MessageDTO.createTips("欢迎登陆慕课后台管理系统~~~");
+            this.sendMessageToManager(message,userId);
         }else {
             webSocketMap.put(String.valueOf(userId), this);
         }
@@ -90,7 +88,7 @@ public class MyWebSocket {
      *  向客户端广播发送信息
      */
 
-    public void sendMessage(WebSocketMessage message){
+    public void sendMessage(MessageDTO message){
 
         for (MyWebSocket webSocket : webSocketMap.values()) {
             try {
@@ -110,7 +108,7 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToUser(WebSocketMessage message, List<Integer> userIds){
+    public void sendMessageToUser(MessageDTO message, List<Integer> userIds){
         userIds.forEach(userId ->{
             if(webSocketMap.get(userId) != null) {
                 try {
@@ -129,7 +127,7 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToManager(WebSocketMessage message, List<Integer> userIds){
+    public void sendMessageToManager(MessageDTO message, List<Integer> userIds){
         userIds.forEach(userId ->{
             if(webSocketMap.get(MANAGER_PRE + userId) != null) {
                 try {
@@ -150,7 +148,7 @@ public class MyWebSocket {
      * @param message
      * @param toUserId
      */
-    public void sendMessageToUser(WebSocketMessage message,Integer toUserId){
+    public void sendMessageToUser(MessageDTO message, Integer toUserId){
         if(webSocketMap!=null && webSocketMap.get(toUserId) != null){
             log.info("[websocket消息] 向{}发消息，message={}",toUserId,message);
             try {
@@ -166,7 +164,7 @@ public class MyWebSocket {
      * @param message
      * @param toUserId
      */
-    public void sendMessageToManager(WebSocketMessage message,Integer toUserId){
+    public void sendMessageToManager(MessageDTO message, Integer toUserId){
         if(webSocketMap!=null && webSocketMap.get(MANAGER_PRE + userId) != null){
             log.info("[websocket消息] 向{}发消息，message={}",MANAGER_PRE + userId,message);
             try {

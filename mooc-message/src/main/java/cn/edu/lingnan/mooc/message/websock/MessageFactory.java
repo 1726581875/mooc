@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.message.service;
+package cn.edu.lingnan.mooc.message.websock;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

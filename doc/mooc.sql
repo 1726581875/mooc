@@ -429,20 +429,25 @@ values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/mon
        (6, '报表统计', 'charts', 'el-icon-s-data', 0, 'report:select', '/report', 0),
        (61, '查询', null, null, 6, 'report:select', null, 1),
        (62, '导出', null, null, 6, 'report:export', null, 1),
-       (7, '系统管理', 'sys', 'el-icon-s-tools', 0, 'sys', '/system', 0),
-       (71, '管理员管理', 'manager', null, 7, 'manager:select', '/system/manager', 0),
-       (72, '角色管理', 'role', null, 7, 'role:select', '/system/role', 0),
-       (721, '查询', null, null, 72, 'role:select', null, 1),
-       (722, '新增', null, null, 72, 'role:insert', null, 1),
-       (723, '修改', null, null, 72, 'role:update', null, 1),
-       (725, '删除', null, null, 72, 'role:delete', null, 1),
-       (727, '导出', null, null, 72, 'role:export', null, 1),
-       (73, '系统日志', 'log', null, 7, 'log:select', '/system/log', 0),
-       (731, '查询', null, null, 73, 'role:select', null, 1),
-       (732, '导出', null, null, 73, 'role:export', null, 1),
-       (75, '在线人员管理', 'online', null, 7, 'online:select', '/online/user', 0),
-       (76, 'IP黑名单管理', 'ipBlacklist', null, 7, 'ipBlacklist:select', '/ipBlacklist', 0),
-       (77, '系统图标设置', 'personalizedSet', null, 7, 'personalizedSet', '/personalizedSet', 0);
+
+       (8, '消息通知管理', 'notice', 'el-icon-bell', 0, 'notice:select', '/notice', 0),
+
+       (9, '系统管理', 'sys', 'el-icon-s-tools', 0, 'sys', '/system', 0),
+       (91, '管理员管理', 'manager', null, 9, 'manager:select', '/system/manager', 0),
+       (92, '角色管理', 'role', null, 9, 'role:select', '/system/role', 0),
+       (921, '查询', null, null, 92, 'role:select', null, 1),
+       (922, '新增', null, null, 92, 'role:insert', null, 1),
+       (923, '修改', null, null, 92, 'role:update', null, 1),
+       (925, '删除', null, null, 92, 'role:delete', null, 1),
+       (929, '导出', null, null, 92, 'role:export', null, 1),
+       (93, '系统日志', 'log', null, 9, 'log:select', '/system/log', 0),
+       (931, '查询', null, null, 93, 'role:select', null, 1),
+       (932, '导出', null, null, 93, 'role:export', null, 1),
+       (95, '在线人员管理', 'online', null, 9, 'online:select', '/online/user', 0),
+       (96, 'IP黑名单管理', 'ipBlacklist', null, 9, 'ipBlacklist:select', '/ipBlacklist', 0),
+       (99, '系统图标设置', 'personalizedSet', null, 9, 'personalizedSet', '/personalizedSet', 0);
+
+
 
 
 -- 管理员与角色关联表
@@ -635,15 +640,25 @@ values
 -- 创建通知表
 DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice`(
-`notice_id` int NOT NULL AUTO_INCREMENT COMMENT '通知id',
-`send_id` int NOT NULL  COMMENT '发送方的用户Id',
-`accept_id` int NOT NULL COMMENT '接收方的用户id或者班级id',
-`notice_content` varchar(64)  COMMENT '通知内容',
-`refuse_url` varchar(128)  COMMENT '拒绝',
-`accept_url` varchar(128)  COMMENT '接受',
-`notice_type` int NOT NULL COMMENT '1系统信息，2.个人信息，3.选择类通知',
-`notice_flag` int NOT NULL DEFAULT 0 COMMENT '0表示没有查看，1表示已看，3表示已拒绝，4表示已同意',
+`id` int NOT NULL AUTO_INCREMENT COMMENT '通知id',
+`send_id` int default NULL  COMMENT '发送方的用户Id',
+`accept_id` int default NULL COMMENT '接收方的用户id',
+`course_id` int default NULL COMMENT '课程id，如果是创建课程',
+`reply_id` int default NULL  COMMENT '回复id，如果是创建课程',
+`content` varchar(512) not null COMMENT '消息内容',
+`notice_type` int NOT NULL DEFAULT 1 COMMENT '1系统信息，2.个人信息',
+`notice_flag` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，3已拒绝，4表示已同意 5已回复',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',
 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-PRIMARY KEY (`notice_id`)
+PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通知表';
+
+insert into notice(send_id,accept_id,course_id,content)
+values
+(null,null,1,'新增了课程《Spring入门实践》'),
+(null,null,2,'新增了课程《Spring入门实践》'),
+(null,null,3,'新增了课程《Spring入门实践》'),
+(null,null,4,'新增了课程《Spring入门实践》'),
+(null,null,5,'新增了课程《Spring入门实践》'),
+(null,null,6,'新增了课程《Spring入门实践》'),
+(null,null,7,'新增了课程《Spring入门实践》');
