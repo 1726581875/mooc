@@ -7,6 +7,7 @@ import cn.edu.lingnan.authorize.model.MenuTreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class MenuTreeService {
             List<MenuTreeDTO> childMenuList = new ArrayList<>();
             menuList.forEach(menu -> {
                 //如果是它的子菜单并且是菜单（leaf=0），则加入list
-                if(menu.getParentId().equals(menuDTO.getId()) && menu.getLeaf().equals(0)){
+                if(menu.getParentId().equals(menuDTO.getId()) && !StringUtils.isEmpty(menu.getMenuKey())){
                     childMenuList.add(convertMenuTreeToDTO(menu));
                 }
                 if (!childMenuList.isEmpty()) {

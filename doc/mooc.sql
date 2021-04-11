@@ -406,34 +406,29 @@ CREATE TABLE `menu_tree`
   DEFAULT charset = utf8mb4 COMMENT ='菜单结构表';
 -- 初始化菜单
 insert into menu_tree(id, label, menu_key, icon, parent_id, permission, router, leaf)
-values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/monitor', 0),
-       (2, '课程管理', 'course', 'el-icon-video-camera', 0, 'course:select', '/course', 0),
+values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/monitor', 1),
+       (2, '课程管理', 'course', 'el-icon-video-camera', 0, 'course:select', '/course', 1),
        (21, '课程信息管理', 'courseInfo', null, 2, 'courseInfo:select', '/courseInfo', 0),
        (211, '查询', null, null, 21, 'courseInfo:select', null, 1),
        (212, '新增', null, null, 21, 'courseInfo:insert', null, 1),
        (213, '修改', null, null, 21, 'courseInfo:update', null, 1),
        (214, '删除', null, null, 21, 'courseInfo:delete', null, 1),
        (215, '导出', null, null, 21, 'courseInfo:export', null, 1),
-       (22, '章节管理', 'chapter', null, 2, 'chapter:select', '/chapter', 0),
+       (22, '章节管理', 'chapter', null, 2, 'chapter:select', '/chapter', 1),
        (3, '人员管理', 'person', 'el-icon-s-custom', 0, 'user', '/person', 0),
-       (311, '教师管理', 'teacher', null, 3, 'teacher:select', '/teacher', 0),
-       (312, '普通用户', 'user', null, 3, 'user:select', '/user', 0),
-       (31, '查询', null, null, 3, 'user:select', null, 1),
-       (32, '新增', null, null, 3, 'user:insert', null, 1),
-       (33, '修改', null, null, 3, 'user:update', null, 1),
-       (34, '删除', null, null, 3, 'user:delete', null, 1),
-       (35, '导出', null, null, 3, 'user:export', null, 1),
+       (311, '教师管理', 'teacher', null, 3, 'teacher:select', '/teacher', 1),
+       (312, '普通用户', 'user', null, 3, 'user:select', '/user', 1),
 
-       (4, '分类管理', 'category', 'el-icon-notebook-2', 0, 'category:select', '/category', 0),
-       (5, '文件管理', 'file', 'el-icon-folder', 0, 'file:select', '/file', 0),
+       (4, '分类管理', 'category', 'el-icon-notebook-2', 0, 'category:select', '/category', 1),
+       (5, '文件管理', 'file', 'el-icon-folder', 0, 'file:select', '/file', 1),
        (6, '报表统计', 'charts', 'el-icon-s-data', 0, 'report:select', '/report', 0),
        (61, '查询', null, null, 6, 'report:select', null, 1),
        (62, '导出', null, null, 6, 'report:export', null, 1),
 
-       (8, '消息通知管理', 'notice', 'el-icon-bell', 0, 'notice:select', '/notice', 0),
+       (8, '消息通知管理', 'notice', 'el-icon-bell', 0, 'notice:select', '/notice', 1),
 
        (9, '系统管理', 'sys', 'el-icon-s-tools', 0, 'sys', '/system', 0),
-       (91, '管理员管理', 'manager', null, 9, 'manager:select', '/system/manager', 0),
+       (91, '管理员管理', 'manager', null, 9, 'manager:select', '/system/manager', 1),
        (92, '角色管理', 'role', null, 9, 'role:select', '/system/role', 0),
        (921, '查询', null, null, 92, 'role:select', null, 1),
        (922, '新增', null, null, 92, 'role:insert', null, 1),
@@ -443,9 +438,9 @@ values (1, '监控中心', 'monitor', 'el-icon-view', 0, 'monitor:select', '/mon
        (93, '系统日志', 'log', null, 9, 'log:select', '/system/log', 0),
        (931, '查询', null, null, 93, 'role:select', null, 1),
        (932, '导出', null, null, 93, 'role:export', null, 1),
-       (95, '在线人员管理', 'online', null, 9, 'online:select', '/online/user', 0),
-       (96, 'IP黑名单管理', 'ipBlacklist', null, 9, 'ipBlacklist:select', '/ipBlacklist', 0),
-       (99, '系统图标设置', 'personalizedSet', null, 9, 'personalizedSet', '/personalizedSet', 0);
+       (95, '在线人员管理', 'online', null, 9, 'online:select', '/online/user', 1),
+       (96, 'IP黑名单管理', 'ipBlacklist', null, 9, 'ipBlacklist:select', '/ipBlacklist', 1),
+       (99, '系统图标设置', 'personalizedSet', null, 9, 'personalizedSet', '/personalizedSet', 1);
 
 
 
@@ -466,12 +461,13 @@ CREATE TABLE `role_menu_rel`
 -- 1为教师角色， 2为课程管理员，3为人员管理员，4一般管理员
 insert into role_menu_rel(role_id, menu_id)
 values
--- 1有课程管理，章节管理，报表统计
+-- 1有课程管理，章节管理，报表统计，通知管理
 (1, 1),
 (1, 2),
 (1, 21),
 (1, 22),
 (1, 6),
+(1, 8),
 -- 1有课程权限，没有删除课程的权限
 (2, 1),
 (2, 11),
@@ -604,10 +600,10 @@ values
 (1,2,"不错,写的什么玩意,成功浪费我几分钟",'2021-03-18 15:17'),
 (2,3,"很好啊",'2021-03-10 06:17');
 
-insert into course_comment(user_id,course_id,comment_content,create_time,type)
+insert into course_comment(id,user_id,course_id,comment_content,create_time,type)
 values
-(3,1,"老师您好，请问什么是SpringCloud",'2021-03-18 06:17',1),
-(2,1,"老师您好,想问一下您在吗？",'2021-03-18 06:18',1);
+(100,3,1,"老师您好，请问什么是SpringCloud?",'2021-03-18 06:17',1),
+(101,2,1,"老师您好,想问一下您在吗？",'2021-03-18 06:18',1);
 
 
 DROP TABLE IF EXISTS `comment_reply`;
@@ -643,16 +639,19 @@ CREATE TABLE `notice`(
 `id` int NOT NULL AUTO_INCREMENT COMMENT '通知id',
 `send_id` int default NULL  COMMENT '发送方的用户Id',
 `accept_id` int default NULL COMMENT '接收方的用户id',
-`course_id` int default NULL COMMENT '课程id，如果是创建课程',
-`reply_id` int default NULL  COMMENT '回复id，如果是创建课程',
+`course_id` int default NULL COMMENT '课程id，如果是创建课程不为null',
+`comment_id` int default NULL  COMMENT '评论id,如果是评论通知不为null',
+`reply_id` int default NULL  COMMENT '回复id,如果是回复不为null',
 `content` varchar(512) not null COMMENT '消息内容',
-`type` int NOT NULL DEFAULT 1 COMMENT '消息所属用户类型,1管理员，2教师',
+`type` int NOT NULL DEFAULT 1 COMMENT '用户类型,1管理员，2教师',
+`flag` int NOT NULL DEFAULT 1 COMMENT '消息类型,1新增课程，2课程提问，3评论回复，4、系统通知',
 `status` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，2已删除',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',
 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通知表';
 
+-- 课程通知
 insert into notice(send_id,accept_id,course_id,content)
 values
 (null,null,1,'新增了课程《Spring入门实践》'),
@@ -661,9 +660,15 @@ values
 (null,null,4,'新增了课程《Spring入门实践》'),
 (null,null,5,'新增了课程《Spring入门实践》'),
 (null,null,6,'新增了课程《Spring入门实践》'),
-(null,null,7,'新增了课程《Spring入门实践》'),
-(null,1,null,'新增了课程《Spring入门实践》'),
-(null,2,null,'新增了课程《Spring入门实践》'),
-(null,3,null,'新增了课程《Spring入门实践》'),
-(null,4,null,'新增了课程《Spring入门实践》'),
-(null,5,null,'新增了课程《Spring入门实践》');
+(null,null,7,'新增了课程《Spring入门实践》');
+
+-- 教师，课程问答通知,
+insert into notice(send_id,accept_id,course_id,content,type,comment_id,flag)
+values
+(null,7,null,'【课程问答】你好你好',2,1,2),
+(null,7,null,'你叫什么名字？',2,2,2),
+(null,7,null,'这门课程是干什么的？',2,3,2),
+(null,7,null,'Hahahaha, 啦啦啦啦啦...',2,4,2),
+(3,7,1,'老师您好，请问什么是SpringCloud?',2,100,2),
+(2,7,1,'老师您好,想问一下您在吗？',2,101,2),
+(null,7,null,'哦哦',2,5,2);
