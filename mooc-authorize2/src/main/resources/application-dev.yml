@@ -9,13 +9,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://39.97.184.214:3306/mooc?characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
-    password: root
+    password: y1234567
 #redis配置  host地址  端口port redis默认是6379 还有密码
   redis:
     host: localhost
     port: 6379
     password: root
-
 
 #rsa公钥、私钥
 mooc:
@@ -30,3 +29,9 @@ mooc:
 logging:
   level:
     cn.edu.lingnan.mooc.dao: trace
+
+#向eureka注册
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
