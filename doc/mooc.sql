@@ -646,8 +646,8 @@ CREATE TABLE `notice`(
 `course_id` int default NULL COMMENT '课程id，如果是创建课程',
 `reply_id` int default NULL  COMMENT '回复id，如果是创建课程',
 `content` varchar(512) not null COMMENT '消息内容',
-`notice_type` int NOT NULL DEFAULT 1 COMMENT '1系统信息，2.个人信息',
-`notice_flag` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，3已拒绝，4表示已同意 5已回复',
+`type` int NOT NULL DEFAULT 1 COMMENT '消息所属用户类型,1管理员，2教师',
+`status` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，2已删除',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',
 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY (`id`)
@@ -661,4 +661,9 @@ values
 (null,null,4,'新增了课程《Spring入门实践》'),
 (null,null,5,'新增了课程《Spring入门实践》'),
 (null,null,6,'新增了课程《Spring入门实践》'),
-(null,null,7,'新增了课程《Spring入门实践》');
+(null,null,7,'新增了课程《Spring入门实践》'),
+(null,1,null,'新增了课程《Spring入门实践》'),
+(null,2,null,'新增了课程《Spring入门实践》'),
+(null,3,null,'新增了课程《Spring入门实践》'),
+(null,4,null,'新增了课程《Spring入门实践》'),
+(null,5,null,'新增了课程《Spring入门实践》');

@@ -29,7 +29,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> excludePathList = new ArrayList<>();
-
+        //放行/error
+        excludePathList.add("/error");
         registry.addInterceptor(CheckPermissionInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePathList);
@@ -37,7 +38,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     /**
      * 跨域配置
-     *
      * @return
      */
     @Bean

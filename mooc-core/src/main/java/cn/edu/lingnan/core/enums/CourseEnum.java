@@ -9,7 +9,8 @@ public enum CourseEnum {
     DRAFT(0,"未审核"),
     NORMAL(1,"正常"),
     DISABLE(2,"禁用"),
-    DELETED(3,"已删除")
+    DELETED(3,"已删除"),
+    UNPASS(4,"审核不通过")
     ;
     /**
      * 状态码
@@ -37,6 +38,15 @@ public enum CourseEnum {
         for (CourseEnum courseEnum : CourseEnum.values()){
             if(courseEnum.getStatus().equals(status)){
                 return courseEnum.getText();
+            }
+        }
+        return null;
+    }
+
+    public static Integer getStatusByText(String text){
+        for (CourseEnum courseEnum : CourseEnum.values()){
+            if(courseEnum.getText().equals(text)){
+                return courseEnum.getStatus();
             }
         }
         return null;

@@ -1,8 +1,10 @@
 package cn.edu.lingnan.core.controller;
 
 import cn.edu.lingnan.core.authentication.annotation.Check;
+import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.param.reception.QueryCourseParam;
+import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.service.CourseService;
@@ -21,6 +23,18 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+
+    @PostMapping("/changeStatus")
+    public RespResult updateCourseStatus(@RequestBody CourseParam courseParam) {
+        //设置参数
+        Course course = new Course();
+        course.setId(courseParam.getId());
+        course.setStatus(CourseEnum.getStatusByText(courseParam.getStatus()));
+        //更新课程状态
+        Integer updateStatus = courseService.update(course);
+        return updateStatus == 1 ? RespResult.success("更改课程状态成功") : RespResult.fail("更改课程状态失败");
+    }
 
     /**
      * 前台方法

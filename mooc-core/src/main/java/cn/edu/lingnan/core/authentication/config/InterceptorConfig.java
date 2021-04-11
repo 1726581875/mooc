@@ -41,6 +41,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //查询评论回复
         excludePathList.add("/comment/listCommentDetail");
 
+        //放行/error
+        excludePathList.add("/error");
+
         registry.addInterceptor(CheckPermissionInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePathList);

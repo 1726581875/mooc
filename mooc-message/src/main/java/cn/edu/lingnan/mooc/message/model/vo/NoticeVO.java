@@ -18,10 +18,14 @@ public class NoticeVO {
     private Integer replyId;
 
     private String content;
-
-    private Integer noticeType;
-
-    private Integer noticeFlag;
+    /**
+     * 消息所属用户类型，1管理员、2教师
+     */
+    private Integer type;
+    /**
+     * 通知状态，0未读，1已读，3已删除
+     */
+    private Integer status;
 
     private Date updateTime;
 

@@ -19,12 +19,10 @@ public class NoticeMapperTest {
 
     @Test
     public void countTest(){
-        int i = noticeMapper.countUnReadNoticeNum();
-        System.out.println("====  count test result========: " + i);
 
-        int msgCount1 = noticeMapper.countUnReadNoticeByUserId(1);
+        int msgCount1 = noticeMapper.countUnReadNoticeByUserId(1, 0);
 
-        int msgCount2 = noticeMapper.countUnReadNoticeByManagerId(1);
+        int msgCount2 = noticeMapper.countUnReadNoticeByManagerId(1,0);
 
         System.out.println("=======user UnReadMessage count =" + msgCount1);
         System.out.println("=======manager UnReadMessage count =" + msgCount2);

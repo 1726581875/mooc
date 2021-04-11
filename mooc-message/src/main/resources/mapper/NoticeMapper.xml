@@ -3,16 +3,39 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="cn.edu.lingnan.mooc.message.mapper.NoticeMapper">
-
-	<select id="countUnReadNoticeNum" resultType="int">
-		select count(id) from course
-	</select>
+    <update id="updateNoticeStatus">
+		update notice set status = #{status}
+        where id in
+        <foreach collection="noticeIdList" open="(" close=")" item="id" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	<update id="updateAllNoticeStatus">
+		update notice set status = #{toStatus} where status = #{fromStatus}
+		<if test="isManager">
+			and (accept_id = #{userId} or course_id is not null) and type = 1
+		</if>
+		<if test="!isManager">
+			and accept_id = #{userId} and type = 2
+		</if>
+	</update>
 
 	<select id="countUnReadNoticeByUserId" resultType="int">
-		select count(id) from notice where accept_id = #{userId} and notice_flag = 0;
+		select count(id) from notice where accept_id = #{userId} and status = #{status} and type = 2;
 	</select>
+
 	<select id="countUnReadNoticeByManagerId" resultType="int">
-		select count(id) from notice where  notice_flag = 0 and accept_id = #{userId} or course_id is not null;
+		select count(id) from notice where  status = #{status} and type = 1 and (accept_id = #{managerId} or course_id is not null)
+	</select>
+
+    <select id="getNoticeList" resultType="cn.edu.lingnan.mooc.message.model.vo.NoticeVO">
+		select * from notice where  status = #{status}
+        <if test="isManager">
+			and (accept_id = #{userId} or course_id is not null) and type = 1
+		</if>
+		<if test="!isManager">
+			and accept_id = #{userId} and type = 2
+		</if>
 	</select>
 
 </mapper>

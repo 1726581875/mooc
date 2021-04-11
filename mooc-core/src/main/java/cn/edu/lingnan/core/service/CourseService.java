@@ -106,6 +106,7 @@ public class CourseService {
         }
         Course course = optional.get();
         CourseVO courseVO = CopyUtil.copy(course, CourseVO.class);
+        courseVO.setStatus(CourseEnum.getText(course.getStatus()));
         //获取课程标签
         List<Tag> tagList = tagRepository.findTagListByCourseId(id);
         courseVO.setTagList(tagList);
@@ -233,7 +234,10 @@ public class CourseService {
           //更新课程
           return this.update(course);
         }
-
+        //否则就是插入课程，设置课程标签
+        Integer userId = UserUtil.getUserId();
+        course.setTeacherId(userId);
+        course.setStatus(CourseEnum.DRAFT.getStatus());
         //插入课程、课程标签关系
         Course newCourse = this.insert(course);
         if(!CollectionUtils.isEmpty(tagList)){
