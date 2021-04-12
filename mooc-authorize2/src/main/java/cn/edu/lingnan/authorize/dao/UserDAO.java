@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -50,6 +53,27 @@ public class UserDAO extends BaseDAO {
         }
         return moocUser;
     }
+
+
+    /**
+     * 根据账号查找id
+     * @param accountList
+     * @return
+     */
+    public List<Integer> findUserIdByAccountList(List<String> accountList){
+
+        List<Integer> idList = new ArrayList<>();
+        String sql = "select id from mooc_user where account in ("
+                + accountList.stream().map(e->"" + e + "").collect(Collectors.joining(",")) + ")";
+        MoocUser moocUser = null;
+        try {
+            idList = jdbcTemplate.queryForList(sql, Integer.class);
+        }catch (Exception e){
+            log.warn("==数据库查询该id失败，accountList{} ,errmsg={}",accountList,e.getMessage());
+        }
+        return idList;
+    }
+
 
     /**
      * 根据id查找用户

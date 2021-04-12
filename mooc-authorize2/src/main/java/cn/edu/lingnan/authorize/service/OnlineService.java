@@ -1,6 +1,7 @@
 package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.constant.UserConstant;
+import cn.edu.lingnan.authorize.dao.UserDAO;
 import cn.edu.lingnan.authorize.model.OnlineUser;
 import cn.edu.lingnan.authorize.util.PageUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +25,8 @@ public class OnlineService {
 
     @Autowired
     private AuthorizeService authorizeService;
+    @Resource
+    private UserDAO userDAO;
 
     /**
      *
@@ -82,7 +86,28 @@ public class OnlineService {
         if(CollectionUtils.isEmpty(accountList)){
             return;
         }
+        //1、使登录用户下线
         accountList.forEach(authorizeService::delRedisTokenOnline);
+
+        //2、找出用户ID,发送webSock推送
+        //获取用户账号
+        List<String> userAccount = new ArrayList<>();
+        //获取管理员账号
+        List<String> managerAccount = new ArrayList<>();
+        //循环遍历出账号
+        accountList.forEach(account -> {
+            if(account.contains("teacher-")){
+                userAccount.add(account.replace("teacher-",""));
+            }else if(account.contains("user-")){
+                userAccount.add(account.replace("user-",""));
+            }else {
+                managerAccount.add(account);
+            }
+        });
+
+
+
+
     }
 
 

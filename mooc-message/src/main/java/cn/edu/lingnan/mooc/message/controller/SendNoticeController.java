@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/send")
@@ -23,7 +25,7 @@ public class SendNoticeController {
     private SendNoticeService sendNoticeService;
 
     @Autowired
-    private MyWebSocket myWebSocket;
+    private MyWebSocket webSocket;
 
     @Autowired
     private MessageFactory messageFactory;
@@ -41,5 +43,12 @@ public class SendNoticeController {
         return success ? RespResult.success("消息发送成功") : RespResult.fail("消息发送失败");
     }
 
+    @PostMapping("/offlineNotice")
+    public RespResult sendOfflineNotice(@RequestParam("token") String token,@RequestParam("accountList") List<String> accountList){
+
+        sendNoticeService.sendOfflineNotice(accountList);
+
+        return  RespResult.success("消息发送成功");
+    }
 
 }

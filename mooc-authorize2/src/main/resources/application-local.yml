@@ -23,7 +23,7 @@ mooc:
     publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCCJ2MUCgeKIDKr9qGkM3C+1eXufEuxOPO8K9hwNwnrrZYpOOGTUMY8RP85T0pBioUhd1N2jrBBdvrb1GnGGIt/r9HFPzehQLE49MG2RMrDujApw5Z8JHj2Silp7os4Qs3CgOQRahuoHR3oprggRO25uFd9KNCkea6ffsOU/cyW6wIDAQAB
 
 #向eureka注册
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:8888/eureka/
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/

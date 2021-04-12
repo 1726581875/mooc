@@ -76,12 +76,12 @@ public class ReceptionLoginService {
         RedisUtil.set(userToken.getAccount(),token, LOGIN_EXPIRE_TIME);
         // 记录在线用户
         OnlineUser onlineUser = new OnlineUser();
-        onlineUser.setAccount(user.getAccount());
+        onlineUser.setAccount("user-" + user.getAccount());
         onlineUser.setLoginTime(new Date());
         onlineUser.setIp(HttpServletUtil.getIpAddress(request)
                 .equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : HttpServletUtil.getIpAddress(request));
         onlineUser.setName(user.getName());
-        RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + userToken.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
+        RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + "user-" + userToken.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
 
         return RespResult.success(userToken);
     }

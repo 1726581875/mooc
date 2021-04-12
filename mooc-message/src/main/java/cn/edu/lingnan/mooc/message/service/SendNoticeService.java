@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,6 +60,22 @@ public class SendNoticeService {
     }
 
 
+    public void sendOfflineNotice(List<String> accountList) {
 
+        //获取用户账号
+        List<String> userAccount = new ArrayList<>();
+        //获取管理员账号
+        List<String> managerAccount = new ArrayList<>();
+        //循环遍历出账号
+        accountList.forEach(account -> {
+            if(account.contains("teacher-")){
+                userAccount.add(account.replace("teacher-",""));
+            }else if(account.contains("user-")){
+                userAccount.add(account.replace("user-",""));
+            }else {
+                managerAccount.add(account);
+            }
+        });
 
+    }
 }
