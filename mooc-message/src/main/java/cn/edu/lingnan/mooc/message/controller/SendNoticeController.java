@@ -1,77 +1,44 @@
 package cn.edu.lingnan.mooc.message.controller;
-
+import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.message.service.SendNoticeService;
 import cn.edu.lingnan.mooc.message.websock.MessageFactory;
 import cn.edu.lingnan.mooc.message.service.NoticeService;
 import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequestMapping("/send")
 public class SendNoticeController {
 
     @Autowired
     private NoticeService noticeService;
 
     @Autowired
-    private MyWebSocket myWebSoket;
+    private SendNoticeService sendNoticeService;
 
-/*    @Resource
-    private CourseUserServiceApi courseUserApi;*/
+    @Autowired
+    private MyWebSocket myWebSocket;
 
     @Autowired
     private MessageFactory messageFactory;
 
-    /**
-     * 给全站在线用户发通知
-     * @param message
-     */
-    @PostMapping("/send/to/all")
-    public void sendMessageToAll(String message){
-        log.info("[通知服务]给所有在线用户发送信息，message======>{}",message);
-        //myWebSoket.sendMessage(message);
+
+    public void sendSystemNotice(){
 
     }
 
-/*
-    */
-/**
-     * 对某个班级发通知
-     *//*
+    @PostMapping("/createCourseNotice")
+    public RespResult sendCreateCourseNotice(Integer senderId, Integer courseId, String content){
 
-    @PostMapping("/send/to/course/user")
-    public void sendMessageToCourseUser(Integer sendId, Integer courseId,String message){
-        log.info("[通知服务] sendMessage======>{}",message);
-        //查出该课程所有成员
-        List<CourseUserInfo> courseUserList = courseUserApi.findAllCourseUserByCourseId(courseId);
-        //获取用户id数组
-        List<Integer> userIds = new ArrayList<>();
-        courseUserList.forEach(e -> userIds.add(e.getUserId()));
-        //使用websocket给在线人提醒
-        myWebSoket.sendMessageToCourseUser(message,userIds);
-        //调用service层方法，数据库属于该课程的每一个人插入一条通知数据
-        noticeService.insertAll(sendId,courseId,message);
+        boolean success = sendNoticeService.sendCreateCourseNotice(senderId, courseId, content);
+
+        return success ? RespResult.success("消息发送成功") : RespResult.fail("消息发送失败");
     }
-
-
-    */
-/**
-     * 给某个用户发通知
-     * @param message
-     *//*
-
-    @PostMapping("/send/to/one")
-    public void sendMessageToOne(Integer sendId, Integer acceptId, String message){
-        log.info("[通知服务]sendId={},acceptId={} ,message={}",sendId,acceptId,message);
-        //websocket推送
-        myWebSoket.sendMessage(message,acceptId);
-        //插入消息数据库
-        noticeService.insert(messageFactory.getSimpleMessage(sendId,acceptId,message));
-    }
-*/
-
 
 
 }

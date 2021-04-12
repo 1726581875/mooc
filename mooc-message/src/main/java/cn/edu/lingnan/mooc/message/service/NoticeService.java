@@ -5,7 +5,9 @@ import cn.edu.lingnan.mooc.message.authentication.entity.UserToken;
 import cn.edu.lingnan.mooc.message.authentication.util.UserUtil;
 import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
+import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.model.vo.NoticeVO;
+import cn.edu.lingnan.mooc.message.model.vo.ReplyNoticeVO;
 import cn.edu.lingnan.mooc.message.repository.NoticeRepository;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -109,6 +111,41 @@ public class NoticeService {
         }
 
         log.info("=====更新消息的状态status={},成功数={} =====",status,successNum);
+    }
+
+    /**
+     * 获取回复消息详情
+     * @param id 消息id
+     * @return
+     */
+    public ReplyNoticeVO getReplyNoticeDetail(Integer id){
+
+        Notice notice = noticeMapper.findById(id);
+        if(notice == null){
+            log.error("====== 统计未读消息发生异常 用户还没有登录======");
+            return null;
+        }
+
+        Integer senderId = notice.getSendId();
+        Integer courseId = notice.getCourseId();
+        String courseName = noticeMapper.getCourseName(courseId);
+        String userName = noticeMapper.getUserName(senderId);
+
+        //构造返回结果
+        ReplyNoticeVO replyNoticeVO = new ReplyNoticeVO();
+        replyNoticeVO.setCommentId(notice.getCommentId());
+        replyNoticeVO.setReplyId(notice.getReplyId());
+        replyNoticeVO.setFromUserId(senderId);
+        replyNoticeVO.setCourseId(courseId);
+        replyNoticeVO.setReplyContent(notice.getContent());
+        replyNoticeVO.setCourseName(courseName);
+        replyNoticeVO.setFromUserName(userName);
+
+        return replyNoticeVO;
+    }
+
+    public int insert(Notice notice){
+        return noticeMapper.insert(notice);
     }
 
 

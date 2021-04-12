@@ -1,5 +1,8 @@
 package cn.edu.lingnan.mooc.message.websock;
 
+import cn.edu.lingnan.mooc.message.menus.NoticeFlagEnum;
+import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
+import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -8,44 +11,44 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageFactory {
 
-/*
-     @Autowired
-     private CourseUserServiceApi courseUserApi;
 
-
-     public List<Notice> getHomeWorkMessage(Integer sendId , Integer courseId,String message){
-          List<Notice> noticeList = new ArrayList<>();
-          List<CourseUserInfo> courseUserList = courseUserApi.findAllCourseUserByCourseId(courseId);
-          courseUserList.forEach(e -> {
-               noticeList.add(new Notice()
-                       .setSendId(sendId)
-                       .setAcceptId(e.getUserId())
-                       .setNoticeType(1)
-                       .setNoticeContent(message)
-                       .setNoticeFlag(0));
-          });
-        return noticeList;
-     }
-
+    /**
+     * 创建一条系统通知
+     * @return
      */
-/**
-      * 构造一个条简单消息
-      * @param sendId
-      * @param acceptId
-      * @param message
-      * @return
-      *//*
+    public Notice getSystemNotice(Integer senderId,Integer acceptId,Integer type, String content){
+        Notice notice = new Notice();
+        notice.setCourseId(null);
+        notice.setCommentId(null);
+        notice.setReplyId(null);
+        notice.setAcceptId(acceptId);
+        notice.setType(type);
+        notice.setFlag(NoticeFlagEnum.SYSTEM.getFlag());
+        notice.setSendId(senderId);
+        notice.setContent("【系统通知】 " + content);
+        return notice;
+    }
 
-     public Notice getSimpleMessage(Integer sendId , Integer acceptId,String message){
+    /**
+     * 创建一条新增课程通知
+     * @param senderId
+     * @param courseId
+     * @param content
+     * @return
+     */
+    public Notice getCreateCourseNotice(Integer senderId,Integer courseId, String content){
+        Notice notice = new Notice();
+        notice.setCourseId(courseId);
+        notice.setCommentId(null);
+        notice.setReplyId(null);
+        notice.setAcceptId(null);
+        notice.setType(NoticeTypeEnum.MANAGER.getType());
+        notice.setFlag(NoticeFlagEnum.CREATE_COURSE.getFlag());
+        notice.setSendId(senderId);
+        notice.setContent("【新增课程】 " + content);
+        return notice;
+    }
 
-          return  new Notice()
-                  .setSendId(sendId)
-                  .setAcceptId(acceptId)
-                  .setNoticeType(2)//类型2，个人信息
-                  .setNoticeContent(message)
-                  .setNoticeFlag(0);//未读
-     }
-*/
 
 
 

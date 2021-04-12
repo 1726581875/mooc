@@ -1,0 +1,64 @@
+package cn.edu.lingnan.mooc.message.service;
+
+import cn.edu.lingnan.mooc.message.mapper.SendNoticeMapper;
+import cn.edu.lingnan.mooc.message.model.entity.Notice;
+import cn.edu.lingnan.mooc.message.websock.MessageDTO;
+import cn.edu.lingnan.mooc.message.websock.MessageFactory;
+import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Service
+public class SendNoticeService {
+
+    @Autowired
+    private NoticeService noticeService;
+
+    @Resource
+    private SendNoticeMapper sendNoticeMapper;
+
+    @Autowired
+    private MyWebSocket webSocket;
+
+    @Autowired
+    private MessageFactory messageFactory;
+
+
+
+
+    /**
+     * 发送一条创建课程消息
+     * @param senderId
+     * @param courseId
+     * @param content
+     * @return
+     */
+    public boolean sendCreateCourseNotice(Integer senderId,Integer courseId, String content){
+
+        Notice notice = messageFactory.getCreateCourseNotice(senderId, courseId, content);
+        int insert = noticeService.insert(notice);
+        if(insert == 0){
+            log.error("==== 插入新增课程消息发生失败 notice={}====",notice);
+            return false;
+        }
+        //创建一个页头停留消息
+        MessageDTO messageDTO = MessageDTO.createStay(content);
+        //获取有课程管理权限的管理员
+        List<Integer> courseManagerIdList = sendNoticeMapper.getCourseManagerIdList();
+        //把超级管理员加上
+        courseManagerIdList.add(0);
+        //向有权限的管理员发送推送消息
+        webSocket.sendMessageToManager(messageDTO, courseManagerIdList);
+        return true;
+    }
+
+
+
+
+}

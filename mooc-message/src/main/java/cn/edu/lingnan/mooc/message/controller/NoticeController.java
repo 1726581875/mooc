@@ -2,13 +2,11 @@ package cn.edu.lingnan.mooc.message.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
-import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
 import cn.edu.lingnan.mooc.message.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -88,6 +86,19 @@ public class NoticeController {
     public RespResult updateAll(@RequestParam(value = "status",defaultValue = "0") Integer status) {
         noticeService.updateAllNoticeStatus(status);
         return RespResult.success("操作成功");
+    }
+
+
+    /**
+     * 获取通知List
+     * @param id
+     * @return
+     */
+    @GetMapping("/reply/detail")
+    public RespResult getReplyMessageDetail(@RequestParam Integer id){
+
+
+        return RespResult.success(null);
     }
 
 }

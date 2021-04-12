@@ -308,15 +308,15 @@ CREATE TABLE `mooc_manager`
     `update_time` datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_account` (`account`)
-) ENGINE = INNODB
+) ENGINE = INNODB AUTO_INCREMENT=10000
   DEFAULT charset = utf8mb4 COMMENT ='系统管理员表';
 
 -- 插入管理员，密码是root
-insert into mooc_manager(name, account, password)
-values ('张三', 'zhangsan', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
-       ('李四', 'lisi', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
-       ('王五', 'wangwu', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
-       ('xiaomingzhang', 'xmz', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2');
+insert into mooc_manager(id,name, account, password)
+values (1,'张三', 'zhangsan', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
+       (2,'李四', 'lisi', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
+       (3,'王五', 'wangwu', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2'),
+       (4,'xiaomingzhang', 'xmz', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2');
 
 
 -- 角色表
@@ -354,10 +354,13 @@ CREATE TABLE `manager_role_rel`
 
 insert into manager_role_rel(manager_id, role_id)
 values (1, 1),
-       (2, 1),
-       (1, 2);
+       (2, 2),
+       (3, 3),
+       (4, 4),
+       (1, 4);
 
 -- 系统资源表
+-- 暂时不用
 DROP TABLE IF EXISTS `mooc_resource`;
 CREATE TABLE `mooc_resource`
 (
@@ -482,7 +485,7 @@ values
 (3, 211),
 (3, 212),
 
--- 3 有用户、课程、报表权限
+-- 3 有用户、课程、报表、通知权限
 (4, 1),
 (4, 11),
 (4, 12),
@@ -496,7 +499,8 @@ values
 (4, 24),
 (4, 25),
 (4, 3),
-(4, 31);
+(4, 31),
+(1, 8);
    
 DROP TABLE IF EXISTS `login_amount_count`;
 CREATE TABLE `login_amount_count`
@@ -631,7 +635,6 @@ values
 (4,1,1,3,"你才是傻子",'2021-04-10 13:28',3),
 (5,1,3,1,"牛逼，咋不上天",'2021-04-10 13:29',4),
 (6,1,3,1,"哈哈",'2021-04-10 14:29',2);
-
 
 -- 创建通知表
 DROP TABLE IF EXISTS `notice`;

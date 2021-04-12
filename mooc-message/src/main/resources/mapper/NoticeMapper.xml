@@ -3,13 +3,20 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="cn.edu.lingnan.mooc.message.mapper.NoticeMapper">
-    <update id="updateNoticeStatus">
+
+	<insert id="insert">
+		insert into notice(`send_id`,`accept_id`,`course_id`,`comment_id`,`reply_id`,`content`,`type`,`flag`)
+		value (#{sendId},#{acceptId},#{courseId},#{commentId},#{replyId},#{content},#{type},#{flag})
+	</insert>
+
+	<update id="updateNoticeStatus">
 		update notice set status = #{status}
         where id in
         <foreach collection="noticeIdList" open="(" close=")" item="id" separator=",">
 			#{id}
 		</foreach>
 	</update>
+
 	<update id="updateAllNoticeStatus">
 		update notice set status = #{toStatus} where status = #{fromStatus}
 		<if test="isManager">
@@ -36,6 +43,18 @@
 		<if test="!isManager">
 			and accept_id = #{userId} and type = 2
 		</if>
+	</select>
+
+    <select id="findById" resultType="cn.edu.lingnan.mooc.message.model.entity.Notice">
+		select * from notice where id = #{id};
+	</select>
+
+	<select id="getUserName" resultType="java.lang.String">
+		select name from mooc_user where id = #{id}
+	</select>
+
+	<select id="getCourseName" resultType="java.lang.String">
+		select name from course where id = #{id}
 	</select>
 
 </mapper>

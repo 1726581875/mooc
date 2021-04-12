@@ -48,4 +48,32 @@ public interface NoticeMapper {
     int updateAllNoticeStatus(@Param("userId")Integer userId,@Param("fromStatus")Integer fromStatus,
                               @Param("toStatus")Integer toStatus,@Param("isManager")Boolean isManager);
 
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    Notice findById(@Param("id")Integer id);
+
+    /**
+     * 根据id查询课程名
+     * @param id
+     * @return
+     */
+    String getCourseName(@Param("id")Integer id);
+
+    /**
+     * 根据id查询用户名
+     * @param id
+     * @return
+     */
+    String getUserName(@Param("id")Integer id);
+
+    /**
+     * 插入一条消息
+     * @param notice
+     * @return
+     */
+    int insert(Notice notice);
 }
