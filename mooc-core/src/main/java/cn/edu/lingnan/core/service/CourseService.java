@@ -1,6 +1,8 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserTokenUtil;
 import cn.edu.lingnan.core.authentication.util.UserUtil;
+import cn.edu.lingnan.core.client.NoticeServiceClient;
 import cn.edu.lingnan.core.entity.*;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
@@ -12,12 +14,14 @@ import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.reception.ReceptionCourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -47,6 +51,8 @@ public class CourseService {
     private CourseTagRelRepository courseTagRelRepository;
     @Autowired
     private MoocUserService moocUserService;
+    @Autowired
+    private NoticeServiceClient noticeServiceClient;
 
     /**
      *
@@ -236,6 +242,10 @@ public class CourseService {
         }
         //否则就是插入课程，设置课程标签
         Integer userId = UserUtil.getUserId();
+        if(StringUtils.isEmpty(course.getImage())){
+            //如果没有上传图片，设置默认头像
+            course.setImage("/file/default.png");
+        }
         course.setTeacherId(userId);
         course.setStatus(CourseEnum.DRAFT.getStatus());
         //插入课程、课程标签关系
@@ -244,6 +254,12 @@ public class CourseService {
             List<CourseTagRel> tagRelList = tagList.stream().map(tag -> new CourseTagRel(newCourse.getId(),tag.getId())).collect(Collectors.toList());
             courseTagRelRepository.saveAll(tagRelList);
         }
+        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(Lists.newArrayList(UserUtil.getUserId()));
+        //发送的消息内容
+        String content = "用户" + userMap.getOrDefault(userId,new MoocUser()).getName() +"新增了课程《" + course.getSummary() + "》，需要审核";
+        //创建临时token
+        String token = UserTokenUtil.createToken();
+        noticeServiceClient.sendCreateCourseNotice(token,userId,course.getId(), content);
 
         return newCourse == null ? 0 : 1;
     }

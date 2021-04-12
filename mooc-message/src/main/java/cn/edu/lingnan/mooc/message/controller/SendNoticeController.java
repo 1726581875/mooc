@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class SendNoticeController {
     }
 
     @PostMapping("/createCourseNotice")
-    public RespResult sendCreateCourseNotice(Integer senderId, Integer courseId, String content){
+    public RespResult sendCreateCourseNotice(@RequestParam("token") String token, Integer senderId, Integer courseId, String content){
 
         boolean success = sendNoticeService.sendCreateCourseNotice(senderId, courseId, content);
 

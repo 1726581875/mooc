@@ -39,7 +39,7 @@ public class SendNoticeService {
      * @param content
      * @return
      */
-    public boolean sendCreateCourseNotice(Integer senderId,Integer courseId, String content){
+    public boolean sendCreateCourseNotice(Integer senderId,Integer courseId, String content) {
 
         Notice notice = messageFactory.getCreateCourseNotice(senderId, courseId, content);
         int insert = noticeService.insert(notice);

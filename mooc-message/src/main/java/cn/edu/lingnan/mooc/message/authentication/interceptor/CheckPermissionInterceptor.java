@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,6 +42,16 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         if(true){
             return true;
         }*/
+
+        //校验临时token
+        String tempToken = (String)request.getParameter("token");
+        if(!StringUtils.isEmpty(tempToken)){
+            UserToken userToken = RedisUtil.get(tempToken, UserToken.class);
+            if(userToken != null){
+                UserUtil.setUserToken(userToken);
+                return true;
+            }
+        }
 
 
         // 获取ip地址
