@@ -56,6 +56,28 @@ public class SendNoticeService {
         return true;
     }
 
+    /**
+     * 发送一条课程提问消息
+     * @param senderId
+     * @param courseId
+     * @param content
+     * @return
+     */
+    public boolean sendQuestionNotice(Integer senderId,Integer acceptId,Integer courseId,Integer commentId, String content) {
+
+        Notice notice = messageFactory.getQuestionNotice(senderId, acceptId, courseId, commentId,  content);
+        int insert = noticeService.insert(notice);
+        if(insert == 0){
+            log.error("==== 插入新提问消息发生失败 notice={}====",notice);
+            return false;
+        }
+        //创建一个页头停留消息
+        MessageDTO messageDTO = MessageDTO.createStay(content);
+        //向教师推送消息
+        webSocket.sendMessageToUser(messageDTO,acceptId);
+        return true;
+    }
+
 
     public void sendOfflineNotice(List<Integer> userIdList,Boolean isManager) {
 

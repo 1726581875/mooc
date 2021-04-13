@@ -49,6 +49,28 @@ public class MessageFactory {
         return notice;
     }
 
+    /**
+     * 创建一条提问消息
+     * @param senderId
+     * @param acceptId
+     * @param courseId
+     * @param commentId
+     * @param content
+     * @return
+     */
+    public Notice getQuestionNotice(Integer senderId,Integer acceptId,Integer courseId,Integer commentId, String content){
+        Notice notice = new Notice();
+        notice.setCourseId(courseId);
+        notice.setCommentId(commentId);
+        notice.setReplyId(null);
+        notice.setAcceptId(acceptId);
+        notice.setType(NoticeTypeEnum.USER.getType());
+        notice.setFlag(NoticeFlagEnum.QUESTION.getFlag());
+        notice.setSendId(senderId);
+        notice.setContent("【课程提问】 " + content);
+        return notice;
+    }
+
 
     /**
      * 创建下线消息

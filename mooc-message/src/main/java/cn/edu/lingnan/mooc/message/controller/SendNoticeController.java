@@ -47,4 +47,11 @@ public class SendNoticeController {
         return  RespResult.success("消息发送成功");
     }
 
+
+    @PutMapping("/questionNotice")
+    public RespResult sendQuestionNotice(@RequestParam("token") String token,Integer senderId,Integer acceptId,Integer courseId,Integer commentId, String content){
+        sendNoticeService.sendQuestionNotice(senderId, acceptId, courseId, commentId,  content);
+        return  RespResult.success("消息发送成功");
+    }
+
 }

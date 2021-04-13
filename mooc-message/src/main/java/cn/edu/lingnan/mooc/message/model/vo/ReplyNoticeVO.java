@@ -3,7 +3,7 @@ package cn.edu.lingnan.mooc.message.model.vo;
 import lombok.Data;
 
 @Data
-public class ReplyNoticeVO {
+public class  ReplyNoticeVO {
     /**
      * 对应课程ID
      */

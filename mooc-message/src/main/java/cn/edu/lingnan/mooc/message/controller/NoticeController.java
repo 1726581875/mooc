@@ -90,15 +90,13 @@ public class NoticeController {
 
 
     /**
-     * 获取通知List
+     * 获取通知详情
      * @param id
      * @return
      */
     @GetMapping("/reply/detail")
     public RespResult getReplyMessageDetail(@RequestParam Integer id){
-
-
-        return RespResult.success(null);
+        return RespResult.success(noticeService.getReplyNoticeDetail(id));
     }
 
 }
