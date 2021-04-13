@@ -43,11 +43,10 @@ public class SendNoticeController {
         return success ? RespResult.success("消息发送成功") : RespResult.fail("消息发送失败");
     }
 
+
     @PostMapping("/offlineNotice")
-    public RespResult sendOfflineNotice(@RequestParam("token") String token,@RequestParam("accountList") List<String> accountList){
-
-        sendNoticeService.sendOfflineNotice(accountList);
-
+    public RespResult sendOfflineNotice(@RequestParam("token") String token,@RequestParam("userIdList") List<Integer> userIdList,@RequestParam("isManager") Boolean isManager){
+        sendNoticeService.sendOfflineNotice(userIdList,isManager);
         return  RespResult.success("消息发送成功");
     }
 

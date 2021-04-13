@@ -47,7 +47,6 @@ public class OnlineUserController {
 
     @PostMapping("/offline/list")
     public RespResult offlineByAccountList(@RequestBody List<String> accountList){
-        System.out.println("accountList=" +  accountList);
         // 使用户下线
         onlineService.offline(accountList);
         return RespResult.success();

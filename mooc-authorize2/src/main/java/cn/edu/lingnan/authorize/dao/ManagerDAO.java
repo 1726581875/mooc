@@ -1,6 +1,7 @@
 package cn.edu.lingnan.authorize.dao;
 
 import cn.edu.lingnan.authorize.model.MoocManager;
+import cn.edu.lingnan.authorize.model.MoocUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,7 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * @author xmz
@@ -91,6 +95,24 @@ public class ManagerDAO extends BaseDAO {
             log.warn("数据库查询该账户失败，id={}，msg={}",managerId,e.getMessage());
         }
         return moocManager;
+    }
+
+    /**
+     * 根据账号查找id
+     * @param accountList
+     * @return
+     */
+    public List<Integer> findManagerIdByAccountList(List<String> accountList){
+
+        List<Integer> idList = new ArrayList<>();
+        String sql = "select id from mooc_manager where account in ("
+                + accountList.stream().map(e->"" + e + "").collect(Collectors.joining(",")) + ")";
+        try {
+            idList = jdbcTemplate.queryForList(sql, Integer.class);
+        }catch (Exception e){
+            log.warn("==根据账号查询数据库id list失败，accountList{} ,errmsg={}",accountList,e.getMessage());
+        }
+        return idList;
     }
 
 

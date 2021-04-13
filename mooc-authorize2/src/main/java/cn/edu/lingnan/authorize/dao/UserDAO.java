@@ -65,11 +65,10 @@ public class UserDAO extends BaseDAO {
         List<Integer> idList = new ArrayList<>();
         String sql = "select id from mooc_user where account in ("
                 + accountList.stream().map(e->"" + e + "").collect(Collectors.joining(",")) + ")";
-        MoocUser moocUser = null;
         try {
             idList = jdbcTemplate.queryForList(sql, Integer.class);
         }catch (Exception e){
-            log.warn("==数据库查询该id失败，accountList{} ,errmsg={}",accountList,e.getMessage());
+            log.warn("==根据账号查询数据库id list失败，accountList{} ,errmsg={}",accountList,e.getMessage());
         }
         return idList;
     }

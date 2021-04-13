@@ -1,6 +1,9 @@
 package cn.edu.lingnan.authorize.service;
 
+import cn.edu.lingnan.authorize.authentication.util.UserTokenUtil;
+import cn.edu.lingnan.authorize.client.NoticeServiceClient;
 import cn.edu.lingnan.authorize.constant.UserConstant;
+import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.UserDAO;
 import cn.edu.lingnan.authorize.model.OnlineUser;
 import cn.edu.lingnan.authorize.util.PageUtil;
@@ -27,6 +30,10 @@ public class OnlineService {
     private AuthorizeService authorizeService;
     @Resource
     private UserDAO userDAO;
+    @Resource
+    private ManagerDAO managerDAO;
+    @Resource
+    private NoticeServiceClient noticeServiceClient;
 
     /**
      *
@@ -80,6 +87,8 @@ public class OnlineService {
 
     /**
      * 使用户下线
+     * 1、删除redis里的token 和用户在线信息
+     * 2、获取用户Id，webSock推送消息通知用户，“您已经被下线”
      * @param accountList 用户账户list
      */
     public void offline(List<String> accountList){
@@ -91,21 +100,31 @@ public class OnlineService {
 
         //2、找出用户ID,发送webSock推送
         //获取用户账号
-        List<String> userAccount = new ArrayList<>();
+        List<String> userAccountList = new ArrayList<>();
         //获取管理员账号
-        List<String> managerAccount = new ArrayList<>();
+        List<String> managerAccountList = new ArrayList<>();
         //循环遍历出账号
         accountList.forEach(account -> {
             if(account.contains("teacher-")){
-                userAccount.add(account.replace("teacher-",""));
+                userAccountList.add(account.replace("teacher-",""));
             }else if(account.contains("user-")){
-                userAccount.add(account.replace("user-",""));
+                userAccountList.add(account.replace("user-",""));
             }else {
-                managerAccount.add(account);
+                managerAccountList.add(account);
             }
         });
 
+        //获取在线用户id,webSock推送消息
+        if(!CollectionUtils.isEmpty(userAccountList)){
+            List<Integer> userIdList = userDAO.findUserIdByAccountList(userAccountList);
+            noticeServiceClient.sendOfflineNotice(UserTokenUtil.createToken(),userIdList,false);
+        }
+        //获取在线管理员id,webSock推送消息
+        if(!CollectionUtils.isEmpty(managerAccountList)){
+            List<Integer> managerIdList = managerDAO.findManagerIdByAccountList(managerAccountList);
+            noticeServiceClient.sendOfflineNotice(UserTokenUtil.createToken(),managerIdList,false);
 
+        }
 
 
     }

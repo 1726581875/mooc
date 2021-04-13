@@ -8,11 +8,8 @@ import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -60,22 +57,16 @@ public class SendNoticeService {
     }
 
 
-    public void sendOfflineNotice(List<String> accountList) {
+    public void sendOfflineNotice(List<Integer> userIdList,Boolean isManager) {
 
-        //获取用户账号
-        List<String> userAccount = new ArrayList<>();
-        //获取管理员账号
-        List<String> managerAccount = new ArrayList<>();
-        //循环遍历出账号
-        accountList.forEach(account -> {
-            if(account.contains("teacher-")){
-                userAccount.add(account.replace("teacher-",""));
-            }else if(account.contains("user-")){
-                userAccount.add(account.replace("user-",""));
-            }else {
-                managerAccount.add(account);
-            }
-        });
+        log.info("================= 发送踢除下线消息,用户数={},要发送的IdList={}",userIdList.size(),userIdList);
+        //创建一个踢除下线消息
+        MessageDTO messageDTO = MessageDTO.createOut(messageFactory.getOfflineNotice());
+        if(isManager){
+            webSocket.sendMessageToManager(messageDTO,userIdList);
+        }else {
+            webSocket.sendMessageToUser(messageDTO,userIdList);
+        }
 
     }
 }
