@@ -64,7 +64,7 @@ public class UserDAO extends BaseDAO {
 
         List<Integer> idList = new ArrayList<>();
         String sql = "select id from mooc_user where account in ("
-                + accountList.stream().map(e->"" + e + "").collect(Collectors.joining(",")) + ")";
+                + accountList.stream().map(e->"'" + e + "'").collect(Collectors.joining(",")) + ")";
         try {
             idList = jdbcTemplate.queryForList(sql, Integer.class);
         }catch (Exception e){

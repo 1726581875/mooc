@@ -110,9 +110,9 @@ public class MyWebSocket {
      */
     public void sendMessageToUser(MessageDTO message, List<Integer> userIds){
         userIds.forEach(userId ->{
-            if(webSocketMap.get(userId) != null) {
+            if(webSocketMap.get(String.valueOf(userId)) != null) {
                 try {
-                    webSocketMap.get(userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                    webSocketMap.get(String.valueOf(userId)).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向用户{} 推送信息：message={}",userId,message);
                 } catch (Exception exception) {
                     log.error("[websocket消息] 向用户{} 推送信息：message={} 异常：",userId,message,exception);

@@ -15,7 +15,7 @@ public class NoticeHystrix implements NoticeServiceClient {
     }
 
     @Override
-    public RespResult sendOfflineNotice(String token, List<Integer> userIdList) {
+    public RespResult sendOfflineNotice(String token, List<Integer> userIdList, Boolean isManager) {
         return RespResult.fail("踢除用户下线失败");
     }
 }
