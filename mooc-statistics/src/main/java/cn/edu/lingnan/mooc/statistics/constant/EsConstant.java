@@ -67,6 +67,6 @@ public interface EsConstant {
     /**
      * 观看人数agg
      */
-    String VIEW_NUM_AGG = "collectionNumCountAgg";
+    String VIEW_NUM_AGG = "viewNumCountAgg";
 
 }

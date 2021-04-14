@@ -224,12 +224,12 @@ public class StatisticsListService {
         log.info("==========agg总数耗时:{}===========", aggEndTime - aggBeginTime);
 
         Aggregation aggResponse = searchResponse.getAggregations().get(EsConstant.GROUP_BY_AGG);
-        ParsedStringTerms terms = ((ParsedStringTerms) aggResponse);
+        ParsedLongTerms terms = ((ParsedLongTerms) aggResponse);
         terms.getBuckets().stream().forEach(bucket -> {
 
             CourseRecordStatisticsVO courseRecordVO = new CourseRecordStatisticsVO();
             // 帐号
-            Integer courseId = (Integer) bucket.getKey();
+            Integer courseId = ((Long) bucket.getKey()).intValue();
             courseRecordVO.setCourseId(courseId);
             // 点赞数
             ParsedSum viewAgg = bucket.getAggregations().get(EsConstant.VIEW_NUM_AGG);
@@ -261,10 +261,10 @@ public class StatisticsListService {
         log.info("==========agg2总数耗时:{}===========", agg2EndTime - agg2BeginTime);
 
         Aggregation detailAggResponse = detailSearchResponse.getAggregations().get(EsConstant.GROUP_BY_AGG);
-        ParsedStringTerms detailTerms = ((ParsedStringTerms) detailAggResponse);
+        ParsedLongTerms detailTerms = ((ParsedLongTerms) detailAggResponse);
         detailTerms.getBuckets().stream().forEach(bucket -> {
             // 帐号
-            Integer courseId = (Integer) bucket.getKey();
+            Integer courseId = ((Long) bucket.getKey()).intValue();
             CourseRecordStatisticsVO courseRecordVO = CourseRecordVOMap.get(courseId);
             // 观看数
             if (courseRecordVO.getViewNum() == null){
