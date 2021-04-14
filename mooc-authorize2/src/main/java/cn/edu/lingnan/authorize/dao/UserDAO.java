@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -105,6 +106,11 @@ public class UserDAO extends BaseDAO {
         jdbcTemplate.update(sql.toString(),user.getName(),user.getAccount(),user.getPassword(),user.getStatus()
                 ,user.getUserType(),user.getUserImage(),
                 user.getPassword(),user.getStatus());
+    }
+
+    public void updateLoginTime(Integer id, Date loginTime){
+        String sql = "update mooc_user set login_time = ? where id = ?";
+        jdbcTemplate.update(sql,loginTime,id);
     }
 
 }

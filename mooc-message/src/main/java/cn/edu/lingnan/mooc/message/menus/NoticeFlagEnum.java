@@ -12,8 +12,8 @@ public enum NoticeFlagEnum {
     CREATE_COURSE(1),
 
     QUESTION(2),
-    REPLY(2),
-    SYSTEM(2);
+    REPLY(3),
+    SYSTEM(4);
 
     private Integer flag;
 

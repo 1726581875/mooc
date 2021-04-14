@@ -149,10 +149,10 @@ public class MyWebSocket {
      * @param toUserId
      */
     public void sendMessageToUser(MessageDTO message, Integer toUserId){
-        if(webSocketMap!=null && webSocketMap.get(toUserId) != null){
+        if(webSocketMap!=null && webSocketMap.get(String.valueOf(toUserId)) != null){
             log.info("[websocket消息] 向{}发消息，message={}",toUserId,message);
             try {
-                webSocketMap.get(toUserId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                webSocketMap.get(String.valueOf(toUserId)).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
                 log.error("[websocket消息] 向{}发消息，message={},发生异常",toUserId,message,e);
             }

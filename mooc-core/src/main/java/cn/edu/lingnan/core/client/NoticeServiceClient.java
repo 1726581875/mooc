@@ -23,5 +23,31 @@ public interface NoticeServiceClient {
                                       @RequestParam("courseId") Integer courseId,
                                       @RequestParam("content") String content);
 
+    /**
+     * 发送一条提问消息
+     * @param token
+     * @param senderId
+     * @param acceptId
+     * @param courseId
+     * @param commentId
+     * @param content
+     * @return
+     */
+    @PutMapping("/send/questionNotice")
+     RespResult sendQuestionNotice(@RequestParam("token") String token,
+                                   @RequestParam("senderId") Integer senderId,
+                                   @RequestParam("acceptId") Integer acceptId,
+                                   @RequestParam("courseId") Integer courseId,
+                                   @RequestParam("commentId") Integer commentId,
+                                   @RequestParam("content") String content);
+
+    @PutMapping("/send/replyNotice")
+    RespResult sendReplyNotice(@RequestParam("token") String token,
+                                  @RequestParam("senderId") Integer senderId,
+                                  @RequestParam("acceptId") Integer acceptId,
+                                  @RequestParam("courseId") Integer courseId,
+                                  @RequestParam("commentId") Integer commentId,
+                                  @RequestParam("replyId") Integer replyId,
+                                  @RequestParam("content") String content);
 
 }

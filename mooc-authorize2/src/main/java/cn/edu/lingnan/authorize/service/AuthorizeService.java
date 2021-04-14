@@ -92,9 +92,17 @@ public class AuthorizeService {
             return RespResult.fail("密码不正确");
         }
 
+        //判断状态，1正常，2禁用，3已删除
+        Integer status = manager.getStatus();
+        if(status == 2){
+            return RespResult.fail(10001,"你的账号已经被禁用，请联系管理员！！");
+        }else if(status == 3){
+            return RespResult.fail(10001,"你的账号已经被删除，请联系管理员！！");
+        }
+
 
         //todo 写法冗余，需要去优化
-        //是教师
+        //如果是教师
         if(manager.getAccount().startsWith("teacher-")) {
             List<Long> teacherRoleId = new ArrayList();
             teacherRoleId.add(1L);
@@ -110,6 +118,9 @@ public class AuthorizeService {
 
             // 构造登录成功返回对象,教师type=2
             LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,teacherType, manager.getId().intValue(), menuTreeService.getTeacherMenuTree());
+
+            //更新最近登录时间
+            userDAO.updateLoginTime(manager.getId().intValue(),new Date());
             return RespResult.success(loginSuccessVO,"登录成功");
         }
 
@@ -126,6 +137,8 @@ public class AuthorizeService {
         // 构造登录成功返回对象,管理员type=1
         LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,1,manager.getId().intValue(),menuTreeService.getMenuTree(manager.getId()));
 
+        //更新最近登录时间
+        managerDAO.updateLoginTime(manager.getId().intValue(),new Date());
         return RespResult.success(loginSuccessVO,"登录成功");
     }
 

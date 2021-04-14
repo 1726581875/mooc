@@ -1,5 +1,7 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserTokenUtil;
+import cn.edu.lingnan.core.client.NoticeServiceClient;
 import cn.edu.lingnan.core.constant.RedisPrefixConstant;
 import cn.edu.lingnan.core.entity.CommentReply;
 import cn.edu.lingnan.core.entity.Course;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -47,6 +50,8 @@ public class CommentService {
     private CourseRepository courseRepository;
     @Autowired
     private CourseService courseService;
+    @Resource
+    private NoticeServiceClient noticeServiceClient;
 
     /**
      * 根据课程courseId查询评论
@@ -174,6 +179,11 @@ public class CommentService {
                     log.error("====== 获取课程信息评论信息失败，评论不存在courseId={}, commentId={} ====", courseId, commentId);
                 }
             }
+
+            //插入一条回复通知，并通过webSock推送
+            noticeServiceClient.sendReplyNotice(UserTokenUtil.createToken(),userId,
+                    toUserId,courseId,commentReply.getCommentId(),commentReply.getId(),content);
+
             return true;
         }
 
@@ -187,6 +197,8 @@ public class CommentService {
         if(articleComment == null){
             return false;
         }
+
+        Optional<Course> optional = courseRepository.findById(courseId);
         //判断是课程评论还是课程问答
         String redisKey = type == 0 ? RedisPrefixConstant.COMMENT_NUM_PRE + courseId : RedisPrefixConstant.QUESTION_NUM_PRE + courseId;
         //评论数+1，缓存里没有就设置到缓存
@@ -194,7 +206,6 @@ public class CommentService {
             //评论数+1
             RedisUtil.getRedisTemplate().opsForValue().increment(redisKey,1L);
         }else {
-            Optional<Course> optional = courseRepository.findById(courseId);
             if(optional.isPresent()) {
                 Course course = optional.get();
                 //缓存
@@ -203,9 +214,15 @@ public class CommentService {
                 RedisUtil.getRedisTemplate().opsForValue().increment(redisKey, 1L);
             }else {
                 log.error("====== 获取课程信息失败，课程不存在 courseId={} ====",courseId);
+                return false;
             }
         }
-        
+
+        //发送消息
+        Course course = optional.get();
+        noticeServiceClient.sendQuestionNotice(UserTokenUtil.createToken(),userId,
+                course.getTeacherId(),course.getId(),articleComment.getId(),content);
+
         return true;
     }
 

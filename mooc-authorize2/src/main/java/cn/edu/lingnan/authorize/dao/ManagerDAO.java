@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -76,7 +77,7 @@ public class ManagerDAO extends BaseDAO {
         sql.append("VALUES ");
         sql.append("(?,?,?,?) ");
         sql.append("ON DUPLICATE KEY ");
-        sql.append("UPDATE password=?,status=? ");
+        sql.append("UPDATE password=?,status=?,update_time=? ");
         jdbcTemplate.update(sql.toString(),manager.getName(),manager.getAccount(),manager.getPassword(),manager.getStatus()
                 ,manager.getPassword(),manager.getStatus());
     }
@@ -115,5 +116,8 @@ public class ManagerDAO extends BaseDAO {
         return idList;
     }
 
-
+    public void updateLoginTime(Integer id, Date loginTime){
+        String sql = "update mooc_user set login_time = ? where id = ?";
+        jdbcTemplate.update(sql,loginTime,id);
+    }
 }

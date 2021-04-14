@@ -71,6 +71,19 @@ public class MessageFactory {
         return notice;
     }
 
+    public Notice getReplyNotice(Integer senderId,Integer acceptId,Integer courseId,Integer commentId,Integer replyId, String content){
+        Notice notice = new Notice();
+        notice.setCourseId(courseId);
+        notice.setCommentId(commentId);
+        notice.setReplyId(replyId);
+        notice.setAcceptId(acceptId);
+        notice.setType(NoticeTypeEnum.USER.getType());
+        notice.setFlag(NoticeFlagEnum.REPLY.getFlag());
+        notice.setSendId(senderId);
+        notice.setContent("【回复消息】 " + content);
+        return notice;
+    }
+
 
     /**
      * 创建下线消息
