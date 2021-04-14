@@ -64,7 +64,7 @@ public class LoginUserCountJob {
 
     /**
      * 统计登录人数补偿任务
-     *
+     * 每天凌晨2点执行
      */
    // @Scheduled(cron = "0/5 * * * * ? ")
     @Scheduled(cron = "0 0 2 * * ?")

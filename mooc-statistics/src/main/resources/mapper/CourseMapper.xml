@@ -41,5 +41,13 @@
 		group by date;
 	</select>
 
+    <select id="getCourseNameByIdList" resultType="java.util.Map">
+		select id,name from course where id in
+		<foreach collection="courseIdList" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+
+	</select>
+
 </mapper>
  

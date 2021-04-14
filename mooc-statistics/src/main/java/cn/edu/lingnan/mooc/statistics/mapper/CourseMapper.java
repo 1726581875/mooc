@@ -40,4 +40,11 @@ public interface CourseMapper {
       */
      List<Map<String,Object>> countCommentGroupByTime(@Param("teacherId")Integer teacherId,@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 
+     /**
+      * 根据课程id获取课程名
+      * @param courseIdList
+      * @return
+      */
+     List<Map<Integer,Object>> getCourseNameByIdList(@Param("courseIdList") List<Integer> courseIdList);
+
 }

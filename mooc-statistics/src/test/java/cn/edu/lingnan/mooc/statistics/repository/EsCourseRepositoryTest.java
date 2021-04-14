@@ -2,12 +2,12 @@ package cn.edu.lingnan.mooc.statistics.repository;
 
 import cn.edu.lingnan.mooc.statistics.entity.es.EsCourse;
 import cn.edu.lingnan.mooc.statistics.entity.mysql.Course;
+import cn.edu.lingnan.mooc.statistics.repository.es.EsCourseRepository;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;

@@ -6,6 +6,8 @@ import cn.edu.lingnan.mooc.statistics.constant.Constant;
 import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
 import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
 import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
+import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
+import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -18,18 +20,23 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedSingleValueNumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.cardinality.ParsedCardinality;
 import org.elasticsearch.search.aggregations.metrics.sum.ParsedSum;
 import org.elasticsearch.search.aggregations.pipeline.PipelineAggregatorBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,6 +51,93 @@ public class StatisticsListService {
 
     @Resource
     private RestHighLevelClient restHighLevelClient;
+    @Resource
+    private CourseMapper courseMapper;
+
+
+    public List<TopCourseVO> listTop10CourseByField(Long beginTime, Long endTime, String countField) {
+        //统计前10
+        int from = 0;
+        int size = 10;
+        List<TopCourseVO> contactCountVOList = new ArrayList<>();
+        List<Integer> courseIdList = new ArrayList<>();
+        //构造聚合agg,查询前10帐号及其统计值
+        TermsAggregationBuilder aggBuilder = getTopUserDailyChatRecordTermsAggBuilder(countField, from, size, false);
+
+        //构造boolQuery
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        //boolQueryBuilder.must(QueryBuilders.termsQuery(EsConstant.TEACHER_ID, teacherId));
+        //时间区间
+        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(EsConstant.CREATE_TIME);
+        if (beginTime != null) {
+            rangeQueryBuilder.gte(beginTime);
+        }
+        if (endTime != null) {
+            rangeQueryBuilder.lte(endTime);
+        }
+        boolQueryBuilder.must(rangeQueryBuilder);
+
+        SearchResponse searchResponse = this.initSearchRequestWithAgg(boolQueryBuilder,aggBuilder,new String[]{"course_record"},"_doc",null,null);
+        Aggregation groupByAgg = searchResponse.getAggregations().get(EsConstant.GROUP_BY_AGG);
+        ParsedLongTerms terms = ((ParsedLongTerms) groupByAgg);
+        terms.getBuckets().stream().forEach(bucket -> {
+            // 帐号
+            TopCourseVO topCourseVO = new TopCourseVO();
+            Integer courseId =  ((Long)bucket.getKey()).intValue();
+            topCourseVO.setCourseId(courseId);
+            // 统计值
+            Aggregation countAgg = bucket.getAggregations().get(EsConstant.COUNT_AGG);
+            ParsedSingleValueNumericMetricsAggregation countAggValue = ((ParsedSingleValueNumericMetricsAggregation) countAgg);
+            double count = countAggValue.value();
+            topCourseVO.setCount(Double.isInfinite(count) ? 0 : ((Double) count).intValue());
+            courseIdList.add(courseId);
+            contactCountVOList.add(topCourseVO);
+        });
+        if (contactCountVOList.size() == 0) {
+            return contactCountVOList;
+        }
+        // 查询课程课程名
+        List<Map<Integer,Object>> courseNameMapList = courseMapper.getCourseNameByIdList(courseIdList);
+        Map<Integer,String> courseNameMap = new HashMap<>(courseNameMapList.size());
+        courseNameMapList.forEach(map -> {
+            courseNameMap.put(((BigInteger) map.get("id")).intValue(), (String) map.get("name"));
+        });
+        //设置课程名
+        contactCountVOList.forEach(item -> item.setCourseName(courseNameMap.getOrDefault(item.getCourseId(),"未知课程")));
+
+        log.info("===========查询前10的课程===========end===========");
+        return contactCountVOList;
+    }
+
+
+
+
+    /**
+     * 统计出前十的课程收藏数、浏览数、评论数
+     *
+     * @return
+     */
+    private TermsAggregationBuilder getTopUserDailyChatRecordTermsAggBuilder(String countField, Integer offset, Integer size, Boolean isAsc) {
+        int totalCount = offset + size;
+        if (totalCount < 0) {
+            totalCount = Integer.MAX_VALUE;
+        }
+        // 按userId分组
+        TermsAggregationBuilder termsAggregationBuilder = AggregationBuilders.terms(EsConstant.GROUP_BY_AGG).field(EsConstant.COURSE_ID);
+        termsAggregationBuilder.size(totalCount);
+        termsAggregationBuilder.order(BucketOrder.aggregation(EsConstant.COUNT_AGG, isAsc));
+        // 统计收藏数、浏览数、评论数
+        termsAggregationBuilder.subAggregation(AggregationBuilders.sum(EsConstant.COUNT_AGG).field(countField));
+        // 按具体字段降序或升序
+        List<FieldSortBuilder> sorts = new ArrayList<>();
+        SortOrder sortOrder = isAsc == true ? SortOrder.ASC : SortOrder.DESC;
+        sorts.add(SortBuilders.fieldSort(EsConstant.COUNT_AGG).order(sortOrder));
+        termsAggregationBuilder.subAggregation(PipelineAggregatorBuilders.bucketSort(EsConstant.ORDER_BY_AGG, sorts).from(offset).size(size));
+        return termsAggregationBuilder;
+    }
+
+
 
 
     public PageVO<CourseRecordStatisticsVO> getCourseStatisticsList(StatisticsListViewQuery query) {
@@ -359,7 +453,7 @@ public class StatisticsListService {
         try {
             searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
-            log.error("==========es查询异常,index={}, type={}, es语句={},exception=",index.toString(),types, searchRequest.source().toString(),e);
+            log.error("==========es查询异常,index={}, type={}, es语句={},exception=",new ArrayList(Arrays.asList(index)).toString(),types, searchRequest.source().toString(),e);
             throw new RuntimeException("es查询异常");
         }
         return searchResponse;

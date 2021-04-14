@@ -4,10 +4,12 @@ package cn.edu.lingnan.mooc.statistics.service;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
 import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
+import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +37,15 @@ public class StatisticsListServiceTest {
         List<CourseRecordStatisticsVO> courseRecordStatisticsVOList = courseStatisticsListPage.getContent();
         //打印输出
         courseRecordStatisticsVOList.forEach(System.out::println);
+    }
+
+    /**
+     * 根据某一字段查询前十课程测试
+     */
+    @Test
+    public void findCourseTop10Test(){
+        List<TopCourseVO> collectionNum = statisticsListService.listTop10CourseByField(0L, new Date().getTime(), "collectionNum");
+        collectionNum.forEach(System.out::println);
     }
 
 

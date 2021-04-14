@@ -40,14 +40,12 @@ public class EsCourse {
     /**
      * 修改时间
      */
-    @Field(type = FieldType.Date,format = DateFormat.custom,
-            pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")
+    @Field(type = FieldType.Date,format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")
     private Date updateTime;
     /**
      * 创建时间
      */
-    @Field(type = FieldType.Date,format = DateFormat.custom,
-            pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")
+    @Field(type = FieldType.Date,format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis")
     private Date createTime;
 
 

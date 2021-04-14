@@ -26,6 +26,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         List<String> excludePathList = new ArrayList<>();
         excludePathList.add("/download/*");
         excludePathList.add("/file/");
+        //放行/error页
+        excludePathList.add("/error");
         registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**");
     }
 
