@@ -45,6 +45,6 @@ public interface CourseMapper {
       * @param courseIdList
       * @return
       */
-     List<Map<Integer,Object>> getCourseNameByIdList(@Param("courseIdList") List<Integer> courseIdList);
+     List<Map<String,Object>> getCourseNameByIdList(@Param("courseIdList") List<Integer> courseIdList);
 
 }

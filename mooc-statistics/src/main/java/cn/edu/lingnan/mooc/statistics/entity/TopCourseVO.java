@@ -11,6 +11,8 @@ public class TopCourseVO {
 
     private Integer courseId;
 
+    private String courseImage;
+
     private String courseName;
 
     private Integer count;

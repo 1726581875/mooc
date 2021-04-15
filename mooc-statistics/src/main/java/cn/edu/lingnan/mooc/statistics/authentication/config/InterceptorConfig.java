@@ -28,7 +28,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/file/");
         //放行/error页
         excludePathList.add("/error");
-        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**");
+        //查询排名前10的课程
+        excludePathList.add("/courses/listTop10");
+        registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**").excludePathPatterns(excludePathList);
     }
 
     /**

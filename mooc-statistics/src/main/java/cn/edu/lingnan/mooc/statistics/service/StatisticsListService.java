@@ -7,6 +7,7 @@ import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
 import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
 import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
 import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
+import cn.edu.lingnan.mooc.statistics.entity.vo.CourseSearchVO;
 import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
@@ -21,7 +22,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.ParsedSingleValueNumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
@@ -98,13 +98,18 @@ public class StatisticsListService {
             return contactCountVOList;
         }
         // 查询课程课程名
-        List<Map<Integer,Object>> courseNameMapList = courseMapper.getCourseNameByIdList(courseIdList);
+        List<Map<String,Object>> courseNameMapList = courseMapper.getCourseNameByIdList(courseIdList);
         Map<Integer,String> courseNameMap = new HashMap<>(courseNameMapList.size());
+        Map<Integer,String> courseImageMap = new HashMap<>(courseNameMapList.size());
         courseNameMapList.forEach(map -> {
             courseNameMap.put(((BigInteger) map.get("id")).intValue(), (String) map.get("name"));
+            courseImageMap.put(((BigInteger) map.get("id")).intValue(), (String) map.get("image"));
         });
         //设置课程名
-        contactCountVOList.forEach(item -> item.setCourseName(courseNameMap.getOrDefault(item.getCourseId(),"未知课程")));
+        contactCountVOList.forEach(item -> {
+            item.setCourseName(courseNameMap.getOrDefault(item.getCourseId(),"未知课程"));
+            item.setCourseImage(courseImageMap.getOrDefault(item.getCourseId(),"/file/default.png"));
+        });
 
         log.info("===========查询前10的课程===========end===========");
         return contactCountVOList;
@@ -437,7 +442,9 @@ public class StatisticsListService {
         searchRequest.indices(index);
         searchRequest.types(types);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(boolQueryBuilder);
+        if(boolQueryBuilder != null){
+            searchSourceBuilder.query(boolQueryBuilder);
+        }
         searchRequest.source(searchSourceBuilder);
         if (aggregationBuilder != null){
             searchSourceBuilder.aggregation(aggregationBuilder);
@@ -458,4 +465,5 @@ public class StatisticsListService {
         }
         return searchResponse;
     }
+
 }
