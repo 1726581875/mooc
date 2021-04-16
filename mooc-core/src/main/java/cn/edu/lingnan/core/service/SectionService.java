@@ -196,7 +196,7 @@ public class SectionService {
             MoocFile file = new MoocFile();
             file.setId(section.getFileId());
             file.setStatus(2);
-            moocFileService.update(file);
+            //moocFileService.update(file);
             // 删除小节(物理删除)
             sectionRepository.deleteById(id);
         }
