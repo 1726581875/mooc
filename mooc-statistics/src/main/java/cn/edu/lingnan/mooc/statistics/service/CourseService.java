@@ -16,19 +16,12 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.cardinality.ParsedCardinality;
-import org.elasticsearch.search.aggregations.metrics.min.ParsedMin;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.search.sort.SortOrder;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -157,6 +150,29 @@ public class CourseService {
         courseSearchVO.setTeacherId(teacherId);
         //教师名
         courseSearchVO.setTeacherName(teacherNameMap.get(teacherId));
+
+        //如果没有匹配到的课程简介，则设置该课程简介前40个字符
+        if(StringUtils.isEmpty(courseSearchVO.getSummary())){
+            String summary = course.getSummary();
+            //截取40个字符
+            int limit = 40;
+            String summary2 = (StringUtils.isEmpty(summary) || summary.length() <= limit)
+                    ? summary : summary.substring(limit) + "...";
+            courseSearchVO.setSummary(summary2);
+        }else {
+            //看看是否需要设置 "..."
+            String searchVOSummary = courseSearchVO.getSummary();
+            if(course.getSummary()!=null && course.getSummary().length() > searchVOSummary.length()){
+                courseSearchVO.setSummary(searchVOSummary + "...");
+            }
+
+        }
+
+        //如果没有匹配到的课程名，则设置课程名
+        if(StringUtils.isEmpty(courseSearchVO.getCourseName())){
+            courseSearchVO.setCourseName(course.getName());
+        }
+
         return courseSearchVO;
     }
 
@@ -179,8 +195,12 @@ public class CourseService {
      */
     private HighlightBuilder getHighlightBuilder(String keyWord) {
         HighlightBuilder highlightBuilder = SearchSourceBuilder.highlight();
-        if (StringUtils.isNotBlank(keyWord)) {
-            highlightBuilder.fields().add(new HighlightBuilder.Field("summary").fragmentSize(20).numOfFragments(10));
+        // 前缀
+        highlightBuilder.preTags("<font color='red'>");
+        //后缀
+        highlightBuilder.postTags("</font>");
+        if (org.junit.platform.commons.util.StringUtils.isNotBlank(keyWord)) {
+            highlightBuilder.fields().add(new HighlightBuilder.Field("summary").fragmentSize(40).numOfFragments(10));
             highlightBuilder.fields().add(new HighlightBuilder.Field("name"));
         }
         return highlightBuilder;

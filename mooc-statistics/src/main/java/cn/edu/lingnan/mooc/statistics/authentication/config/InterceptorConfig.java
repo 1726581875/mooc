@@ -30,6 +30,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/error");
         //查询排名前10的课程
         excludePathList.add("/courses/listTop10");
+        //查询课程
+        excludePathList.add("/courses/search");
         registry.addInterceptor(CheckPermissionInterceptor).addPathPatterns("/**").excludePathPatterns(excludePathList);
     }
 
