@@ -2,6 +2,8 @@ package cn.edu.lingnan.mooc.statistics.entity.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class CourseSearchVO {
 
@@ -20,5 +22,7 @@ public class CourseSearchVO {
     private Integer teacherId;
 
     private String teacherName;
+
+    private Date createTime;
 
 }

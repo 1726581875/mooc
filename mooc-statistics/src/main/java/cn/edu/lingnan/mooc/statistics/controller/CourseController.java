@@ -52,8 +52,8 @@ public class CourseController {
 
     @RequestMapping("/search")
     public RespResult searchCourseByKeyWord(@RequestParam(value = "keyWord",defaultValue = "") String keyWord,
-                                            @RequestParam(value = "pageIndex",defaultValue = "0") String pageIndex,
-                                            @RequestParam(value = "pageSize",defaultValue = "10") String pageSize){
+                                            @RequestParam(value = "pageIndex",defaultValue = "0") Integer pageIndex,
+                                            @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
 
         return RespResult.success(courseService.searchCourseByKeyWord(keyWord,pageIndex,pageSize));
     }

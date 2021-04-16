@@ -49,5 +49,20 @@
 
 	</select>
 
+	<select id="getCourseByIdList" resultType="cn.edu.lingnan.mooc.statistics.entity.mysql.Course">
+		select * from course where id in
+		<foreach collection="courseIdList" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+
+
+	<select id="getTeacherNameByIdList" resultType="java.util.Map">
+		select id,name from mooc_user where id in
+		<foreach collection="teacherIdList" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+
 </mapper>
  

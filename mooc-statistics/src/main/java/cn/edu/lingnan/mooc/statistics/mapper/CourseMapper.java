@@ -47,4 +47,19 @@ public interface CourseMapper {
       */
      List<Map<String,Object>> getCourseNameByIdList(@Param("courseIdList") List<Integer> courseIdList);
 
+
+     /**
+      * 根据课程id获取课程
+      * @param courseIdList
+      * @return
+      */
+     List<Course> getCourseByIdList(@Param("courseIdList") List<Integer> courseIdList);
+
+     /**
+      * 根据教师id获取教师名
+      * @param teacherIdList
+      * @return
+      */
+     List<Map<String,Object>> getTeacherNameByIdList(@Param("teacherIdList") List<Integer> teacherIdList);
+
 }
