@@ -25,7 +25,7 @@ public class MoocUser {
     private String password;
     // 类型，教师/普通用户
     private String userType;
-    // 用户状态| 1正常，2禁用，3已删除
+    // 用户状态| 0未审批（教师角色需要审批），1正常，2禁用，3已删除
     private Integer status;
     /**
      * 个人座右铭、格言

@@ -27,6 +27,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/mooc/admin/code/image");
         excludePathList.add("/user/login");
         excludePathList.add("/user/isLogin");
+        excludePathList.add("/user/register");
         //放行/error
         excludePathList.add("/error");
 

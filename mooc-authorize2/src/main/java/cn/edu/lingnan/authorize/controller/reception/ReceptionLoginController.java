@@ -55,6 +55,11 @@ public class ReceptionLoginController {
         return respResult;
     }
 
+    /**
+     * 注册方法
+     * @param registerParam
+     * @return
+     */
     @PostMapping("/register")
     public RespResult register(@RequestBody RegisterParam registerParam){
 

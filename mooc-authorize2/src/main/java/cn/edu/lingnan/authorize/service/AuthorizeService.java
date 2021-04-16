@@ -98,6 +98,8 @@ public class AuthorizeService {
             return RespResult.fail(10001,"你的账号已经被禁用，请联系管理员！！");
         }else if(status == 3){
             return RespResult.fail(10001,"你的账号已经被删除，请联系管理员！！");
+        }else if(status == 0){
+            return RespResult.fail(10001,"你的账号已经还没审核通过！！");
         }
 
 

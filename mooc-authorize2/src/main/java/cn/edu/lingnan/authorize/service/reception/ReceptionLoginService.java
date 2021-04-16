@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -94,7 +95,7 @@ public class ReceptionLoginService {
      */
     public RespResult register(RegisterParam registerParam){
 
-        MoocUser user =userDAO.findUserByAccount(registerParam.getUsername());
+        MoocUser user =userDAO.findUserByAccount(registerParam.getAccount());
         if (user != null) {
             return RespResult.fail("账号已存在");
         }
@@ -119,17 +120,29 @@ public class ReceptionLoginService {
         return RespResult.success();
     }
 
+
     private MoocUser createUser(RegisterParam registerParam,String password){
         MoocUser moocUser = new MoocUser();
-        moocUser.setAccount(registerParam.getUsername());
-        moocUser.setName("随机名3468");
-        moocUser.setStatus(1);
+        moocUser.setAccount(registerParam.getAccount());
+        Random random = new Random();
+        if("教师".equals(registerParam.getUserType())){
+            moocUser.setName("教师" + random.nextInt(123456));
+        }else {
+
+            moocUser.setName("用户" + random.nextInt(123456));
+        }
+
+        //如果是教师角色，需要插入用户状态为0，表示未审批
+        if("教师".equals(registerParam.getUserType())){
+            moocUser.setStatus(0);
+        }else {
+            moocUser.setStatus(1);
+        }
+        moocUser.setUserImage("/file/default.png");
         moocUser.setUserType(registerParam.getUserType());
         moocUser.setPassword(BCrypt.hashpw(password,BCrypt.gensalt()));
         return moocUser;
     }
-
-
 
 
 }

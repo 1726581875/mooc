@@ -5,14 +5,16 @@ import cn.edu.lingnan.core.param.UserParam;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.util.StringUtils;
+
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.criteria.Predicate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,16 +96,42 @@ public class MoocUserService {
      */
     public PageVO<MoocUser> findPage(MoocUser matchObject, Integer pageIndex, Integer pageSize){
         // 1、构造条件
-         // 1.1 设置匹配策略，name属性模糊查询
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", match -> match.startsWith());//startsWith右模糊(name%)/contains全模糊(%name%)
-         // 1.2 构造匹配条件Example对象
-        Example<MoocUser> example = Example.of(matchObject,matcher);
+        Specification<MoocUser> specification = (root,criteriaQuery, criteriaBuilder) ->{
+            List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicateOr = new ArrayList<>();
+            Predicate conditionPre = null;
 
+            //姓名模糊
+            if(!StringUtils.isEmpty(matchObject.getName())){
+                predicateOr.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + matchObject.getName() + "%"));
+            }
+            //账号模糊
+            if(!StringUtils.isEmpty(matchObject.getAccount())){
+                predicateOr.add(criteriaBuilder.like(root.get("account").as(String.class), "%" + matchObject.getAccount() + "%"));
+            }
+            //and 用户类型
+            if(!StringUtils.isEmpty(matchObject.getUserType())){
+                predicates.add(criteriaBuilder.equal(root.get("userType").as(String.class), matchObject.getUserType()));
+            }
+            //and status
+            if(!StringUtils.isEmpty(matchObject.getStatus())){
+                predicates.add(criteriaBuilder.equal(root.get("status").as(Integer.class), matchObject.getStatus()));
+            }
+
+            //构造where and/or
+            if (!predicateOr.isEmpty()) {
+                conditionPre = criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])),
+                criteriaBuilder.or(predicateOr.toArray(new Predicate[predicateOr.size()]))).getRestriction();
+            } else {
+                conditionPre = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+
+           return conditionPre;
+        };
         // 2、 构造分页参数 ,第几页,每页大小
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         // 3、 传入条件、分页参数，调用方法
-        Page<MoocUser> moocUserPage = moocUserRepository.findAll(example, pageable);
+        Page<MoocUser> moocUserPage = moocUserRepository.findAll(specification, pageable);
         //获取page对象里的list
         List<MoocUser> moocUserList = moocUserPage.getContent();
         /* 4. 封装到自定义分页结果 */

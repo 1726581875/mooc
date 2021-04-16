@@ -24,5 +24,7 @@ public class UserParam {
      * 个人座右铭、格言
      */
     private String motto;
+
+    private Integer status;
     
 }
