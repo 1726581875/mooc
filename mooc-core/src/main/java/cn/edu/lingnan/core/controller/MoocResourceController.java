@@ -43,7 +43,7 @@ public class MoocResourceController {
      * @param moocResource
      * @return
      */
-    @PutMapping("/{id}")
+    @PutMapping("/{id:\\d+}")
     public RespResult update(@RequestBody MoocResource moocResource) {
         Integer flag = moocResourceService.update(moocResource);
         if (flag == 0) {

@@ -267,28 +267,28 @@ public class VideoController {
         String fileRelativePath = fileMappingPath.substring(FileConstant.MAPPING_PATH.length());
 
         File mergeFile = new File(FILE_PATH + File.separator + fileRelativePath);
-        //创建文件输入流
-        try(FileOutputStream fileOutput = new FileOutputStream(mergeFile, true);
-             BufferedOutputStream buffOutput = new BufferedOutputStream(fileOutput, 8 * 1024 * 10)){
+        //创建文件输出流
+        try (FileOutputStream fileOutput = new FileOutputStream(mergeFile, true);
+             BufferedOutputStream buffOutput = new BufferedOutputStream(fileOutput, 8 * 1024 * 10)) {
             byte[] bytes = new byte[8 * 1024];
             int len;
-            //循环写入分片流
+            //循环读取分片流，汇总写出
             for (int i = 1; i <= shardCount; i++) {
-                try(FileInputStream fileInput = new FileInputStream(new File(FILE_PATH + File.separator + fileRelativePath + ".shard-" + i));
-                BufferedInputStream buffInput = new BufferedInputStream(fileInput, 8 * 1024 * 10)) {
+                try (FileInputStream fileInput = new FileInputStream(new File(FILE_PATH + File.separator + fileRelativePath + ".shard-" + i));
+                     BufferedInputStream buffInput = new BufferedInputStream(fileInput, 8 * 1024 * 10)) {
                     while ((len = buffInput.read(bytes)) != -1) {
                         buffOutput.write(bytes, 0, len);
                     }
                     buffOutput.flush();
-                }catch (Exception e){
-                    log.error("分片合并发生异常:",e);
+                } catch (Exception e) {
+                    log.error("分片合并发生异常:", e);
                 }
             }
             // 提醒java执行gc操作，否则下面删除分片文件会失败
             System.gc();
             Thread.sleep(100);
-        }catch (Exception e){
-            log.error("分片合并发生异常:",e);
+        } catch (Exception e) {
+            log.error("分片合并发生异常:", e);
         }
 
         log.info("====合并分片结束====");

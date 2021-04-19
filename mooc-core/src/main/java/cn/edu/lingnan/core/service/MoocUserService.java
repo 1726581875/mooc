@@ -1,9 +1,11 @@
 package cn.edu.lingnan.core.service;
 
+import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.MoocUser;
 import cn.edu.lingnan.core.param.UserParam;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.vo.reception.UserDetailVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
@@ -61,6 +63,18 @@ public class MoocUserService {
 
     }
 
+    /**
+     * 获取用户信息
+     * @return
+     */
+    public UserDetailVO getOwnDetail(){
+        Optional<MoocUser> optional = moocUserRepository.findById(UserUtil.getUserId());
+        if(!optional.isPresent()){
+            return null;
+        }
+        UserDetailVO userDetailVO = CopyUtil.copy(optional.get(),UserDetailVO.class);
+        return userDetailVO;
+    }
     /**
      * 根据Id查找
      * @param id

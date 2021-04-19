@@ -163,8 +163,10 @@ public class FileManageController {
         //创建输入流
         try (FileInputStream fileInputStream = new FileInputStream(file);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
+            //获取输出流对象
             OutputStream os = response.getOutputStream();
             int i = bufferedInputStream.read(buffer);
+            //循环读取和写出
             while (i != -1) {
                 os.write(buffer, 0, i);
                 i = bufferedInputStream.read(buffer);

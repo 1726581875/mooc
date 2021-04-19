@@ -99,7 +99,7 @@ public class ReceptionCourseService {
             log.error("插入监控记录失败，点赞的课程不存在，courseId={}",courseId);
             return;
         }
-        Optional<MoocUser>userOptional = moocUserRepository.findById(courseId);
+        Optional<MoocUser>userOptional = moocUserRepository.findById(userId);
         if(!userOptional.isPresent()){
             log.error("插入监控记录失败，用户不存在，userId={}",userId);
             return;

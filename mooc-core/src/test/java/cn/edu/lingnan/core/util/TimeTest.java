@@ -2,6 +2,7 @@ package cn.edu.lingnan.core.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,6 +25,15 @@ public class TimeTest {
         calendar.add(Calendar.DATE,1);
         calendar.add(Calendar.SECOND,-1);
         System.out.println(calendar.getTime());
+    }
+
+
+    public static void main(String[] args) throws ParseException {
+        String dataStr = "2021/04/19 00:00:00";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = dateFormat.parse(dataStr);
+        System.out.println(date);
+
     }
 
 

@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
  * @date 2020/12/1
  * 自定义logo功能
  */
-@RestController
 @Slf4j
+@RestController
 @RequestMapping("/admin/logo")
 public class LogoController{
 

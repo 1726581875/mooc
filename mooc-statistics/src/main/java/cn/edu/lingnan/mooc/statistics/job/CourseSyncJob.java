@@ -26,7 +26,7 @@ public class CourseSyncJob {
     @Autowired
     private CourseRepository mysqlCourseRepository;
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void courseSyncJob(){
         log.info("============ 课程同步任务开始 ============");
         // 获取mysql全部课程信息

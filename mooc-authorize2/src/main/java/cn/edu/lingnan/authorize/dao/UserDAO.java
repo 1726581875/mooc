@@ -93,7 +93,7 @@ public class UserDAO extends BaseDAO {
     }
 
     /**
-     * 插入或者更新管理员
+     * 插入或者更新用户
      * @param user
      */
     public void save(MoocUser user){

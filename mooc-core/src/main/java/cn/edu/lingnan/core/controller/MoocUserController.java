@@ -20,6 +20,28 @@ public class MoocUserController {
     @Autowired
     private MoocUserService moocUserService;
 
+
+    /**
+     * 根据id获取用户
+     * @return
+     */
+    @GetMapping("/getOwnDetail")
+    public RespResult getOwnDetail() {
+        return RespResult.success(moocUserService.getOwnDetail());
+    }
+    /**
+     * 更新用户·信息
+     * @param user
+     * @return
+     */
+    @PostMapping("/update")
+    public RespResult updateUser(@RequestBody UserParam user){
+        moocUserService.update(user);
+        return RespResult.success();
+    }
+
+
+
     /**
      * 分页查询moocUser接口
      * get请求

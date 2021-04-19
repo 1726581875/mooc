@@ -37,9 +37,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/comment/list");
         excludePathList.add("/comment/listAll");
         //查询用户信息
-        excludePathList.add("/admin/moocUsers/*");
+        excludePathList.add("/admin/moocUsers/{id:\\d+}");
         //查询评论回复
         excludePathList.add("/comment/listCommentDetail");
+        //放行登录页logo
+        excludePathList.add("/admin/logo/loginLogo");
 
         //放行/error
         excludePathList.add("/error");

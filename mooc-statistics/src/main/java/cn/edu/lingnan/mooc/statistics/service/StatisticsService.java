@@ -89,13 +89,13 @@ public class StatisticsService {
         if(UserUtil.isTeacher()){
             teacherId = UserUtil.getUserId();
         }
-        //开始时间,统计七天前
+        //开始时间,统计七天前（包括今天）
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_WEEK, -7);
+        calendar.add(Calendar.DAY_OF_WEEK, -6);
         Date startTime = calendar.getTime();
-        //初始化返回的map
-        Map<String, Long> commentCountMap = monitorService.initDailyCount(startTime.getTime(), new Date().getTime());
+        //初始化返回的map,
+        Map<String, Long> commentCountMap = monitorService.initDailyCount(startTime.getTime(), System.currentTimeMillis() + 86400000L);
         //数据库获取统计数据
         List<Map<String, Object>> mapList = courseMapper.countCommentGroupByTime(teacherId, startTime, new Date());
         //遍历返回结果集，赋值

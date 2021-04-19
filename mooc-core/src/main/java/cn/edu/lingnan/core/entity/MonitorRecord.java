@@ -20,7 +20,7 @@ public class MonitorRecord{
     private Integer courseId;
     // 具体消息   
     private String message;
-    // 类型|新增课程、上传视频、删除课程   
+    // 类型|新增课程、上传视频、删除课程、课程点赞、取消点赞
     private String recordType;
     // 登录ip   
     private String ip;

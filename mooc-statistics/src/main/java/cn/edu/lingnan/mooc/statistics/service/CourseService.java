@@ -209,8 +209,10 @@ public class CourseService {
 
     private BoolQueryBuilder getBoolQuery(String keyWord) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name",keyWord));
-        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("summary",keyWord));
+//        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name",keyWord));
+//        boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("summary",keyWord));
+          boolQueryBuilder.should(QueryBuilders.matchQuery("name",keyWord));
+          boolQueryBuilder.should(QueryBuilders.matchQuery("summary",keyWord));
         return boolQueryBuilder;
     }
 

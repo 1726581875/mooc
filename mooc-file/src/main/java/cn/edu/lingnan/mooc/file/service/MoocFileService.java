@@ -13,10 +13,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -151,7 +148,7 @@ public class MoocFileService {
         // 3、 传入条件、分页参数，调用方法
         Page<MoocFile> moocFilePage = moocFileRepository.findAll(example, pageable);
         if(moocFilePage.getNumberOfElements() == 0){
-            return pageVO;
+            return new PageVO<>(pageIndex,pageSize,0,0,new ArrayList<>());
         }
         //获取page对象里的list
         List<MoocFile> moocFileList = moocFilePage.getContent();

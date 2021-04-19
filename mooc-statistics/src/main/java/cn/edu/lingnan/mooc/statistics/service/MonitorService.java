@@ -1,5 +1,7 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
+import cn.edu.lingnan.mooc.statistics.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
 import cn.edu.lingnan.mooc.statistics.entity.mysql.LoginAmountCount;
 import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
 import cn.edu.lingnan.mooc.statistics.repository.LoginAmountCountRepository;
@@ -102,8 +104,12 @@ public class MonitorService {
         // 构造时间聚合
         DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram("dateAgg").field("createTime").timeZone(DateTimeZone.forOffsetHours(8));
         dateAgg.dateHistogramInterval(DateHistogramInterval.days(1));
+
         // 构造bool条件
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(UserUtil.isTeacher()){
+            boolQueryBuilder.must(QueryBuilders.termQuery(EsConstant.TEACHER_ID, String.valueOf(UserUtil.getUserId())));
+        }
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("createTime");
         rangeQueryBuilder.gte(beginTime);
         rangeQueryBuilder.lte(endTime);

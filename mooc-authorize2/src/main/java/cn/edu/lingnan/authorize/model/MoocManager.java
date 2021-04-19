@@ -1,9 +1,14 @@
 package cn.edu.lingnan.authorize.model;
 
+import lombok.Data;
+
+import java.util.Date;
+
 /**
  * @author xmz
  * @date: 2020/11/22
  */
+@Data
 public class MoocManager {
 
     private Long id;
@@ -15,6 +20,8 @@ public class MoocManager {
     private String password;
 
     private Integer status;
+
+    private Date updateTime;
 
     public MoocManager() {}
 
@@ -75,6 +82,14 @@ public class MoocManager {
         return this;
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         return "MoocManager{" +
@@ -83,6 +98,7 @@ public class MoocManager {
                 ", account='" + account + '\'' +
                 ", password='" + password + '\'' +
                 ", status=" + status +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }

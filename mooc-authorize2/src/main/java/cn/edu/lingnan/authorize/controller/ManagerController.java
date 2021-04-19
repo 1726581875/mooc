@@ -20,16 +20,16 @@ public class ManagerController {
     private ManagerService managerService;
     @Autowired
     private ReceptionUserService receptionUserService;
-    @PostMapping("/updatePassword")
 
     /**
      * 管理员修改密码
      */
+    @PostMapping("/updatePassword")
     public RespResult updatePassword(@RequestBody PasswordParam passwordParam){
 
         RespResult respResult = null;
-        //教师或者管理员位于不同的表，这里需要判断
-        if(UserUtil.getUserToken().getAccount().startsWith("teacher-")) {
+        //教师、用户或者管理员位于不同的表，这里需要判断
+        if(UserUtil.getUserToken().getType() == 2) {
             respResult = receptionUserService.updatePassword(passwordParam);
         }else {
             respResult = managerService.updatePassword(passwordParam);
