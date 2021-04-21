@@ -44,7 +44,7 @@ public class StatisticsListServiceTest {
      */
     @Test
     public void findCourseTop10Test(){
-        List<TopCourseVO> collectionNum = statisticsListService.listTop10CourseByField(0L, new Date().getTime(), "collectionNum");
+        List<TopCourseVO> collectionNum = statisticsListService.listTop10CourseByField(0L, new Date().getTime(), "collectionNum",0);
         collectionNum.forEach(System.out::println);
     }
 

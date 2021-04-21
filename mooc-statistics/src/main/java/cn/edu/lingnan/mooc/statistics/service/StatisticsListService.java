@@ -33,7 +33,6 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
@@ -55,7 +54,7 @@ public class StatisticsListService {
     private CourseMapper courseMapper;
 
 
-    public List<TopCourseVO> listTop10CourseByField(Long beginTime, Long endTime, String countField) {
+    public List<TopCourseVO> listTop10CourseByField(Long beginTime, Long endTime, String countField,Integer teacherId) {
         //统计前10
         int from = 0;
         int size = 10;
@@ -67,9 +66,13 @@ public class StatisticsListService {
         //构造boolQuery
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        //boolQueryBuilder.must(QueryBuilders.termsQuery(EsConstant.TEACHER_ID, teacherId));
         //时间区间
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(EsConstant.CREATE_TIME);
+        //课程Id
+        if (teacherId != null && teacherId != 0) {
+            boolQueryBuilder.must(QueryBuilders.termsQuery(EsConstant.TEACHER_ID, teacherId));
+        }
+
         if (beginTime != null) {
             rangeQueryBuilder.gte(beginTime);
         }
@@ -331,7 +334,7 @@ public class StatisticsListService {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         //课程Id
         if (teacherId != null) {
-            boolQueryBuilder.must(QueryBuilders.termsQuery("courseId", teacherId.toString()));
+            boolQueryBuilder.must(QueryBuilders.termsQuery("teacherId", teacherId.toString()));
         }
         //设置时间范围
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("createTime");

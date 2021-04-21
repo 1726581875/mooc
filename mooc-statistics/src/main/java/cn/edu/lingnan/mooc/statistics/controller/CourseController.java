@@ -35,7 +35,8 @@ public class CourseController {
      * @return
      */
     @RequestMapping("/listTop10")
-    public RespResult listTop10CourseByField(@RequestParam(value = "field",defaultValue = "collectionNum") String field){
+    public RespResult listTop10CourseByField(@RequestParam(value = "field",defaultValue = "collectionNum") String field
+              ,@RequestParam(value = "teacherId",defaultValue = "0") Integer teacherId){
 
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //获取一个月前的时间作为开始时间
@@ -46,7 +47,7 @@ public class CourseController {
         //当前时间为结束时间
         Date endTime = new Date();
         log.info("====统计课程排名的时间：{} 至 {}",simpleDateFormat.format(calendar.getTime()),simpleDateFormat.format(endTime));
-        return RespResult.success(statisticsListService.listTop10CourseByField(beginTime.getTime(),endTime.getTime(),field));
+        return RespResult.success(statisticsListService.listTop10CourseByField(beginTime.getTime(),endTime.getTime(),field, teacherId));
     }
 
 

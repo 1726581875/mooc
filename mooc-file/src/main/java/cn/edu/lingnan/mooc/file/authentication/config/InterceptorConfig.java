@@ -28,7 +28,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> excludePathList = new ArrayList<>();
-        excludePathList.add("/download/*");
+        //视频下载接口
+        excludePathList.add("/fileManage/download/*");
         excludePathList.add("/file/**");
         //放行/error
         excludePathList.add("/error");
