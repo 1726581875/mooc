@@ -70,7 +70,7 @@ public class StatisticsListService {
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(EsConstant.CREATE_TIME);
         //课程Id
         if (teacherId != null && teacherId != 0) {
-            boolQueryBuilder.must(QueryBuilders.termsQuery(EsConstant.TEACHER_ID, teacherId));
+            boolQueryBuilder.must(QueryBuilders.termsQuery(EsConstant.TEACHER_ID, teacherId.toString()));
         }
 
         if (beginTime != null) {

@@ -168,7 +168,7 @@ public class AuthorizeService {
         MoocManager manager = new MoocManager();
         manager.setAccount("teacher-" + user.getAccount());
         manager.setId(Long.valueOf(user.getId()));
-        manager.setStatus(1);
+        manager.setStatus(user.getStatus());
         manager.setName(user.getName());
         manager.setPassword(user.getPassword());
         return manager;

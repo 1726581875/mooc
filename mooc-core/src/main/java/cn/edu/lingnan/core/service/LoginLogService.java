@@ -117,7 +117,7 @@ public class LoginLogService {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码
-        String fileName = URLEncoder.encode(startTimeStr + "至" + endTime + "的登录日志", "UTF-8").replaceAll("\\+", "%20");
+        String fileName = URLEncoder.encode(startTimeStr + "至" + endTimeStr + "的登录日志", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
         EasyExcel.write(response.getOutputStream(), LoginLogExport.class).sheet("sheet1").doWrite(loginLogExportList);
     }

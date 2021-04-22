@@ -64,6 +64,16 @@ public class ReceptionLoginService {
             return RespResult.fail("密码不正确");
         }
 
+        //判断状态，1正常，2禁用，3已删除
+        Integer status = user.getStatus();
+        if(status == 2){
+            return RespResult.fail(10001,"你的账号已经被禁用，请联系管理员！！");
+        }else if(status == 3){
+            return RespResult.fail(10001,"你的账号已经被删除，请联系管理员！！");
+        }else if(status == 0){
+            return RespResult.fail(10001,"你的账号已经还没审核通过！！");
+        }
+
         //生成token,设置redis
         String token = UUID.randomUUID().toString();
         UserToken userToken = new UserToken();

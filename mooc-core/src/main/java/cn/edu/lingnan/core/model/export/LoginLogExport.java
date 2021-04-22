@@ -15,27 +15,27 @@ import java.util.Date;
 @Data
 public class LoginLogExport {
 
-    @ExcelProperty(value = "管理员账号",index = 14)
+    @ExcelProperty(value = "管理员账号",index = 0)
     @ColumnWidth(value = 20)
     private String account;
 
-    @ExcelProperty(value = "日志名",index = 14)
+    @ExcelProperty(value = "日志名",index = 1)
     @ColumnWidth(value = 20)
     private String logName;
 
-    @ExcelProperty(value = "是否成功",index = 14)
+    @ExcelProperty(value = "是否成功",index = 2)
     @ColumnWidth(value = 20)
     private String succeed;
 
-    @ExcelProperty(value = "具体消息",index = 14)
+    @ExcelProperty(value = "具体消息",index = 3)
     @ColumnWidth(value = 20)
     private String message;
 
-    @ExcelProperty(value = "登录ip",index = 14)
+    @ExcelProperty(value = "登录ip",index = 4)
     @ColumnWidth(value = 20)
     private String ip;
 
-    @ExcelProperty(value = "创建时间",index = 15)
+    @ExcelProperty(value = "创建时间",index = 5)
     @ColumnWidth(value = 20)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;

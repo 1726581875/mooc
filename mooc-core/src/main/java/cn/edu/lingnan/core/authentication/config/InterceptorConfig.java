@@ -42,6 +42,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/comment/listCommentDetail");
         //放行登录页logo
         excludePathList.add("/admin/logo/loginLogo");
+        //登录日志导出接口
+        excludePathList.add("/admin/loginLogs/export");
+        excludePathList.add("/admin/ipBlacklists/export");
+        excludePathList.add("/admin/ipBlacklists/import");
 
         //放行/error
         excludePathList.add("/error");
