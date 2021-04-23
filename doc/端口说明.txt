@@ -1,7 +1,6 @@
 mooc-eureka 注册中心 8888
 mooc-core 核心服务 9001
 mooc-file 文件服务 9002
-mooc-scheduled-job 定时任务服务 9003
 mooc-message 消息服务 9004
 mooc-statistics 统计报表服务 9005
 mooc-gateway 网关服务 9090

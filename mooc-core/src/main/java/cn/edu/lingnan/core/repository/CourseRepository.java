@@ -24,8 +24,8 @@ public interface CourseRepository extends JpaRepository<Course, Integer>,JpaSpec
      * @param pageable 分页参数
      * @return
      */
-    @Query(value="select c.* from course c,course_tag_rel r where c.id = r.course_id and r.tag_id in (?1) group by c.id"
-            ,countQuery = "select count(c.id) from course c,course_tag_rel r where c.id = r.course_id and r.tag_id in (?1) group by c.id",nativeQuery=true)
+    @Query(value="select c.* from course c,course_tag_rel r where c.id = r.course_id and c.status=1 and r.tag_id in (?1) group by c.id"
+            ,countQuery = "select count(c.id) from course c,course_tag_rel r where c.id = r.course_id and c.status=1 and r.tag_id in (?1) group by c.id",nativeQuery=true)
     Page<Course> findCourseByTagList(List<Integer> tagIdList, Pageable pageable);
 
 }
