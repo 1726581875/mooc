@@ -122,7 +122,7 @@ public class OnlineService {
         //获取在线管理员id,webSock推送消息
         if(!CollectionUtils.isEmpty(managerAccountList)){
             List<Integer> managerIdList = managerDAO.findManagerIdByAccountList(managerAccountList);
-            noticeServiceClient.sendOfflineNotice(UserTokenUtil.createToken(),managerIdList,false);
+            noticeServiceClient.sendOfflineNotice(UserTokenUtil.createToken(),managerIdList,true);
 
         }
 
