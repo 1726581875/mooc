@@ -313,7 +313,8 @@ public class CourseService {
      */
     public Integer deleteAllByIds(List<Integer> courseIdList){
         List<Course> delCourseList = courseRepository.findAllById(courseIdList);
-        courseRepository.deleteInBatch(delCourseList);
+        delCourseList.forEach(course -> course.setStatus(3));
+        courseRepository.saveAll(delCourseList);
         return delCourseList.size();
     }
 

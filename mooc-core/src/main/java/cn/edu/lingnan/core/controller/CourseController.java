@@ -4,13 +4,19 @@ import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.param.reception.QueryCourseParam;
+import cn.edu.lingnan.core.repository.CourseRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
+import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author xmz
@@ -23,6 +29,8 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+    @Resource
+    private CourseRepository courseRepository;
 
 
     @PostMapping("/changeStatus")
@@ -121,8 +129,14 @@ public class CourseController {
      */
     @DeleteMapping("/{id}")
     public RespResult delete(@PathVariable Integer id) {
-        Integer flag = courseService.deleteById(id);
-        if (flag == 0) {
+        Optional<Course> courseOptional = courseRepository.findById(id);
+        if(!courseOptional.isPresent()){
+            return RespResult.fail("课程不存在");
+        }
+        Course course = courseOptional.get();
+        course.setStatus(3);
+        Course c = courseRepository.save(course);
+        if (c == null) {
             return RespResult.fail("删除Course失败");
         }
         return RespResult.success("删除Course成功");
