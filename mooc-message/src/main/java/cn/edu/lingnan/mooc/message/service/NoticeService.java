@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author xmz
+ * @date: 2020/4/28
+ */
 @Slf4j
 @Service
 public class NoticeService {

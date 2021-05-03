@@ -34,7 +34,7 @@ public class Notice {
      */
     private Integer type;
     /**
-     * 消息类型,1新增课程，2课程提问，3评论回复，4、系统通知, 5已回复
+     * 消息类型,1新增课程，2课程提问，3评论回复，4、系统通知, 5已回复, 6下线通知
      */
     private Integer flag;
     /**

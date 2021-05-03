@@ -31,6 +31,14 @@ spring:
     host: localhost
     port: 6379
     password: root
+  #rabbitmq配置
+  rabbitmq:
+    host: localhost
+    virtual-host: xmz
+    port: 5672
+    username: guest
+    password: guest
+
   #时间格式化
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -52,6 +60,11 @@ logging:
           mooc:
             message:
               mapper: trace
+
+#配置队列名
+constant:
+  mq:
+    messageQueue: mooc.mq.messageQueue
 
 
 
