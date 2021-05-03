@@ -140,7 +140,7 @@ public class CourseService {
      * @return
      */
     private CourseSearchVO setCourseSearchVO(CourseSearchVO courseSearchVO,Map<Integer,Course> courseMap, Map<Integer,String> teacherNameMap){
-        Course course = courseMap.get(courseSearchVO.getCourseId());
+        Course course = courseMap.getOrDefault(courseSearchVO.getCourseId(),new Course());
         //课程图片
         courseSearchVO.setCourseImage(course.getImage());
         //设置课程创建时间

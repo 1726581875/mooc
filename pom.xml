@@ -15,7 +15,6 @@
         <module>mooc-core</module>
         <module>mooc-common</module>
         <module>mooc-file</module>
-        <module>mooc-scheduled-job</module>
         <module>mooc-message</module>
         <module>mooc-gateway</module>
         <module>mooc-authorize</module>

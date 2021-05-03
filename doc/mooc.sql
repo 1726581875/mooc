@@ -221,7 +221,7 @@ CREATE TABLE `mooc_file`
 DROP TABLE IF EXISTS `login_log`;
 CREATE TABLE `login_log`
 (
-    `id`          bigint       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `id`          int       NOT NULL AUTO_INCREMENT COMMENT '主键',
     `log_name`    varchar(255) NOT NULL COMMENT '日志名称',
     `account`     varchar(50)  NOT NULL COMMENT '管理员账号',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -230,9 +230,7 @@ CREATE TABLE `login_log`
     `ip`          varchar(255)          DEFAULT NULL COMMENT '登录ip',
     `system_type` varchar(255)          DEFAULT NULL COMMENT '系统类型',
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 8793
-  DEFAULT CHARSET = utf8 COMMENT ='登录日志表';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='登录日志表';
 
 -- 课程监控记录表
 DROP TABLE IF EXISTS `course_monitor_record`;
