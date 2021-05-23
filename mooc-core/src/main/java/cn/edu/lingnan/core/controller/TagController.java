@@ -13,7 +13,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/tags")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class TagController {
 
     @Autowired

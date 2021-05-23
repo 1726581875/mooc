@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/comment")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class ReceptionCommentController {
 
     @Autowired

@@ -32,7 +32,6 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/admin/ipBlacklists")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class IpBlacklistController {
 
     @Autowired

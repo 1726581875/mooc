@@ -13,7 +13,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/managerRoleRels")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class ManagerRoleRelController {
 
     @Autowired

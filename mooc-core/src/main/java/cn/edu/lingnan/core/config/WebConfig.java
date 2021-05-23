@@ -12,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author xmz
  * @date: 2020/11/15
@@ -39,10 +42,13 @@ public class WebConfig implements WebMvcConfigurer{
      */
     @Bean
     public CorsFilter corsFilter() {
+        List<String> allowOrigins = new ArrayList<>();
+        allowOrigins.add("http://localhost:8080");
+        allowOrigins.add("http://localhost:8081");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
+        config.setAllowedOrigins(allowOrigins);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

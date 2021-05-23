@@ -13,7 +13,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/moocResources")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MoocResourceController {
 
     @Autowired

@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/admin/chapters")
-@CrossOrigin(allowedHeaders = "*", allowCredentials = "true")
 public class ChapterController {
 
     @Autowired

@@ -16,7 +16,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/categorys")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class CategoryController {
 
     @Autowired

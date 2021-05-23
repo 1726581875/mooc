@@ -15,7 +15,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/moocManagers")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MoocManagerController {
 
     @Autowired

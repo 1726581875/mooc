@@ -13,7 +13,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/sections")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class SectionController {
 
     @Autowired

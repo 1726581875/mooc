@@ -15,7 +15,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/monitorRecords")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MonitorRecordController {
 
     @Autowired

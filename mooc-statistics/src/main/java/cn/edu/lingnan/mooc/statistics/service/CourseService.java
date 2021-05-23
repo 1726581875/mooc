@@ -155,9 +155,9 @@ public class CourseService {
         if(StringUtils.isEmpty(courseSearchVO.getSummary())){
             String summary = course.getSummary();
             //截取40个字符
-            int limit = 40;
+            int limit = 100;
             String summary2 = (StringUtils.isEmpty(summary) || summary.length() <= limit)
-                    ? summary : summary.substring(limit) + "...";
+                    ? summary : summary.substring(0,limit) + "...";
             courseSearchVO.setSummary(summary2);
         }else {
             //看看是否需要设置 "..."

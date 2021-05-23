@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/admin/menu")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MenuTreeController {
 
     @Autowired

@@ -8,6 +8,7 @@ import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

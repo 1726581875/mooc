@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/admin/loginLogs")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class LoginLogController {
 
     @Autowired

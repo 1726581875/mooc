@@ -24,7 +24,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/admin/courses")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class CourseController {
 
     @Autowired
