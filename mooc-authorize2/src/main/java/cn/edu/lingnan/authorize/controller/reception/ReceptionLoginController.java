@@ -1,8 +1,8 @@
 package cn.edu.lingnan.authorize.controller.reception;
 
-import cn.edu.lingnan.authorize.param.LoginParam;
+import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.model.UserToken;
-import cn.edu.lingnan.authorize.param.RegisterParam;
+import cn.edu.lingnan.authorize.model.param.RegisterParam;
 import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.service.reception.ReceptionLoginService;
 import cn.edu.lingnan.authorize.util.RedisUtil;

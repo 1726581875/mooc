@@ -1,14 +1,12 @@
 package cn.edu.lingnan.authorize.service.reception;
 
 import cn.edu.lingnan.authorize.constant.UserConstant;
-import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.UserDAO;
-import cn.edu.lingnan.authorize.model.MoocUser;
-import cn.edu.lingnan.authorize.param.LoginParam;
-import cn.edu.lingnan.authorize.model.MoocManager;
-import cn.edu.lingnan.authorize.model.OnlineUser;
+import cn.edu.lingnan.authorize.model.entity.MoocUser;
+import cn.edu.lingnan.authorize.model.param.LoginParam;
+import cn.edu.lingnan.authorize.model.entity.OnlineUser;
 import cn.edu.lingnan.authorize.model.UserToken;
-import cn.edu.lingnan.authorize.param.RegisterParam;
+import cn.edu.lingnan.authorize.model.param.RegisterParam;
 import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.authorize.util.RsaUtil;

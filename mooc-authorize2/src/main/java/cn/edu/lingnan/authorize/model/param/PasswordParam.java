@@ -1,4 +1,4 @@
-package cn.edu.lingnan.authorize.param;
+package cn.edu.lingnan.authorize.model.param;
 
 import lombok.Data;
 

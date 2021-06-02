@@ -1,8 +1,8 @@
 package cn.edu.lingnan.authorize.controler;
 
+import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.BaseMvcTest;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
-import cn.edu.lingnan.authorize.param.LoginParam;
 import cn.edu.lingnan.authorize.service.AuthorizeService;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;

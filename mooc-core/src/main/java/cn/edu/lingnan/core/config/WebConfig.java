@@ -44,7 +44,7 @@ public class WebConfig implements WebMvcConfigurer{
     public CorsFilter corsFilter() {
         List<String> allowOrigins = new ArrayList<>();
         allowOrigins.add("http://localhost:8080");
-        allowOrigins.add("http://localhost:8081");
+        //allowOrigins.add("http://localhost:8081");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);

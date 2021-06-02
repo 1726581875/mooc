@@ -1,4 +1,4 @@
-package cn.edu.lingnan.authorize.model;
+package cn.edu.lingnan.authorize.model.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

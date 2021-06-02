@@ -1,8 +1,8 @@
 package cn.edu.lingnan.authorize.aspect;
 
 import cn.edu.lingnan.authorize.dao.LoginLogDAO;
-import cn.edu.lingnan.authorize.model.LoginLog;
-import cn.edu.lingnan.authorize.param.LoginParam;
+import cn.edu.lingnan.authorize.model.entity.LoginLog;
+import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.model.UserToken;
 import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;

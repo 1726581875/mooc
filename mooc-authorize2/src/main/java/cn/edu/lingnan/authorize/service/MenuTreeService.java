@@ -2,8 +2,8 @@ package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
-import cn.edu.lingnan.authorize.model.MenuTree;
-import cn.edu.lingnan.authorize.model.MenuTreeDTO;
+import cn.edu.lingnan.authorize.model.entity.MenuTree;
+import cn.edu.lingnan.authorize.model.vo.MenuTreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

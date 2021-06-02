@@ -5,7 +5,7 @@ import cn.edu.lingnan.authorize.client.NoticeServiceClient;
 import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.UserDAO;
-import cn.edu.lingnan.authorize.model.OnlineUser;
+import cn.edu.lingnan.authorize.model.entity.OnlineUser;
 import cn.edu.lingnan.authorize.util.PageUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;

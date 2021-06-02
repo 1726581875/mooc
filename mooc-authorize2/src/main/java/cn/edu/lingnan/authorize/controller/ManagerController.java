@@ -1,7 +1,7 @@
 package cn.edu.lingnan.authorize.controller;
 
 import cn.edu.lingnan.authorize.authentication.util.UserUtil;
-import cn.edu.lingnan.authorize.param.PasswordParam;
+import cn.edu.lingnan.authorize.model.param.PasswordParam;
 import cn.edu.lingnan.authorize.service.ManagerService;
 import cn.edu.lingnan.authorize.service.reception.ReceptionUserService;
 import cn.edu.lingnan.mooc.common.model.RespResult;

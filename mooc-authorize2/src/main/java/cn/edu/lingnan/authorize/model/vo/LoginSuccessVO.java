@@ -1,4 +1,4 @@
-package cn.edu.lingnan.authorize.model;
+package cn.edu.lingnan.authorize.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
