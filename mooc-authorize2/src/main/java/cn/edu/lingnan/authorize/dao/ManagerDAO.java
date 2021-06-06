@@ -105,11 +105,9 @@ public class ManagerDAO extends BaseDAO {
     }
 
     public void batchDeleteManager(List<Long> managerIdList){
-/*        String sql=  "delete from mooc_manager where id in ("
-                + accountList.stream().map(e->"'" + e + "'").collect(Collectors.joining(",")) + ")";
-        List<Object[]> batchArgs = new ArrayList<>();
-        managerRoleRels.forEach(e -> batchArgs.add(new Object[]{e.getManagerId(),e.getRoleId()}));
-        jdbcTemplate.batchUpdate(sql, batchArgs);*/
+        String sql=  "delete from mooc_manager where id in ("
+                + managerIdList.stream().map(e->"?").collect(Collectors.joining(",")) + ")";
+        jdbcTemplate.queryForList(sql, new Object[]{managerIdList});
     }
 
     /**
@@ -137,9 +135,9 @@ public class ManagerDAO extends BaseDAO {
 
         List<Integer> idList = new ArrayList<>();
         String sql = "select id from mooc_manager where account in ("
-                + accountList.stream().map(e->"'" + e + "'").collect(Collectors.joining(",")) + ")";
+                + accountList.stream().map(e->"?").collect(Collectors.joining(",")) + ")";
         try {
-            idList = jdbcTemplate.queryForList(sql, Integer.class);
+            idList = jdbcTemplate.queryForList(sql,new Object[]{accountList},Integer.class);
         }catch (Exception e){
             log.warn("==根据账号查询数据库id list失败，accountList{} ,errmsg={}",accountList,e.getMessage());
         }
