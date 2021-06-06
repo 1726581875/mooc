@@ -1,6 +1,7 @@
 package cn.edu.lingnan.authorize.dao;
 
 import cn.edu.lingnan.authorize.model.entity.MoocManager;
+import cn.edu.lingnan.mooc.common.model.PageVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,4 +39,15 @@ public class ManagerDAOTest {
         managerDAO.save(manager);
 
     }
+
+    @Test
+    public void findManagePageTest(){
+        Integer pageIndex = 1;
+        Integer pageSize = 10;
+        String queryStr = "";
+        PageVO<MoocManager> managePage = managerDAO.findManagePage(queryStr, pageIndex, pageSize);
+        System.out.println(managePage);
+    }
+
+
 }
