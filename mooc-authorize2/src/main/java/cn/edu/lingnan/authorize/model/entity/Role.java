@@ -1,43 +1,36 @@
 package cn.edu.lingnan.authorize.model.entity;
 
-/**
- * @author xmz
- * @date: 2020/11/22
- */
+import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Date;
+
+@Data
+@DynamicInsert
+@DynamicUpdate
+@Entity(name = "role")
 public class Role {
-
+    // 角色ID   
+    @Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
+    // 角色名称   
     private String name;
+    // 创建时间   
+    private Date createTime;
+    // 修改时间   
+    private Date updateTime;
 
     public Role(){}
 
-    public Role(long id,String name){
+    public Role(Long id, String name){
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

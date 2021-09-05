@@ -1,6 +1,4 @@
 package cn.edu.lingnan.authorize.config;
-
-import cn.edu.lingnan.authorize.interceptor.LoginInterceptor;
 import cn.edu.lingnan.authorize.util.SpringContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,15 +14,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig  implements WebMvcConfigurer {
-
-    @Autowired
-    private LoginInterceptor loginInterceptor;
-
-
-/*    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor);
-    }*/
 
     @Bean
     public SpringContextHolder springContextHolder() {

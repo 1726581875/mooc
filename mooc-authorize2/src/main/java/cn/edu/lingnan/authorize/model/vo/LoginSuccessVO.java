@@ -25,6 +25,6 @@ public class LoginSuccessVO {
 
     private Integer userId;
 
-    private List<MenuTreeDTO> menuList;
+    private List<UserMenuTreeVO> menuList;
 
 }

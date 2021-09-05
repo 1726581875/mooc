@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class MenuTreeDTO {
+public class UserMenuTreeVO {
 
     /**
      * id
@@ -36,6 +36,6 @@ public class MenuTreeDTO {
     /**
      * 子菜单
      */
-    private List<MenuTreeDTO> subs;
+    private List<UserMenuTreeVO> subs;
 
 }

@@ -31,7 +31,7 @@ public class RoleDAO extends BaseDAO{
     public List<Role> findAllRoleByManagerId(Long managerId){
         String querySql = "select r.* from manager_role_rel mrr,role r where r.id = mrr.role_id and mrr.manager_id = ?";
         return jdbcTemplate.query(querySql,new Object[]{managerId}
-        ,(resultSet,i)-> new Role(resultSet.getInt("id"),resultSet.getString("name")));
+        ,(resultSet,i)-> new Role(resultSet.getLong("id"),resultSet.getString("name")));
     }
 
     public void saveAll(List<Role> roleList){
