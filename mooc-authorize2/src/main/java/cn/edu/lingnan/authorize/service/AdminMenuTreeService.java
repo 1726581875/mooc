@@ -55,7 +55,7 @@ public class AdminMenuTreeService {
         menuTreeDTOList.forEach(menuDTO -> {
             List<MenuTreeDTO> childrenList = new ArrayList<>();
             menuList.forEach(menu -> {
-                if(menuDTO.getId() == menu.getParentId()){
+                if(menuDTO.getId().equals(menu.getParentId())){
                     childrenList.add(CopyUtil.copy(menu,menuDTO.getClass()));
                 }
             });
