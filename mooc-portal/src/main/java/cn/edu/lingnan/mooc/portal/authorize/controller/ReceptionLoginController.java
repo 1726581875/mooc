@@ -1,6 +1,10 @@
 package cn.edu.lingnan.mooc.portal.authorize.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.portal.authorize.model.UserToken;
+import cn.edu.lingnan.mooc.portal.authorize.model.param.LoginParam;
+import cn.edu.lingnan.mooc.portal.authorize.model.param.RegisterParam;
+import cn.edu.lingnan.mooc.portal.authorize.service.AuthorizeService;
 import cn.edu.lingnan.mooc.portal.authorize.service.ReceptionLoginService;
 import cn.edu.lingnan.mooc.portal.authorize.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +27,10 @@ public class ReceptionLoginController {
 
     @Autowired
     private ReceptionLoginService receptionLoginService;
+
     @Autowired
     private AuthorizeService authorizeService;
+
     /**
      * 前台用户登录方法
      * @param loginParam
@@ -65,7 +71,6 @@ public class ReceptionLoginController {
 
     @GetMapping("/loginOut")
     public RespResult loginOut(HttpServletRequest request){
-        // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
         if(token == null){
             return RespResult.success("登出成功");
@@ -74,7 +79,6 @@ public class ReceptionLoginController {
         if(token == null || userToken == null){
             return RespResult.fail("token失效");
         }
-        // 删除token/在线信息
         authorizeService.delRedisTokenOnline(userToken.getAccount());
         return RespResult.success("登出成功");
     }
@@ -87,7 +91,6 @@ public class ReceptionLoginController {
     @GetMapping("/isLogin")
     public RespResult isLogin(HttpServletRequest request){
 
-        // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
         if(token == null){
             return RespResult.success(false);

@@ -11,11 +11,17 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RespResult {
-    // 状态码
+    /**
+     * 状态码 200表示成功
+     */
     private Integer status;
-    // 状态信息
+    /**
+     * 状态信息
+     */
     private String msg;
-    // 数据内容
+    /**
+     * 数据内容
+     */
     private Object data;
 
     public RespResult() {}

@@ -1,19 +1,40 @@
 package cn.edu.lingnan.mooc.common.exception;
 
+import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
+
 /**
  * @author xmz
  * @date: 2020/11/29
  */
-public interface MoocException {
-     int getCode();
-     String getMsg();
-     MoocException setMsg(String errMsg);
+public class MoocException extends RuntimeException implements BaseException {
 
-    default String getDefaultMsg(){
-        return "未知异常";
+    private int code;
+
+    private String msg;
+
+
+    public MoocException(int code, String msg){
+        this.code = code;
+        this.msg = msg;
     }
-    default int getDefaultCode(){
-        return -1;
+
+    public MoocException(ExceptionEnum exceptionEnum){
+        this(exceptionEnum.getCode(), exceptionEnum.getMsg());
     }
+
+    public MoocException(String msg){
+        this(ExceptionEnum.KNOWN_ERROR.getCode(), msg);
+    }
+
+    @Override
+    public int getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMsg() {
+        return msg;
+    }
+
 
 }

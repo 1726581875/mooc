@@ -13,6 +13,7 @@
 
 
     <dependencies>
+
         <!-- spring boot web 基础依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,6 +35,16 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!-- 使用spring-jdbc  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <!-- 使用spring-data-jpa  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <dependency>
@@ -63,11 +74,6 @@
             <version>0.4</version>
         </dependency>
 
-        <!-- 使用spring-data-jpa  -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
 
     </dependencies>
 
