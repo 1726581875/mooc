@@ -23,7 +23,7 @@ public class NoticeController {
      * @return
      */
     @GetMapping("/count")
-    public RespResult getUnReadMessageCount(@RequestParam(value = "status",defaultValue = "0") Integer status){
+    public RespResult getUnReadMessageCount(@RequestParam(value = "status", defaultValue = "0") Integer status){
         return RespResult.success(noticeService.getUnReadNoticeNum(status));
     }
 

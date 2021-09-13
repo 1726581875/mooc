@@ -5,7 +5,6 @@ import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.portal.authorize.constant.UserConstant;
 import cn.edu.lingnan.mooc.portal.authorize.model.UserToken;
-import cn.edu.lingnan.mooc.portal.authorize.model.dao.UserDAO;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.OnlineUser;
 import cn.edu.lingnan.mooc.portal.authorize.model.enums.UserStatusEnum;
@@ -14,9 +13,11 @@ import cn.edu.lingnan.mooc.portal.authorize.model.param.RegisterParam;
 import cn.edu.lingnan.mooc.portal.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.mooc.portal.authorize.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.util.RsaUtil;
+import cn.edu.lingnan.mooc.portal.dao.MoocUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,10 +25,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author xmz
@@ -40,8 +38,10 @@ public class ReceptionLoginService {
 
     @Value("${mooc.rsa.privateKey}")
     private String RSA_PRI_KEY;
+
     @Resource
-    private UserDAO userDAO;
+    private MoocUserRepository moocUserRepository;
+
     @Value("${mooc.login.expire.time:1800}")
     private Integer LOGIN_EXPIRE_TIME;
 
@@ -108,11 +108,11 @@ public class ReceptionLoginService {
 
 
     private MoocUser getUserByAccount(String account) {
-        MoocUser user = userDAO.findUserByAccount(account);
-        if (user == null) {
+        Optional<MoocUser> userOptional = moocUserRepository.findOne(Example.of(new MoocUser().setAccount(account)));
+        if (!userOptional.isPresent()) {
             throw new MoocException("账号不存在");
         }
-        return user;
+        return userOptional.get();
     }
 
     private void checkUserStatus(Integer status) {
@@ -125,15 +125,18 @@ public class ReceptionLoginService {
         if (user == null) {
             throw new MoocException("账号不存在");
         }
-        String decryptPassword = "";
-        try {
-            decryptPassword = RsaUtil.decryptByPrivateKey(RSA_PRI_KEY, loginParam.getPassword());
-        } catch (Exception e) {
-            log.error("密码解密失败", e);
-            throw new MoocException(ExceptionEnum.KNOWN_ERROR);
-        }
+        String decryptPassword = getDecryptString(loginParam.getPassword());
         if (!BCrypt.checkpw(decryptPassword, user.getPassword())) {
             throw new MoocException("密码不正确");
+        }
+    }
+
+    private String getDecryptString(String str){
+        try {
+            return RsaUtil.decryptByPrivateKey(RSA_PRI_KEY, str);
+        } catch (Exception e) {
+            log.error("解密失败, str={}, key={}",str,RSA_PRI_KEY, e);
+            throw new MoocException(ExceptionEnum.KNOWN_ERROR);
         }
     }
 
@@ -144,31 +147,21 @@ public class ReceptionLoginService {
      * @param registerParam
      * @return
      */
-    public RespResult register(RegisterParam registerParam) {
+    public void register(RegisterParam registerParam) {
 
-        MoocUser user = userDAO.findUserByAccount(registerParam.getAccount());
-        if (user != null) {
-            return RespResult.fail("账号已存在");
+        Optional<MoocUser> userOptional = moocUserRepository.findOne(Example.of(new MoocUser().setAccount(registerParam.getAccount())));
+        if (userOptional.isPresent()) {
+            throw new MoocException("账号已存在");
         }
-        String confirmPassword = null;
-        String password = null;
-        //密码进行解密，rsa算法使用私钥解密
-        try {
-            confirmPassword = RsaUtil.decryptByPrivateKey(RSA_PRI_KEY, registerParam.getConfirmPassword());
-            password = RsaUtil.decryptByPrivateKey(RSA_PRI_KEY, registerParam.getPassword());
-        } catch (Exception e) {
-            log.info("密码解密失败", e);
-            return RespResult.failUnKnownError();
-        }
+        String confirmPassword = getDecryptString(registerParam.getConfirmPassword());
+        String password = getDecryptString(registerParam.getPassword());
         //密码是否与确认密码相等
         if (!confirmPassword.equals(password)) {
-            return RespResult.fail("两次输入密码不一致");
+            throw new MoocException("两次输入密码不一致");
         }
-
         //插入用户信息
         MoocUser moocUser = this.createUser(registerParam, password);
-        userDAO.save(moocUser);
-        return RespResult.success();
+        moocUserRepository.save(moocUser);
     }
 
 
@@ -181,7 +174,6 @@ public class ReceptionLoginService {
         } else {
             moocUser.setName("用户" + random.nextInt(123456));
         }
-
         //如果是教师角色，需要插入用户状态为0，表示未审批
         if ("教师".equals(registerParam.getUserType())) {
             moocUser.setStatus(0);
@@ -192,6 +184,22 @@ public class ReceptionLoginService {
         moocUser.setUserType(registerParam.getUserType());
         moocUser.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         return moocUser;
+    }
+
+    /**
+     * 登出
+     * @param account
+     */
+    public void delRedisTokenOnline(String account){
+        // 删除用户在线息
+        RedisUtil.delete(UserConstant.ONLINE_USER_PREFIX + account);
+        String token = RedisUtil.get(account);
+        if(token != null){
+            // 删除用户token, 登录信息
+            RedisUtil.delete(token);
+        }
+        // 删除账户、token关联
+        RedisUtil.delete(account);
     }
 
 

@@ -1,12 +1,11 @@
 package cn.edu.lingnan.mooc.portal.authorize.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.portal.authorize.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.LoginParam;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.RegisterParam;
-import cn.edu.lingnan.mooc.portal.authorize.service.AuthorizeService;
 import cn.edu.lingnan.mooc.portal.authorize.service.ReceptionLoginService;
-import cn.edu.lingnan.mooc.portal.authorize.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -28,8 +27,6 @@ public class ReceptionLoginController {
     @Autowired
     private ReceptionLoginService receptionLoginService;
 
-    @Autowired
-    private AuthorizeService authorizeService;
 
     /**
      * 前台用户登录方法
@@ -64,8 +61,8 @@ public class ReceptionLoginController {
      */
     @PostMapping("/register")
     public RespResult register(@RequestBody RegisterParam registerParam){
-
-        return receptionLoginService.register(registerParam);
+         receptionLoginService.register(registerParam);
+         return RespResult.success();
     }
 
 
@@ -79,7 +76,7 @@ public class ReceptionLoginController {
         if(token == null || userToken == null){
             return RespResult.fail("token失效");
         }
-        authorizeService.delRedisTokenOnline(userToken.getAccount());
+        receptionLoginService.delRedisTokenOnline(userToken.getAccount());
         return RespResult.success("登出成功");
     }
 

@@ -4,20 +4,21 @@ package cn.edu.lingnan.mooc.message.menus;
  * @author xmz
  * @date: 2021/04/09
  */
-public enum NoticeTypeEnum {
+public enum UserTypeEnum {
+
 
     /**
-     * 消息类型,1新增课程，2课程提问，3评论回复，4、系统通知
+     * 这条消息属于管理员
      */
-    CREATE_COURSE(1),
-
-    QUESTION(2),
-    REPLY(3),
-    SYSTEM(4);
+    MANAGER(1),
+    /**
+     * 这条消息属于用户
+     */
+    USER(2);
 
     private Integer type;
 
-    private NoticeTypeEnum(Integer type){
+    private UserTypeEnum(Integer type){
         this.type = type;
     }
 

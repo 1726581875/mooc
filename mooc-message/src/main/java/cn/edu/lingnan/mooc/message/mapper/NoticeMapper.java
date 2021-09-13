@@ -13,16 +13,18 @@ import java.util.List;
 public interface NoticeMapper {
 
     /**
+     * 统计用户消息数
      * @param userId
      * @return
      */
-     int countUnReadNoticeByUserId(@Param("userId") Integer userId,@Param("status") Integer status);
+     int countUnReadNoticeByUserId(@Param("userId") Integer userId, @Param("status") Integer status);
 
     /**
+     * 统计管理员未读消息数
      * @param managerId
      * @return
      */
-    int countUnReadNoticeByManagerId(@Param("managerId") Integer managerId,@Param("status") Integer status);
+    int countUnReadNoticeByManagerId(@Param("managerId") Integer managerId, @Param("status") Integer status);
 
     /**
      * 获取通知List

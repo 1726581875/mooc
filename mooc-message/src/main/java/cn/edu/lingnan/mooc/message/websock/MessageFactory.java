@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.message.websock;
 
-import cn.edu.lingnan.mooc.message.menus.NoticeFlagEnum;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
+import cn.edu.lingnan.mooc.message.menus.UserTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class MessageFactory {
         notice.setCommentId(null);
         notice.setReplyId(null);
         notice.setAcceptId(acceptId);
-        notice.setType(type);
-        notice.setFlag(NoticeFlagEnum.SYSTEM.getFlag());
+        notice.setUserType(type);
+        notice.setType(NoticeTypeEnum.SYSTEM.getType());
         notice.setSendId(senderId);
         notice.setContent("【系统通知】 " + content);
         return notice;
@@ -42,8 +42,8 @@ public class MessageFactory {
         notice.setCommentId(null);
         notice.setReplyId(null);
         notice.setAcceptId(null);
-        notice.setType(NoticeTypeEnum.MANAGER.getType());
-        notice.setFlag(NoticeFlagEnum.CREATE_COURSE.getFlag());
+        notice.setUserType(UserTypeEnum.MANAGER.getType());
+        notice.setType(NoticeTypeEnum.CREATE_COURSE.getType());
         notice.setSendId(senderId);
         notice.setContent("【新增课程】 " + content);
         return notice;
@@ -64,8 +64,8 @@ public class MessageFactory {
         notice.setCommentId(commentId);
         notice.setReplyId(null);
         notice.setAcceptId(acceptId);
-        notice.setType(NoticeTypeEnum.USER.getType());
-        notice.setFlag(NoticeFlagEnum.QUESTION.getFlag());
+        notice.setUserType(UserTypeEnum.USER.getType());
+        notice.setType(NoticeTypeEnum.QUESTION.getType());
         notice.setSendId(senderId);
         notice.setContent("【课程提问】 " + content);
         return notice;
@@ -77,8 +77,8 @@ public class MessageFactory {
         notice.setCommentId(commentId);
         notice.setReplyId(replyId);
         notice.setAcceptId(acceptId);
-        notice.setType(NoticeTypeEnum.USER.getType());
-        notice.setFlag(NoticeFlagEnum.REPLY.getFlag());
+        notice.setUserType(UserTypeEnum.USER.getType());
+        notice.setType(NoticeTypeEnum.REPLY.getType());
         notice.setSendId(senderId);
         notice.setContent("【回复消息】 " + content);
         return notice;

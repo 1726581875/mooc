@@ -8,11 +8,9 @@ import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.model.vo.NoticeVO;
 import cn.edu.lingnan.mooc.message.model.vo.ReplyNoticeVO;
-import cn.edu.lingnan.mooc.message.repository.NoticeRepository;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,8 +24,6 @@ import java.util.List;
 @Service
 public class NoticeService {
 
-    @Autowired
-    private NoticeRepository noticeRepository;
     @Resource
     private NoticeMapper noticeMapper;
 
@@ -47,7 +43,7 @@ public class NoticeService {
             return noticeMapper.countUnReadNoticeByUserId(userId,status);
         }
 
-        return noticeMapper.countUnReadNoticeByManagerId(userId,status);
+        return noticeMapper.countUnReadNoticeByManagerId(userId, status);
     }
 
     /**

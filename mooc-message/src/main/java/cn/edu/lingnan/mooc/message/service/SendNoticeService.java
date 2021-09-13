@@ -46,12 +46,12 @@ public class SendNoticeService {
             return;
         }
 
-        if (notice.getFlag() == null) {
+        if (notice.getType() == null) {
             log.error("===== message type cannot be null. notice={} ======", notice);
             return;
         }
         //根据不同消息类型发送消息
-        int flag = notice.getFlag();
+        int flag = notice.getType();
         switch (flag) {
             case 1:
                 //创建课程通知
@@ -70,7 +70,7 @@ public class SendNoticeService {
                 List<Integer> userIdList = new ArrayList<>(1);
                 userIdList.add(notice.getAcceptId());
                 //判断类型
-                boolean isManager = notice.getType() != null && notice.getType() == 1 ? true : false;
+                boolean isManager = notice.getUserType() != null && notice.getUserType() == 1 ? true : false;
                 this.sendOfflineNotice(userIdList,isManager);
                 break;
             default:

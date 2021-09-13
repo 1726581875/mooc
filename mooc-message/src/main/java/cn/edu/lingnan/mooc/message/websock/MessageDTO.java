@@ -1,6 +1,5 @@
 package cn.edu.lingnan.mooc.message.websock;
 
-import lombok.Data;
 
 /**
  * @author xmz
