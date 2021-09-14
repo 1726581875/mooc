@@ -26,7 +26,7 @@ public class UserDAO extends BaseDAO {
 
         @Override
         public MoocUser mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new MoocUser().setId(resultSet.getInt("id"))
+            return new MoocUser().setId(resultSet.getLong("id"))
                     .setName(resultSet.getString("name"))
                     .setAccount(resultSet.getString("account"))
                     .setPassword(resultSet.getString("password"))

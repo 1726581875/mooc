@@ -4,18 +4,22 @@ import cn.edu.lingnan.authorize.constant.UserConstant;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
 import cn.edu.lingnan.authorize.dao.UserDAO;
-import cn.edu.lingnan.authorize.model.*;
 import cn.edu.lingnan.authorize.model.entity.MenuTree;
 import cn.edu.lingnan.authorize.model.entity.MoocManager;
 import cn.edu.lingnan.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.authorize.model.entity.OnlineUser;
+import cn.edu.lingnan.authorize.model.enums.AuthorizeExceptionEnum;
+import cn.edu.lingnan.authorize.model.enums.ManagerStatusEnum;
 import cn.edu.lingnan.authorize.model.vo.LoginSuccessVO;
 import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.util.HttpServletUtil;
 import cn.edu.lingnan.authorize.util.RedisUtil;
+import cn.edu.lingnan.mooc.common.exception.MoocException;
+import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.util.RsaUtil;
+import cn.edu.lingnan.mooc.common.model.UserToken;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,80 +62,50 @@ public class AuthorizeService {
     @Value("${mooc.superAdmin.password:root}")
     private String superAdminPassword;
 
-    public RespResult login(LoginParam loginParam, HttpServletRequest request){
+    public LoginSuccessVO login(LoginParam loginParam, HttpServletRequest request){
 
-        MoocManager manager = new MoocManager();
-        // 如果是超管
-        if(superAdminUsername.equals(loginParam.getUsername())){
-            manager = this.createSuperManager();
-        }else {
-            // 否则就是分管，根据输入账号查询数据库
-            manager = managerDAO.findManagerByAccount(loginParam.getUsername());
-            //todo 管理员和教师分别在不同的两张表，如果教师账号和管理员账号相同，则教师登录不了
+        // check verification code
+        checkVerificationCode(request.getSession().getId(), loginParam.getCode());
 
-            // 如果管理员表没有(则可能是教师，查询用户表)
-            if (manager == null) {
-                MoocUser moocUser = userDAO.findUserByAccount(loginParam.getUsername());
-                if(moocUser == null){
-                    return RespResult.fail("账号不存在");
-                }
-                //类型是教师才授权
-                if("教师".equals(moocUser.getUserType())){
-                    manager = createTeacherManager(moocUser);
-                }else {
-                    return RespResult.fail("账号不存在");
-                }
-            }
+        // get manager
+        MoocManager manager = getMoocManager(loginParam.getUsername(),loginParam.getType());
+        if(manager == null){
+            throw new MoocException(AuthorizeExceptionEnum.ACCOUNT_NOT_EXIST);
         }
+        // check password
+        checkPassword(manager.getPassword(), loginParam.getPassword());
 
-        // 密码进行解密，rsa算法使用私钥解密
-        String decryptPassword = "";
-        try {
-            decryptPassword = RsaUtil.decryptByPrivateKey(RSA_PRI_KEY,loginParam.getPassword());
-        } catch (Exception e) {
-            log.info("密码解密失败",e);
-            return RespResult.failUnKnownError();
-        }
-        // 数据库密码对比输入的密码
-        if(!BCrypt.checkpw(decryptPassword,manager.getPassword())){
-            return RespResult.fail("密码不正确");
-        }
+        checkStatus(manager.getStatus());
 
-        //判断状态，1正常，2禁用，3已删除
-        Integer status = manager.getStatus();
-        if(status == 2){
-            return RespResult.fail(10001,"你的账号已经被禁用，请联系管理员！！");
-        }else if(status == 3){
-            return RespResult.fail(10001,"你的账号已经被删除，请联系管理员！！");
-        }else if(status == 0){
-            return RespResult.fail(10001,"你的账号已经还没审核通过！！");
-        }
+        //
+        LoginSuccessVO loginSuccessVO = buildLoginSuccessVO(manager, request);
+
+        return loginSuccessVO;
+    }
 
 
-        //todo 写法冗余，需要去优化
-        //如果是教师
+    private LoginSuccessVO buildLoginSuccessVO(MoocManager manager, HttpServletRequest request) {
         if(manager.getAccount().startsWith("teacher-")) {
-            List<Long> teacherRoleId = new ArrayList();
-            teacherRoleId.add(1L);
-            List<MenuTree> menuList = menuTreeDAO.findMenuList(teacherRoleId);
+            // 教师权限绑定教师角色 id为1
+            List<MenuTree> menuList = menuTreeDAO.findMenuList(Arrays.asList(1L));
             List<MenuTree> teacherMenuList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
             // 拼接权限字符串
             String permissionStr = teacherMenuList.stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
-            //生成token,设置redis
+
             String token = UUID.randomUUID().toString();
             //教师类型
             Integer teacherType = 2;
-            setRedisTokenOnline(manager,teacherType, permissionStr,request,token);
+            setRedisTokenOnline(manager,teacherType, permissionStr, request, token);
 
             // 构造登录成功返回对象,教师type=2
             LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,teacherType, manager.getId().intValue(), menuTreeService.getTeacherMenuTree());
 
             //更新最近登录时间
             userDAO.updateLoginTime(manager.getId().intValue(),new Date());
-            return RespResult.success(loginSuccessVO,"登录成功");
+            return loginSuccessVO;
         }
 
-       // 拼接权限字符串
+        // 拼接权限字符串
         String permissionStr = menuTreeService.getPermission(manager.getId())
                 .stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
 
@@ -146,8 +120,71 @@ public class AuthorizeService {
 
         //更新最近登录时间
         managerDAO.updateLoginTime(manager.getId().intValue(),new Date());
-        return RespResult.success(loginSuccessVO,"登录成功");
+        return loginSuccessVO;
     }
+
+
+
+    private void checkStatus(Integer status) {
+        // 判断状态，1正常，2禁用，3已删除
+        if(ManagerStatusEnum.NORMAL.equals(status)){
+            throw new MoocException(10001,"你的账号不可用，请联系管理员！！");
+        }
+    }
+
+    /**
+     *
+     * @param password 数据库密码，BCrypt加密
+     * @param encryptPassword 输入密码，RSA加密
+     */
+    private void checkPassword(String password, String encryptPassword) {
+        String decryptPassword = getDecryptString(encryptPassword);
+        if (!BCrypt.checkpw(decryptPassword, password)) {
+            throw new MoocException("密码不正确");
+        }
+    }
+
+    private String getDecryptString(String str){
+        try {
+            return RsaUtil.decryptByPrivateKey(RSA_PRI_KEY, str);
+        } catch (Exception e) {
+            log.error("解密失败, str={}, key={}",str,RSA_PRI_KEY, e);
+            throw new MoocException(ExceptionEnum.KNOWN_ERROR);
+        }
+    }
+
+    private MoocManager getMoocManager(String account, UserToken.UserType type){
+
+        // 教师
+        if(UserToken.UserType.TEACHER.equals(type)){
+            MoocUser moocUser = userDAO.findUserByAccount(account);
+            if(moocUser == null){
+               return null;
+            }
+            if(!"教师".equals(moocUser.getUserType())){
+                throw new MoocException("您不能登录本系统");
+            }
+            return createTeacherManager(moocUser);
+        } else {
+            // 超级管理员
+            if(superAdminUsername.equals(account)){
+                return this.createSuperManager();
+            }
+            //普通管理员
+            return managerDAO.findManagerByAccount(account);
+        }
+    }
+
+
+
+
+    private void checkVerificationCode(String sessionId, String inputCode){
+        String verificationCode = RedisUtil.get(sessionId);
+        if(verificationCode == null || !verificationCode.equalsIgnoreCase(inputCode)){
+            throw new MoocException(AuthorizeExceptionEnum.INCORRECT_VERIFICATION_CODE);
+        }
+    }
+
 
     /**
      * 构造一个超管信息
@@ -157,7 +194,7 @@ public class AuthorizeService {
         MoocManager manager = new MoocManager();
         manager.setAccount(superAdminUsername);
         manager.setId(0L);
-        manager.setStatus(1);
+        manager.setStatus(ManagerStatusEnum.NORMAL.getStatus());
         manager.setName(superAdminUsername);
         manager.setPassword(BCrypt.hashpw(superAdminPassword,BCrypt.gensalt()));
         return manager;
@@ -172,7 +209,7 @@ public class AuthorizeService {
     private MoocManager createTeacherManager(MoocUser user){
         MoocManager manager = new MoocManager();
         manager.setAccount("teacher-" + user.getAccount());
-        manager.setId(Long.valueOf(user.getId()));
+        manager.setId(user.getId());
         manager.setStatus(user.getStatus());
         manager.setName(user.getName());
         manager.setPassword(user.getPassword());

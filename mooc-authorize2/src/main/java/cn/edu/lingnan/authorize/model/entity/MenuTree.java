@@ -35,8 +35,12 @@ public class MenuTree {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         MenuTree menuTree = (MenuTree) o;
         return Objects.equals(id, menuTree.id);
     }

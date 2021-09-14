@@ -14,7 +14,7 @@ import java.util.Date;
 @Accessors(chain = true)
 public class MoocUser {
 
-    private Integer id;
+    private Long id;
     // 用户头像
     private String userImage;
     // 用户昵称

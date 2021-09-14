@@ -2,6 +2,7 @@ package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.dao.RoleDAO;
+import cn.edu.lingnan.authorize.model.entity.MenuTree;
 import cn.edu.lingnan.authorize.model.vo.UserMenuTreeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,17 +113,17 @@ public class MenuTreeService {
      * @return
      */
     public List<cn.edu.lingnan.authorize.model.entity.MenuTree> getAllPermissionMenuTree(Long managerId){
-        //如果是超管
+        // 如果是超管
         if(managerId.equals(0L)){
             return menuTreeDAO.findAllMenuList();
         }
-        //获取管理员所有角色列表
+        // 获取管理员所有角色列表
         List<Long> roleIdList = roleDAO.findAllRoleIdByManagerId(managerId);
         if(CollectionUtils.isEmpty(roleIdList)){
             return new ArrayList<>();
         }
-        List<cn.edu.lingnan.authorize.model.entity.MenuTree> menuList = menuTreeDAO.findMenuList(roleIdList);
-        //去重，注意对象去重，MenuTree需要重写equals 和 hashCode方法
+        List<MenuTree> menuList = menuTreeDAO.findMenuList(roleIdList);
+        // 去重，注意对象去重，MenuTree需要重写equals 和 hashCode方法
         return new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
     }
 

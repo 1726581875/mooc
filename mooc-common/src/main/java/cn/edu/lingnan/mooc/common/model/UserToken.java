@@ -27,4 +27,6 @@ public class UserToken implements Serializable {
 
     private String permission;
 
+    public enum UserType{MANAGER, TEACHER}
+
 }
