@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @ToString
-public class ReceptionCourseVO {
+public class CourseVO {
 
     /**
      * id

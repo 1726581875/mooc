@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @date: 2021/01/31
  */
 @Service
-public class ReceptionChapterService {
+public class ChapterService {
 
     @Resource
     private ChapterRepository chapterRepository;

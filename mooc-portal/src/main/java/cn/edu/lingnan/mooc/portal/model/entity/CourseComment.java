@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.portal.model.entity;
 
+import cn.edu.lingnan.mooc.portal.model.param.CommentParam;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -43,5 +44,13 @@ public class CourseComment {
     private Date createTime;
 
     private Date updateTime;
+
+    public CourseComment build(CommentParam commentParam){
+        this.courseId = commentParam.getCourseId();
+        this.userId = commentParam.getUserId();
+        this.commentContent = commentParam.getContent();
+        this.type = commentParam.getType();
+        return this;
+    }
 
 }

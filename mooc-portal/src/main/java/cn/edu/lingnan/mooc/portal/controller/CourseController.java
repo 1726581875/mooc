@@ -2,7 +2,7 @@ package cn.edu.lingnan.mooc.portal.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.portal.model.param.QueryCourseParam;
-import cn.edu.lingnan.mooc.portal.service.ReceptionCourseService;
+import cn.edu.lingnan.mooc.portal.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/courses")
-public class ReceptionCourseController {
+public class CourseController {
     @Autowired
-    private ReceptionCourseService receptionCourseService;
+    private CourseService receptionCourseService;
 
     /**
      * 前台方法

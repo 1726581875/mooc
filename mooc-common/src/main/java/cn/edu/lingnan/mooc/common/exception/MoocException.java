@@ -18,7 +18,7 @@ public class MoocException extends RuntimeException implements BaseException {
         this.msg = msg;
     }
 
-    public MoocException(ExceptionEnum exceptionEnum){
+    public MoocException(BaseException exceptionEnum){
         this(exceptionEnum.getCode(), exceptionEnum.getMsg());
     }
 

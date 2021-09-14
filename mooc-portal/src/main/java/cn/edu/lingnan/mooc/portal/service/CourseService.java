@@ -15,7 +15,7 @@ import cn.edu.lingnan.mooc.portal.model.entity.Course;
 import cn.edu.lingnan.mooc.portal.model.entity.MonitorRecord;
 import cn.edu.lingnan.mooc.portal.model.vo.ChapterVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CourseDetailVO;
-import cn.edu.lingnan.mooc.portal.model.vo.ReceptionCourseVO;
+import cn.edu.lingnan.mooc.portal.model.vo.CourseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class ReceptionCourseService {
+public class CourseService {
 
     @Resource
     private CourseRepository courseRepository;
@@ -53,7 +53,7 @@ public class ReceptionCourseService {
     @Resource
     private CollectionRepository collectionRepository;
     @Autowired
-    private ReceptionChapterService receptionChapterService;
+    private ChapterService receptionChapterService;
     @Autowired
     private MonitorRecordRepository monitorRecordRepository;
 
@@ -90,14 +90,14 @@ public class ReceptionCourseService {
      * @param pageSize
      * @return
      */
-    public PageVO<ReceptionCourseVO> getCourseByTagList(List<Integer> tagIdList, Integer pageIndex, Integer pageSize){
+    public PageVO<CourseVO> getCourseByTagList(List<Integer> tagIdList, Integer pageIndex, Integer pageSize){
 
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
         Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList,pageable);
         List<Course> courseList = coursePage.getContent();
-        List<ReceptionCourseVO> courseVOList = CopyUtil.copyList(courseList,ReceptionCourseVO.class);
+        List<CourseVO> courseVOList = CopyUtil.copyList(courseList, CourseVO.class);
         /* 4. 封装到自定义分页结果 */
-        PageVO<ReceptionCourseVO> pageVO = new PageVO<>();
+        PageVO<CourseVO> pageVO = new PageVO<>();
         pageVO.setContent(courseVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
@@ -270,7 +270,7 @@ public class ReceptionCourseService {
      * @param pageSize
      * @return
      */
-   public PageVO<ReceptionCourseVO> findCourseByTeachId(Integer teacherId, Integer pageIndex, Integer pageSize){
+   public PageVO<CourseVO> findCourseByTeachId(Integer teacherId, Integer pageIndex, Integer pageSize){
        //构造匹配条件Example对象
        Course matchObject = new Course();
        matchObject.setTeacherId(teacherId);
@@ -280,10 +280,10 @@ public class ReceptionCourseService {
        Page<Course> coursePage = courseRepository.findAll(example, pageable);
        List<Course> courseList = coursePage.getContent();
        //对象转换，属性值复制
-       List<ReceptionCourseVO> courseVOList = CopyUtil.copyList(courseList,ReceptionCourseVO.class);
+       List<CourseVO> courseVOList = CopyUtil.copyList(courseList, CourseVO.class);
 
        /* 4. 封装到自定义分页结果 */
-       PageVO<ReceptionCourseVO> pageVO = new PageVO<>();
+       PageVO<CourseVO> pageVO = new PageVO<>();
        pageVO.setContent(courseVOList);
        pageVO.setPageIndex(pageIndex);
        pageVO.setPageSize(pageSize);
@@ -299,7 +299,7 @@ public class ReceptionCourseService {
      * @param pageSize
      * @return
      */
-    public PageVO<ReceptionCourseVO> findCollectionCourseByUserId(Integer userId,Integer pageIndex,Integer pageSize){
+    public PageVO<CourseVO> findCollectionCourseByUserId(Integer userId, Integer pageIndex, Integer pageSize){
 
         //获取课程id
         Collection collection = new Collection();
@@ -322,9 +322,9 @@ public class ReceptionCourseService {
         Page<Course> coursePage = courseRepository.findAll(specification, pageable);
         List<Course> courseList = coursePage.getContent();
         //对象转换，属性值复制
-        List<ReceptionCourseVO> courseVOList = CopyUtil.copyList(courseList,ReceptionCourseVO.class);
+        List<CourseVO> courseVOList = CopyUtil.copyList(courseList, CourseVO.class);
         /* 4. 封装到自定义分页结果 */
-        PageVO<ReceptionCourseVO> pageVO = new PageVO<>();
+        PageVO<CourseVO> pageVO = new PageVO<>();
         pageVO.setContent(courseVOList);
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);

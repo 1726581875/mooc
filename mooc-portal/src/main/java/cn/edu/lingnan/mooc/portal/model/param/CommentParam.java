@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class CommentParam extends ReplyParam {
     /**
-     * 评论类型，
+     * 评论类型，0课程评论、1课程问答
      */
     private Integer type;
 }

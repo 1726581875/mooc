@@ -1,12 +1,12 @@
 package cn.edu.lingnan.mooc.portal.service;
 
+import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.util.JsonUtil;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.util.CopyUtil;;
-import cn.edu.lingnan.mooc.portal.client.NoticeServiceClient;
 import cn.edu.lingnan.mooc.portal.constant.RabbitMqConstant;
 import cn.edu.lingnan.mooc.portal.constant.RedisPrefixConstant;
 import cn.edu.lingnan.mooc.portal.dao.CommentRepository;
@@ -16,11 +16,12 @@ import cn.edu.lingnan.mooc.portal.model.dto.ReplyerDTO;
 import cn.edu.lingnan.mooc.portal.model.entity.CommentReply;
 import cn.edu.lingnan.mooc.portal.model.entity.Course;
 import cn.edu.lingnan.mooc.portal.model.entity.CourseComment;
+import cn.edu.lingnan.mooc.portal.model.enums.MoocExceptionEnum;
+import cn.edu.lingnan.mooc.portal.model.param.CommentParam;
 import cn.edu.lingnan.mooc.portal.model.param.ReplyParam;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentAndReplyVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentDetailVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentListVO;
-import cn.edu.lingnan.mooc.portal.util.UserTokenUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -29,7 +30,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,13 +46,11 @@ public class CommentService {
     @Autowired
     private ReplyRepository replyRepository;
     @Autowired
-    private ReceptionUserService moocUserService;
+    private UserService userService;
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
-    private ReceptionCourseService courseService;
-    @Resource
-    private NoticeServiceClient noticeServiceClient;
+    private CourseService courseService;
     @Autowired
     private AmqpTemplate amqpTemplate;
 
@@ -76,7 +74,7 @@ public class CommentService {
         List<Integer> commentIdList = courseCommentList.stream().map(CourseComment::getId).collect(Collectors.toList());
         List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
+        Map<Integer, MoocUser> userMap = userService.getUserMap(userIdList);
         //获取评论回复Map
         Map<Integer, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
 
@@ -125,7 +123,7 @@ public class CommentService {
         allUserIdSet.addAll(userIdList);
         allUserIdSet.addAll(toUserIdList);
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(new ArrayList<>(allUserIdSet));
+        Map<Integer, MoocUser> userMap = userService.getUserMap(new ArrayList<>(allUserIdSet));
 
         List<ReplyerDTO> replyerDTOList = commentReplyList.stream()
                 .map(reply->createReplyerDTO(reply,userMap)).collect(Collectors.toList());
@@ -189,6 +187,46 @@ public class CommentService {
         return noticeDTO;
     }
 
+
+    public void insertComment(CommentParam commentParam){
+
+        Optional<Course> courseOptional = courseRepository.findById(commentParam.getCourseId());
+
+        if(!courseOptional.isPresent()) {
+            log.error("====== 获取课程信息失败，课程不存在 courseId={} ====", commentParam.getCourseId());
+            throw new MoocException(MoocExceptionEnum.COURSE_NOT_EXIST);
+        }
+
+        // 插入课程评论
+        CourseComment comment = new CourseComment().build(commentParam);
+        CourseComment courseComment = commentRepository.save(comment);
+
+        // 判断是课程评论还是课程问答,对应redis前缀不一样
+        String redisKey = commentParam.getType().equals(0) ? RedisPrefixConstant.COMMENT_NUM_PRE + commentParam.getCourseId()
+                : RedisPrefixConstant.QUESTION_NUM_PRE + commentParam.getCourseId();
+
+        if(RedisUtil.isNotExist(redisKey)) {
+            Course course = courseOptional.get();
+            RedisUtil.setIfAbsent(redisKey, course.getCommentNum().toString());
+        }
+        RedisUtil.getRedisTemplate().opsForValue().increment(redisKey,1L);
+
+        //发送消息
+        NoticeDTO noticeDTO = buildCommentNotion(commentParam, courseOptional.get(), courseComment.getId());
+        amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
+
+    }
+
+    private NoticeDTO buildCommentNotion(CommentParam commentParam, Course course, Integer commentId){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setSendId(commentParam.getUserId());
+        noticeDTO.setAcceptId(course.getTeacherId());
+        noticeDTO.setCourseId(course.getId());
+        noticeDTO.setCommentId(commentId);
+        noticeDTO.setContent(commentParam.getContent());
+        noticeDTO.setType(2);
+        return noticeDTO;
+    }
 
 
     public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId,
@@ -300,7 +338,7 @@ public class CommentService {
 
         //获取用户信息map
         List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
-        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(userIdList);
+        Map<Integer, MoocUser> userMap = userService.getUserMap(userIdList);
         //获取课程名
         List<Integer> courseIdList = courseCommentList.stream().map(CourseComment::getCourseId).collect(Collectors.toList());
         Map<Integer, String> courseNameMap = courseService.getCourseNameMap(courseIdList);
@@ -340,7 +378,7 @@ public class CommentService {
         }
         CourseComment courseComment = commentOptional.get();
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = moocUserService.getUserMap(Lists.newArrayList(courseComment.getUserId()));
+        Map<Integer, MoocUser> userMap = userService.getUserMap(Lists.newArrayList(courseComment.getUserId()));
         //获取课程名
         Map<Integer, String> courseNameMap = courseService.getCourseNameMap(Lists.newArrayList(courseComment.getCourseId()));
         //获取评论的回复List

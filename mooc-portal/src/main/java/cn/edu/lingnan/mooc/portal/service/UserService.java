@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @date: 2021/02/08
  */
 @Service
-public class ReceptionUserService {
+public class UserService {
 
     @Autowired
     private MoocUserRepository moocUserRepository;
