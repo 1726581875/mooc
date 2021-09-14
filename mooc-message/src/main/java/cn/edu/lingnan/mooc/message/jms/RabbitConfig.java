@@ -22,7 +22,6 @@ public class RabbitConfig {
     @Bean
     public Queue setGroupInfoQueue(){
         return new Queue(rabbitMqConstant.getMessageQueueName());
-
     }
 
 

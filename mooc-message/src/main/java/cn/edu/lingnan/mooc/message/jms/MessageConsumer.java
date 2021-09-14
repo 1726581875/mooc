@@ -28,16 +28,15 @@ public class MessageConsumer {
      */
     @RabbitHandler
     @RabbitListener(queues = "${constant.mq.messageQueueName:mooc.mq.messageQueue}")
-    public void messageConsumer(String message){
+    public void messageConsumer(String message) {
         log.info("messageConsumer accept message : {}",message);
         Notice notice = null;
         try {
             notice = objectMapper.readValue(message, Notice.class);
+            sendNoticeService.saveAndSendNotice(notice);
         } catch (JsonProcessingException e) {
             log.error("==== 转换消息发生错误 ==== message={} ",message);
-            return;
         }
-        sendNoticeService.saveAndSendNotice(notice);
     }
 
 

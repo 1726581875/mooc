@@ -1,10 +1,13 @@
 package cn.edu.lingnan.mooc.portal.service;
 
+import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.common.util.JsonUtil;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.util.CopyUtil;;
 import cn.edu.lingnan.mooc.portal.client.NoticeServiceClient;
+import cn.edu.lingnan.mooc.portal.constant.RabbitMqConstant;
 import cn.edu.lingnan.mooc.portal.constant.RedisPrefixConstant;
 import cn.edu.lingnan.mooc.portal.dao.CommentRepository;
 import cn.edu.lingnan.mooc.portal.dao.CourseRepository;
@@ -13,12 +16,14 @@ import cn.edu.lingnan.mooc.portal.model.dto.ReplyerDTO;
 import cn.edu.lingnan.mooc.portal.model.entity.CommentReply;
 import cn.edu.lingnan.mooc.portal.model.entity.Course;
 import cn.edu.lingnan.mooc.portal.model.entity.CourseComment;
+import cn.edu.lingnan.mooc.portal.model.param.ReplyParam;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentAndReplyVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentDetailVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CommentListVO;
 import cn.edu.lingnan.mooc.portal.util.UserTokenUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -48,6 +53,8 @@ public class CommentService {
     private ReceptionCourseService courseService;
     @Resource
     private NoticeServiceClient noticeServiceClient;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     /**
      * 根据课程courseId查询评论
@@ -145,8 +152,48 @@ public class CommentService {
     }
 
 
+    public void insertReply(ReplyParam replyParam) {
+
+        CommentReply reply = new CommentReply().build(replyParam);
+        //插入回复信息
+        CommentReply commentReply = replyRepository.save(reply);
+
+        //评论的回复数+1,加锁避免多线程下回复数混乱
+        synchronized (CommentService.class) {
+            Optional<CourseComment> commentOptional = commentRepository.findById(replyParam.getCommentId());
+            if (!commentOptional.isPresent()) {
+                log.error("====== 获取课程信息评论信息失败，评论不存在courseId={}, commentId={} ====", replyParam.getCourseId(), replyParam.getCommentId());
+            }
+
+            CourseComment comment = commentOptional.get();
+            //评论的回复数数加一，并保存到数据库
+            comment.setReplyNum(comment.getReplyNum() + 1);
+            commentRepository.save(comment);
+
+            NoticeDTO noticeDTO = buildReplyNoticeDTO(replyParam,commentReply);
+            amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
+        }
+
+    }
+
+
+    private NoticeDTO buildReplyNoticeDTO(ReplyParam replyParam,  CommentReply commentReply){
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setSendId(replyParam.getUserId());
+        noticeDTO.setAcceptId(replyParam.getToUserId());
+        noticeDTO.setCourseId(replyParam.getCourseId());
+        noticeDTO.setCommentId(commentReply.getCommentId());
+        noticeDTO.setReplyId(commentReply.getId());
+        noticeDTO.setContent(replyParam.getContent());
+        noticeDTO.setType(3);
+        return noticeDTO;
+    }
+
+
+
     public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId,
                                         Integer userId, Integer toUserId, String content,Integer type) {
+
 
         //1、判断是不是要插入回复，toUserId不为null就说明是回复
         if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
@@ -176,10 +223,15 @@ public class CommentService {
                 }
             }
 
-            //插入一条回复通知，并通过webSock推送
-            noticeServiceClient.sendReplyNotice(UserTokenUtil.createToken(),userId,
-                    toUserId,courseId,commentReply.getCommentId(),commentReply.getId(),content);
-
+            NoticeDTO noticeDTO = new NoticeDTO();
+            noticeDTO.setSendId(userId);
+            noticeDTO.setAcceptId(toUserId);
+            noticeDTO.setCourseId(courseId);
+            noticeDTO.setCommentId(commentReply.getCommentId());
+            noticeDTO.setReplyId(commentReply.getId());
+            noticeDTO.setContent(content);
+            noticeDTO.setType(3);
+            amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
             return true;
         }
 
@@ -216,9 +268,15 @@ public class CommentService {
 
         //发送消息
         Course course = optional.get();
-        noticeServiceClient.sendQuestionNotice(UserTokenUtil.createToken(),userId,
-                course.getTeacherId(),course.getId(),articleComment.getId(),content);
 
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setSendId(userId);
+        noticeDTO.setAcceptId(course.getTeacherId());
+        noticeDTO.setCourseId(course.getId());
+        noticeDTO.setCommentId(articleComment.getId());
+        noticeDTO.setContent(content);
+        noticeDTO.setType(2);
+        amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
         return true;
     }
 

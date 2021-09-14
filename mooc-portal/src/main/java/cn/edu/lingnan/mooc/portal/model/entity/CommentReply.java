@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.portal.model.entity;
 
+import cn.edu.lingnan.mooc.portal.model.param.ReplyParam;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -47,5 +48,17 @@ public class CommentReply {
 	private Date createTime;
 
 	private Date updateTime;
+
+
+	public CommentReply build(ReplyParam replyParam){
+		this.commentId = replyParam.getCommentId();
+		this.userId = replyParam.getUserId();
+		this.toUserId = replyParam.getToUserId();
+		this.replyContent = replyParam.getContent();
+		if(replyParam.getReplyId() != null) {
+			this.parentId = replyParam.getReplyId();
+		}
+		return this;
+	}
 	
 }

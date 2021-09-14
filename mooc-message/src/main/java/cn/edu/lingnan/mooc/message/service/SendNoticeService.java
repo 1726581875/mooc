@@ -51,8 +51,8 @@ public class SendNoticeService {
             return;
         }
         //根据不同消息类型发送消息
-        int flag = notice.getType();
-        switch (flag) {
+        int type = notice.getType();
+        switch (type) {
             case 1:
                 //创建课程通知
                 this.sendCreateCourseNotice(notice.getSendId(), notice.getCourseId(), notice.getContent());
