@@ -144,7 +144,7 @@ public class ManagerDAO extends BaseDAO {
         return idList;
     }
 
-    public void updateLoginTime(Integer id, Date loginTime){
+    public void updateLoginTime(Long id, Date loginTime){
         String sql = "update mooc_user set login_time = ? where id = ?";
         jdbcTemplate.update(sql,loginTime,id);
     }

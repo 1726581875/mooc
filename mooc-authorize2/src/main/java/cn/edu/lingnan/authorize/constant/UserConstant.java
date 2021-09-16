@@ -19,5 +19,10 @@ public interface UserConstant {
      */
     String MANAGER_TOKEN_PREFIX = "manager:token:";
 
+    /**
+     * redis账号key前缀
+     */
+    String MANAGER_ACCOUNT_PREFIX = "manager:account:";
+
 
 }

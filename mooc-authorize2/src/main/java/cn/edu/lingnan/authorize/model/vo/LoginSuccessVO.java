@@ -1,5 +1,6 @@
 package cn.edu.lingnan.authorize.model.vo;
 
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,10 @@ import java.util.List;
 public class LoginSuccessVO {
 
     private String token;
-    /**
-     * 1、管理员  2教师
-     */
-    private Integer type;
 
-    private Integer userId;
+    private UserTypeEnum type;
+
+    private Long userId;
 
     private List<UserMenuTreeVO> menuList;
 

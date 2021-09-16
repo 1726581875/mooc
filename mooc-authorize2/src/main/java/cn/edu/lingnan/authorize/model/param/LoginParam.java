@@ -1,4 +1,5 @@
 package cn.edu.lingnan.authorize.model.param;
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.UserToken;
 import lombok.Data;
 
@@ -27,8 +28,8 @@ public class LoginParam {
     private String code;
 
     /**
-     * 类型 1为管理员，2为普通用户或教师
+     * 类型 管理员，教师
      */
-    private UserToken.UserType type;
+    private UserTypeEnum type;
 
 }

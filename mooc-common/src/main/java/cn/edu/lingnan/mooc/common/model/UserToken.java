@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.common.model;
 
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +12,8 @@ import java.io.Serializable;
 @Data
 public class UserToken implements Serializable {
 
+    private static final long serialVersionUID = 5021055089779459121L;
+
     private String token;
 
     private Long userId;
@@ -19,14 +22,10 @@ public class UserToken implements Serializable {
      */
     private String account;
     /**
-     * 类型 1为管理员，2为普通用户或教师
+     * 类型 为管理员，教师,普通用户
      */
-    private Integer type;
-
-    private String sessionId;
+    private UserTypeEnum type;
 
     private String permission;
-
-    public enum UserType{MANAGER, TEACHER}
 
 }

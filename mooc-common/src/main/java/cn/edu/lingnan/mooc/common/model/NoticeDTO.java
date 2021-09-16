@@ -2,6 +2,8 @@ package cn.edu.lingnan.mooc.common.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +12,9 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-public class NoticeDTO {
+public class NoticeDTO implements Serializable {
+
+    private static final long serialVersionUID = 6343950671330615279L;
 
     private Integer id;
 

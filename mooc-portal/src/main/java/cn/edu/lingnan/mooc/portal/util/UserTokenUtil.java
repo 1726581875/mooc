@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.portal.util;
 
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.UserToken;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 
@@ -23,7 +24,7 @@ public class UserTokenUtil {
         userToken.setToken(token);
         userToken.setPermission(null);
         userToken.setSessionId(null);
-        userToken.setType(1);
+        userToken.setType(UserTypeEnum.MANAGER);
         //设置60秒
         RedisUtil.set(token,userToken,60);
         return token;

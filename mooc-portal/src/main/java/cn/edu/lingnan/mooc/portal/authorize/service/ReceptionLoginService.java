@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.portal.authorize.service;
 
 import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.model.UserToken;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
@@ -86,7 +87,7 @@ public class ReceptionLoginService {
         userToken.setToken(token);
         userToken.setAccount(user.getAccount());
         userToken.setUserId(Long.valueOf(user.getId()));
-        userToken.setType(2);
+        userToken.setType(UserTypeEnum.USER);
         RedisUtil.set(token, userToken, LOGIN_EXPIRE_TIME);
         return userToken;
     }

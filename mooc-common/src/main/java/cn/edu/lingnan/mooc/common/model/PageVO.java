@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,7 +17,9 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageVO <T> {
+public class PageVO <T> implements Serializable {
+
+    private static final long serialVersionUID = -5534780421701875924L;
     /**
      * 当前第几页
      */

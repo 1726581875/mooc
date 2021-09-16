@@ -3,6 +3,8 @@ package cn.edu.lingnan.mooc.common.model;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @Author xmz
  * @Date: 2020/10/06
@@ -10,7 +12,9 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class RespResult {
+public class RespResult implements Serializable {
+
+    private static final long serialVersionUID = 3069934188369972954L;
     /**
      * 状态码 200表示成功
      */

@@ -12,20 +12,25 @@ import cn.edu.lingnan.authorize.model.enums.AuthorizeExceptionEnum;
 import cn.edu.lingnan.authorize.model.enums.ManagerStatusEnum;
 import cn.edu.lingnan.authorize.model.vo.LoginSuccessVO;
 import cn.edu.lingnan.authorize.model.param.LoginParam;
-import cn.edu.lingnan.authorize.util.HttpServletUtil;
-import cn.edu.lingnan.authorize.util.RedisUtil;
+import cn.edu.lingnan.authorize.model.vo.UserMenuTreeVO;
 import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
-import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.util.RsaUtil;
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
+import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -77,50 +82,57 @@ public class AuthorizeService {
 
         checkStatus(manager.getStatus());
 
-        //
+
         LoginSuccessVO loginSuccessVO = buildLoginSuccessVO(manager, request);
+
+        updateLastLoginTime(manager.getId(), manager.getType());
 
         return loginSuccessVO;
     }
 
 
+    private void updateLastLoginTime(Long managerId, UserTypeEnum userTypeEnum) {
+        if(UserTypeEnum.TEACHER.equals(userTypeEnum)) {
+            userDAO.updateLoginTime(managerId, new Date());
+        }else {
+            managerDAO.updateLoginTime(managerId, new Date());
+        }
+    }
+
+
     private LoginSuccessVO buildLoginSuccessVO(MoocManager manager, HttpServletRequest request) {
-        if(manager.getAccount().startsWith("teacher-")) {
+
+        String token = UUID.randomUUID().toString();
+
+        List<UserMenuTreeVO> menuVOList = null;
+        List<MenuTree> permissionList = null;
+        // 获取菜单和权限
+        if(UserTypeEnum.TEACHER.equals(manager.getType())) {
             // 教师权限绑定教师角色 id为1
-            List<MenuTree> menuList = menuTreeDAO.findMenuList(Arrays.asList(1L));
-            List<MenuTree> teacherMenuList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
-            // 拼接权限字符串
-            String permissionStr = teacherMenuList.stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
+            Long roleId = 1L;
+            List<MenuTree> menuList = menuTreeDAO.findMenuList(Arrays.asList(roleId));
+            permissionList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
+            menuVOList = menuTreeService.getMenuByRoleId(Arrays.asList(roleId));
+        }else {
+            permissionList = menuTreeService.getPermission(manager.getId());
+            menuVOList = menuTreeService.getMenuTree(manager.getId());
 
-            String token = UUID.randomUUID().toString();
-            //教师类型
-            Integer teacherType = 2;
-            setRedisTokenOnline(manager,teacherType, permissionStr, request, token);
-
-            // 构造登录成功返回对象,教师type=2
-            LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,teacherType, manager.getId().intValue(), menuTreeService.getTeacherMenuTree());
-
-            //更新最近登录时间
-            userDAO.updateLoginTime(manager.getId().intValue(),new Date());
-            return loginSuccessVO;
         }
 
         // 拼接权限字符串
-        String permissionStr = menuTreeService.getPermission(manager.getId())
-                .stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
+        String permissionStr = getPermissionStr(permissionList);
 
-        //生成token,设置redis
-        String token = UUID.randomUUID().toString();
-        //管理员类型
-        Integer managerType = 1;
-        setRedisTokenOnline(manager,managerType, permissionStr,request,token);
+        // 存储token
+        saveLoginUserToken(manager, permissionStr, token);
 
-        // 构造登录成功返回对象,管理员type=1
-        LoginSuccessVO loginSuccessVO = new LoginSuccessVO(token,1,manager.getId().intValue(),menuTreeService.getMenuTree(manager.getId()));
+        return new LoginSuccessVO(token, manager.getType() , manager.getId(), menuVOList);
+    }
 
-        //更新最近登录时间
-        managerDAO.updateLoginTime(manager.getId().intValue(),new Date());
-        return loginSuccessVO;
+    private String getPermissionStr(List<MenuTree> menuList) {
+        if(CollectionUtils.isEmpty(menuList)) {
+            return "";
+        }
+        return menuList.stream().map(MenuTree::getPermission).collect(Collectors.joining(","));
     }
 
 
@@ -153,15 +165,16 @@ public class AuthorizeService {
         }
     }
 
-    private MoocManager getMoocManager(String account, UserToken.UserType type){
+    private MoocManager getMoocManager(String account, UserTypeEnum type){
 
         // 教师
-        if(UserToken.UserType.TEACHER.equals(type)){
+        if(UserTypeEnum.TEACHER.equals(type)){
             MoocUser moocUser = userDAO.findUserByAccount(account);
             if(moocUser == null){
                return null;
             }
-            if(!"教师".equals(moocUser.getUserType())){
+            final String teacher = "教师";
+            if(!teacher.equals(moocUser.getUserType())){
                 throw new MoocException("您不能登录本系统");
             }
             return createTeacherManager(moocUser);
@@ -171,7 +184,11 @@ public class AuthorizeService {
                 return this.createSuperManager();
             }
             //普通管理员
-            return managerDAO.findManagerByAccount(account);
+            MoocManager manager = managerDAO.findManagerByAccount(account);
+            if(manager != null) {
+                manager.setType(UserTypeEnum.MANAGER);
+            }
+            return manager;
         }
     }
 
@@ -197,6 +214,7 @@ public class AuthorizeService {
         manager.setStatus(ManagerStatusEnum.NORMAL.getStatus());
         manager.setName(superAdminUsername);
         manager.setPassword(BCrypt.hashpw(superAdminPassword,BCrypt.gensalt()));
+        manager.setType(UserTypeEnum.MANAGER);
         return manager;
     }
 
@@ -208,62 +226,79 @@ public class AuthorizeService {
      */
     private MoocManager createTeacherManager(MoocUser user){
         MoocManager manager = new MoocManager();
-        manager.setAccount("teacher-" + user.getAccount());
+        manager.setAccount(user.getAccount());
         manager.setId(user.getId());
         manager.setStatus(user.getStatus());
         manager.setName(user.getName());
         manager.setPassword(user.getPassword());
+        manager.setType(UserTypeEnum.TEACHER);
         return manager;
     }
 
 
     /**
-     *登录成功设置redis
-     * 1、设置用户token和登录信息
-     * 2、把前该账号旧token删除
-     * redis存储的k、v
-     * token-userDetail
-     * account-token
+     * 登录成功设置token
+     * 1、删除该账号旧token
+     * 2、设置用户token和登录信息
+     * 3、记录在线信息
      *
      * @param manager
      * @param permissionStr
-     * @param request
      * @param token
      */
-    private void setRedisTokenOnline(MoocManager manager, Integer type, String permissionStr, HttpServletRequest request, String token){
-        // 登录信息存redis
+    private void saveLoginUserToken(MoocManager manager, String permissionStr, String token){
+
+        String accountKey = UserConstant.MANAGER_ACCOUNT_PREFIX + ":" + manager.getType() + ":" + manager.getAccount();
+        // 如果旧token存在，则先删除（防止一个账号两个地方同时登录）
+        if(RedisUtil.isExist(accountKey)){
+            String oldToken = RedisUtil.get(accountKey);
+            RedisUtil.delete(oldToken);
+        }
+
+        // 设置UserToken（用户登录基本信息）
+        String tokenKey = UserConstant.MANAGER_TOKEN_PREFIX + ":" + manager.getType() + ":"+ token;
+        UserToken userToken = buildUserToken(manager, token, permissionStr);
+        RedisUtil.set(tokenKey, userToken, LOGIN_EXPIRE_TIME);
+
+        // 账户和token关联关系
+        RedisUtil.set(accountKey, token, LOGIN_EXPIRE_TIME);
+
+        // 非超管记录在线信息
+        if(!manager.getId().equals(0L)) {
+            OnlineUser onlineUser = buildOnlineUser(manager);
+            RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + manager.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
+        }
+
+    }
+
+
+    private UserToken buildUserToken(MoocManager manager, String token, String permissionStr){
         UserToken userToken = new UserToken();
         userToken.setUserId(manager.getId());
         userToken.setAccount(manager.getAccount());
         userToken.setToken(token);
         userToken.setPermission(permissionStr);
-        userToken.setSessionId(request.getSession().getId());
-        userToken.setType(type);
-        //设置用户UserToken（用户登录基本信息）
-        RedisUtil.set(token,userToken,LOGIN_EXPIRE_TIME);
-
-        // 重新登录，把之前的token删除，设置当前token。（防止两个人同时登录）
-        String account = manager.getAccount();
-        String oldToken = RedisUtil.get(account);
-        if(oldToken != null){
-            RedisUtil.delete(oldToken);
-        }
-        // 账户和token关联
-        RedisUtil.set(account,token,LOGIN_EXPIRE_TIME);
-
-        // 非超管记录在线信息
-        if(!manager.getId().equals(0L)) {
-            // 记录在线用户
-            OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setAccount(manager.getAccount());
-            onlineUser.setLoginTime(new Date());
-            onlineUser.setIp(HttpServletUtil.getIpAddress(request)
-                    .equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : HttpServletUtil.getIpAddress(request));
-            onlineUser.setName(manager.getName());
-            RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + account, onlineUser, LOGIN_EXPIRE_TIME);
-        }
-
+        userToken.setType(manager.getType());
+        return userToken;
     }
+
+
+
+    private OnlineUser buildOnlineUser(MoocManager manager){
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        OnlineUser onlineUser = new OnlineUser();
+        onlineUser.setAccount(manager.getAccount());
+        onlineUser.setLoginTime(new Date());
+        if (Objects.nonNull(attributes)) {
+            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) attributes;
+            //设置ip
+            onlineUser.setIp(HttpServletUtil.getIpAddress(requestAttributes.getRequest()));
+        }
+        onlineUser.setName(manager.getName());
+        return onlineUser;
+    }
+
+
 
     /**
      * 登出
@@ -298,12 +333,6 @@ public class AuthorizeService {
         return menuPermissionList.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
     }
 
-
-
-
-    public void insertManager(MoocManager manager){
-        managerDAO.save(manager);
-    }
 
 
 }

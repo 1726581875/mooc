@@ -1,5 +1,7 @@
 package cn.edu.lingnan.authorize.model.entity;
 
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.model.UserToken;
 import lombok.Data;
 
 import java.util.Date;
@@ -20,6 +22,8 @@ public class MoocManager {
     private String password;
 
     private Integer status;
+
+    private UserTypeEnum type;
 
     private Date updateTime;
 

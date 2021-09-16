@@ -29,12 +29,9 @@ public class MenuTreeService {
      * 获取教师菜单树
      * @return
      */
-    public List<UserMenuTreeVO> getTeacherMenuTree(){
+    public List<UserMenuTreeVO> getMenuByRoleId(List<Long> roleIdList){
 
-        List<Long> teacherRoleId = new ArrayList();
-        //固定角色id=1为教师角色
-        teacherRoleId.add(1L);
-        List<cn.edu.lingnan.authorize.model.entity.MenuTree> menuList = menuTreeDAO.findMenuList(teacherRoleId);
+        List<cn.edu.lingnan.authorize.model.entity.MenuTree> menuList = menuTreeDAO.findMenuList(roleIdList);
         List<cn.edu.lingnan.authorize.model.entity.MenuTree> teacherMenuList = new ArrayList<>(menuList.stream().collect(Collectors.toSet()));
         List<UserMenuTreeVO> menuTreeDTOList = teacherMenuList.stream().filter(menu -> menu.getParentId().equals(0L))
                 .map(this::convertMenuTreeToDTO).collect(Collectors.toList());
