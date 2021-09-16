@@ -1,12 +1,12 @@
 package cn.edu.lingnan.authorize.controller;
 
-import cn.edu.lingnan.authorize.authentication.util.UserUtil;
 import cn.edu.lingnan.authorize.model.entity.MoocManager;
 import cn.edu.lingnan.authorize.model.param.ManagerParam;
 import cn.edu.lingnan.authorize.model.param.PasswordParam;
 import cn.edu.lingnan.authorize.service.ManagerService;
-import cn.edu.lingnan.authorize.service.reception.ReceptionUserService;
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,6 @@ public class ManagerController {
 
     @Autowired
     private ManagerService managerService;
-    @Autowired
-    private ReceptionUserService receptionUserService;
 
     /**
      * 管理员修改密码
@@ -34,8 +32,8 @@ public class ManagerController {
 
         RespResult respResult = null;
         //教师、用户或者管理员位于不同的表，这里需要判断
-        if(UserUtil.getUserToken().getType() == 2) {
-            respResult = receptionUserService.updatePassword(passwordParam);
+        if(UserTypeEnum.MANAGER.equals(UserUtil.getUserToken().getType())) {
+            respResult = managerService.updatePassword(passwordParam);
         }else {
             respResult = managerService.updatePassword(passwordParam);
         }

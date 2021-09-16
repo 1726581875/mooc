@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,7 +124,7 @@ public class CourseService {
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(totalPage);
-        pageVO.setPageTotal(totalCount);
+        pageVO.setTotalRow(totalCount);
 
         log.info("===========课程搜索===========结束===========");
         return pageVO;

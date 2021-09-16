@@ -88,7 +88,7 @@ public class CommentService {
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(courseCommentPage.getTotalPages());
         //总数
-        pageVO.setPageTotal(((Long)courseCommentPage.getTotalElements()).intValue());
+        pageVO.setTotalRow(courseCommentPage.getTotalElements());
         return pageVO;
     }
 

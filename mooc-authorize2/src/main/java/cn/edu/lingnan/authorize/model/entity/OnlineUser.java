@@ -1,5 +1,6 @@
 package cn.edu.lingnan.authorize.model.entity;
 
+import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -26,6 +27,11 @@ public class OnlineUser {
      * IP
      */
     private String ip;
+
+    /**
+     * 用户类型
+     */
+    private UserTypeEnum type;
 
     /**
      * 登录时间

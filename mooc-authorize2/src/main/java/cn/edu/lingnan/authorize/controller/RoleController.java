@@ -1,9 +1,8 @@
 package cn.edu.lingnan.authorize.controller;
 
-import cn.edu.lingnan.authorize.authentication.annotation.Check;
+import cn.edu.lingnan.authorize.authentication.annotation.CheckAuthority;
 import cn.edu.lingnan.authorize.model.entity.Role;
 import cn.edu.lingnan.authorize.model.param.RoLeParam;
-import cn.edu.lingnan.authorize.service.AdminMenuTreeService;
 import cn.edu.lingnan.authorize.service.RoleService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class RoleController {
     }
 
 
-    @Check("role:select")
+    @CheckAuthority("role:select")
     @GetMapping("/all")
     public RespResult findAllRole() {
         return RespResult.success(roleService.findAll());

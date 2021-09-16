@@ -14,6 +14,11 @@ public class UserToken implements Serializable {
 
     private static final long serialVersionUID = 5021055089779459121L;
 
+    /**
+     * 前端Http请求头携带的token key
+     */
+    public static final String HTTP_TOKEN_HEAD = "Authorization";
+
     private String token;
 
     private Long userId;

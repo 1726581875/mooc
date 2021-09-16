@@ -1,6 +1,12 @@
 package cn.edu.lingnan.mooc.common.util;
 
+import cn.edu.lingnan.mooc.common.exception.MoocException;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @author xmz
@@ -13,7 +19,8 @@ public class HttpServletUtil {
      * @param request
      * @return
      */
-    public static String getIpAddress(HttpServletRequest request) {
+    public static String getIpAddress() {
+        HttpServletRequest request = getRequest();
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
@@ -38,5 +45,15 @@ public class HttpServletUtil {
         return ip;
     }
 
+
+
+    public static HttpServletRequest getRequest() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (Objects.isNull(attributes)) {
+            throw new MoocException("获取request失败");
+        }
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) attributes;
+        return requestAttributes.getRequest();
+    }
 
 }

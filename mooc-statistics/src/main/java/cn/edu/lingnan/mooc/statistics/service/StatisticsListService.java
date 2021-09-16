@@ -7,7 +7,6 @@ import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
 import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
 import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
 import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
-import cn.edu.lingnan.mooc.statistics.entity.vo.CourseSearchVO;
 import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
@@ -318,7 +317,7 @@ public class StatisticsListService {
         pageVO.setPageCount(totalPage);
         pageVO.setPageIndex(currPage);
         pageVO.setPageSize(pageSize);
-        pageVO.setPageTotal(totalCount);
+        pageVO.setTotalRow(totalCount);
         return pageVO;
     }
 

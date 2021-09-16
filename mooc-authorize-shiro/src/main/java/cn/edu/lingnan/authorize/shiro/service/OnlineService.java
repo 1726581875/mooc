@@ -35,7 +35,7 @@ public class OnlineService {
         // 查询所有在线用户
         List<OnlineUser> allOnlineUser = getAllOnlineUser();
         if(allOnlineUser.isEmpty()){
-            return new PageVO<>(pageIndex,pageSize,0,0,null);
+            return new PageVO<>(pageIndex,pageSize,0,0L,null);
         }
         // 条件查询
         String accountOrName = matchStr.trim();
@@ -46,10 +46,10 @@ public class OnlineService {
                 //匹配名称
                 onlineUserList = allOnlineUser.stream().filter(user -> user.getName().contains(matchStr)).collect(Collectors.toList());
                 if (onlineUserList.isEmpty()) {
-                    return new PageVO<>(pageIndex, pageSize, 0, 0, null);
+                    return new PageVO<>(pageIndex, pageSize, 0, 0L, null);
                 }
             }
-            return PageUtil.getPageVO(onlineUserList,pageIndex,pageSize);
+            return PageUtil.getPageVO(allOnlineUser,pageIndex,pageSize);
         }
 
         return PageUtil.getPageVO(allOnlineUser,pageIndex,pageSize);

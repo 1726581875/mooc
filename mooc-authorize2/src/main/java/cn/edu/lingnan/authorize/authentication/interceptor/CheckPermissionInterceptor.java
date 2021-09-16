@@ -1,14 +1,15 @@
 package cn.edu.lingnan.authorize.authentication.interceptor;
 
-import cn.edu.lingnan.authorize.authentication.annotation.Check;
-import cn.edu.lingnan.authorize.authentication.util.UserUtil;
-import cn.edu.lingnan.authorize.model.UserToken;
-import cn.edu.lingnan.authorize.util.RedisUtil;
+import cn.edu.lingnan.mooc.common.annotation.CheckAuthority;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.util.RedisUtil;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +29,7 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Transactional
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -42,9 +44,6 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             return true;
         }*/
 
-
-        // TODO 获取ip地址
-        String ipAddress = getIpAddress(request);
 
         // 1、获取请求头携带的token
         String token = request.getHeader("Authorization");
@@ -71,12 +70,12 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             // 获取请求的方法
             Method method = handlerMethod.getMethod();
             //判断方法名上是@Check注解
-            boolean hasCheck = method.isAnnotationPresent(Check.class);
+            boolean hasCheck = method.isAnnotationPresent(CheckAuthority.class);
             // 如果该controller方法没有加上@Check注解，直接放行任何人都可以访问
             if (!hasCheck) {
                 return true;
             }
-            Check checkAnnotation = method.getAnnotation(Check.class);
+            CheckAuthority checkAnnotation = method.getAnnotation(CheckAuthority.class);
             String permission = checkAnnotation.value();
             System.out.println("permission=" + permission);
 
@@ -112,26 +111,5 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
                 RespResult.build().setStatus(status).setMsg(message)));
     }
 
-
-    public static String getIpAddress(HttpServletRequest request) {
-
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
 
 }

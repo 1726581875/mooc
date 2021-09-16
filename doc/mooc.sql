@@ -666,7 +666,7 @@ values
 (null,null,7,'新增了课程《Spring入门实践》');
 
 -- 教师，课程问答通知,
-insert into notice(send_id,accept_id,course_id,content,type,comment_id,flag)
+insert into notice(send_id,accept_id,course_id,content,user_type,comment_id, type)
 values
 (null,7,null,'【课程问答】你好你好',2,1,2),
 (null,7,null,'你叫什么名字？',2,2,2),

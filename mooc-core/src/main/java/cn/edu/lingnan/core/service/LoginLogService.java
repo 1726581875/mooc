@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.SimpleFormatter;
 
 /**
  * @author xmz
@@ -72,10 +71,10 @@ public class LoginLogService {
         // 封装返回结果
         PageVO<LoginLogVO> pageVO = new PageVO<>();
         pageVO.setContent(CopyUtil.copyList(loginLogPage.getContent(),LoginLogVO.class));
-        pageVO.setPageTotal((int) loginLogPage.getTotalElements()); //总条数
+        pageVO.setTotalRow(loginLogPage.getTotalElements());
         pageVO.setPageSize(pageSize);
         pageVO.setPageIndex(pageIndex);
-        pageVO.setPageCount(loginLogPage.getTotalPages()); //页数
+        pageVO.setPageCount(loginLogPage.getTotalPages());
         return pageVO;
     }
 

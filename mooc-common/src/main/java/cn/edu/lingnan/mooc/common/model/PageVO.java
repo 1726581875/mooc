@@ -1,9 +1,7 @@
 package cn.edu.lingnan.mooc.common.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,9 +12,6 @@ import java.util.List;
  * 封装分页结果
  */
 @Data
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
 public class PageVO <T> implements Serializable {
 
     private static final long serialVersionUID = -5534780421701875924L;
@@ -35,11 +30,37 @@ public class PageVO <T> implements Serializable {
     /**
      * 数据总条数
      */
-    private Integer pageTotal;
+    private Long totalRow;
     /**
      * 页数据
      */
     private List<T> content;
+
+
+    public PageVO() {}
+
+    public PageVO(Integer pageIndex, Integer pageSize, Integer pageCount,  List<T> content) {
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
+        this.pageCount = pageCount;
+        this.content = content;
+    }
+
+    public PageVO(Integer pageIndex, Integer pageSize, Integer pageCount, Long totalRow, List<T> content) {
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
+        this.pageCount = pageCount;
+        this.totalRow = totalRow;
+        this.content = content;
+    }
+
+    public PageVO(Page<T> page) {
+        this.pageIndex = page.getNumber();
+        this.pageSize = page.getSize();
+        this.pageCount = page.getTotalPages();
+        this.totalRow = page.getTotalElements();
+        this.content = page.getContent();
+    }
 
 }
 

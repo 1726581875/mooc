@@ -72,7 +72,7 @@ public class NoticeService {
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(pageInfo.getPages());
         pageVO.setContent(pageInfo.getList());
-        pageVO.setPageTotal((int)pageInfo.getTotal());
+        pageVO.setTotalRow(pageInfo.getTotal());
 
         return pageVO;
     }

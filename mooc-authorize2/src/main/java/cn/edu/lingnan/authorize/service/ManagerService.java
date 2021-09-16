@@ -1,6 +1,5 @@
 package cn.edu.lingnan.authorize.service;
 
-import cn.edu.lingnan.authorize.authentication.util.UserUtil;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.authorize.dao.UserDAO;
 import cn.edu.lingnan.authorize.model.entity.ManagerRoleRel;
@@ -13,6 +12,7 @@ import cn.edu.lingnan.authorize.util.CopyUtil;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

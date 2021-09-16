@@ -1,7 +1,8 @@
-package cn.edu.lingnan.authorize.util;
+package cn.edu.lingnan.mooc.common.util;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

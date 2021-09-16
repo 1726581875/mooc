@@ -3,7 +3,7 @@ package cn.edu.lingnan.authorize.controler;
 import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.BaseMvcTest;
 import cn.edu.lingnan.authorize.dao.ManagerDAO;
-import cn.edu.lingnan.authorize.service.AuthorizeService;
+import cn.edu.lingnan.authorize.service.impl.AuthorizeServiceImpl;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class LoginControllerTest extends BaseMvcTest {
     private String pubKey;
 
     @Autowired
-    AuthorizeService authorizeService;
+    AuthorizeServiceImpl authorizeService;
 
     @Autowired
     ManagerDAO managerDAO;

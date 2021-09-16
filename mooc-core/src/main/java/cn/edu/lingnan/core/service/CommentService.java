@@ -13,15 +13,12 @@ import cn.edu.lingnan.core.repository.ReplyRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
 import cn.edu.lingnan.core.util.RedisUtil;
 import cn.edu.lingnan.core.vo.CommentAndReplyVO;
-import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.core.vo.ReplyerDTO;
 import cn.edu.lingnan.core.vo.reception.CommentDetailVO;
 import cn.edu.lingnan.core.vo.reception.CommentListVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.common.model.RespResult;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -86,8 +82,7 @@ public class CommentService {
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(courseCommentPage.getTotalPages());
-        //总数
-        pageVO.setPageTotal(((Long)courseCommentPage.getTotalElements()).intValue());
+        pageVO.setTotalRow(courseCommentPage.getTotalElements());
         return pageVO;
     }
 
