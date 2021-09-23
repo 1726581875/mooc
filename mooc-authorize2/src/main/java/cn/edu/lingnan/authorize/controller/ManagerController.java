@@ -4,7 +4,7 @@ import cn.edu.lingnan.authorize.model.entity.MoocManager;
 import cn.edu.lingnan.authorize.model.param.ManagerParam;
 import cn.edu.lingnan.authorize.model.param.PasswordParam;
 import cn.edu.lingnan.authorize.service.ManagerService;
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;

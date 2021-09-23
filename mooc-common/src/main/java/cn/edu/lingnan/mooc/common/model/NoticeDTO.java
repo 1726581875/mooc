@@ -30,7 +30,7 @@ public class NoticeDTO implements Serializable {
 
     private String content;
     /**
-     * 消息所属用户类型，1管理员、2教师
+     * 消息所属用户类型，1管理员、2教师、3普通用户
      */
     private Integer userType;
     /**

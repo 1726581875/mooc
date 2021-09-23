@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.util;
 
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 
 /**
  * @author xmz

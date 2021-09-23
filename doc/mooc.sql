@@ -265,7 +265,7 @@ CREATE TABLE `mooc_user`
     `name`        varchar(40)   NOT NULL COMMENT '用户昵称',
     `account`     varchar(20)   NOT NULL COMMENT '登录账号',
     `password`    varchar(1048) NOT NULL COMMENT '登录密码',
-    `user_type`   varchar(4)    NOT NULL COMMENT '类型，教师/普通用户',
+    `user_type`   varchar(20)    NOT NULL COMMENT '类型，TEACHER/USER',
     `motto` varchar(64) default NULL COMMENT '用户格言/座右铭',
     `status`      tinyint       NOT NULL DEFAULT 1 COMMENT '用户状态| 1正常，2禁用，3已删除',
     `login_time`  datetime               DEFAULT NULL COMMENT '最近登录时间',
@@ -278,20 +278,20 @@ CREATE TABLE `mooc_user`
 -- 插入用户表，密码为root
 insert into `mooc_user`(id,user_image, name, account, password, user_type)
 values (1,'/file/default.png', '张三丰', 'zhangsanfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
+        'USER'),
        (2,'/file/default.png', '张四丰', 'zhangsifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
+        'USER'),
        (3,'/file/default.png', '张五丰', 'zhangwufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
+        'USER'),
        (4,'/file/default.png', '张一丰', 'zhangyifeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
+        'USER'),
        (5,'/file/default.png', '张六丰', 'zhangliufeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
+        'USER'),
        (6,'/file/default.png', '张二丰', 'zhangerfeng', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '普通用户'),
-       (7,'/file/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', '教师'),
+        'USER'),
+       (7,'/file/default.png', 'go老师', 'gotodo', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2', 'TEACHER'),
        (8,'/file/default.png', '以父之名', 'yifuzhiming', '$2a$10$0LI/kQxqW8XxO1BVsH2hK.K7AkRdeUMYuhqd/wUOg2RqEe3n3kOY2',
-        '教师');
+        'TEACHER');
 
 -- 系统管理员表
 DROP TABLE IF EXISTS `mooc_manager`;
@@ -646,7 +646,7 @@ CREATE TABLE `notice`(
 `comment_id` int default NULL  COMMENT '评论id,如果是评论通知不为null',
 `reply_id` int default NULL  COMMENT '回复id,如果是回复不为null',
 `content` varchar(512) not null COMMENT '消息内容',
-`user_type` int NOT NULL DEFAULT 1 COMMENT '用户类型,1管理员，2教师',
+`user_type` varchar(20) NOT NULL COMMENT '用户类型,管理员MANAGER，教师TEACHER, 普通用户USER',
 `type` int NOT NULL DEFAULT 1 COMMENT '消息类型,1新增课程，2课程提问，3评论回复，4、系统通知',
 `status` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，2已删除',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',
@@ -655,23 +655,23 @@ PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通知表';
 
 -- 课程通知
-insert into notice(send_id,accept_id,course_id,content)
+insert into notice(send_id,accept_id,course_id,content,user_type)
 values
-(null,null,1,'新增了课程《Spring入门实践》'),
-(null,null,2,'新增了课程《Spring入门实践》'),
-(null,null,3,'新增了课程《Spring入门实践》'),
-(null,null,4,'新增了课程《Spring入门实践》'),
-(null,null,5,'新增了课程《Spring入门实践》'),
-(null,null,6,'新增了课程《Spring入门实践》'),
-(null,null,7,'新增了课程《Spring入门实践》');
+(null,null,1,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,2,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,3,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,4,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,5,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,6,'新增了课程《Spring入门实践》','MANAGER'),
+(null,null,7,'新增了课程《Spring入门实践》','MANAGER');
 
 -- 教师，课程问答通知,
 insert into notice(send_id,accept_id,course_id,content,user_type,comment_id, type)
 values
-(null,7,null,'【课程问答】你好你好',2,1,2),
-(null,7,null,'你叫什么名字？',2,2,2),
-(null,7,null,'这门课程是干什么的？',2,3,2),
-(null,7,null,'Hahahaha, 啦啦啦啦啦...',2,4,2),
-(3,7,1,'老师您好，请问什么是SpringCloud?',2,100,2),
-(2,7,1,'老师您好,想问一下您在吗？',2,101,2),
-(null,7,null,'哦哦',2,5,2);
+(null,7,null,'【课程问答】你好你好','TEACHER',1,2),
+(null,7,null,'你叫什么名字？','TEACHER',2,2),
+(null,7,null,'这门课程是干什么的？','TEACHER',3,2),
+(null,7,null,'Hahahaha, 啦啦啦啦啦...','TEACHER',4,2),
+(3,7,1,'老师您好，请问什么是SpringCloud?','TEACHER',100,2),
+(2,7,1,'老师您好,想问一下您在吗？','TEACHER',101,2),
+(null,7,null,'哦哦','TEACHER',5,2);

@@ -3,7 +3,7 @@ import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.message.service.SendNoticeService;
 import cn.edu.lingnan.mooc.message.websock.MessageFactory;
 import cn.edu.lingnan.mooc.message.service.NoticeService;
-import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
+import cn.edu.lingnan.mooc.message.websock.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class SendNoticeController {
     private SendNoticeService sendNoticeService;
 
     @Autowired
-    private MyWebSocket webSocket;
+    private WebSocketHandler webSocket;
 
     @Autowired
     private MessageFactory messageFactory;

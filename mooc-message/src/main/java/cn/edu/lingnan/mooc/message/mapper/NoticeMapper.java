@@ -15,6 +15,7 @@ public interface NoticeMapper {
     /**
      * 统计用户消息数
      * @param userId
+     * @param status
      * @return
      */
      int countUnReadNoticeByUserId(@Param("userId") Integer userId, @Param("status") Integer status);
@@ -22,6 +23,7 @@ public interface NoticeMapper {
     /**
      * 统计管理员未读消息数
      * @param managerId
+     * @param status
      * @return
      */
     int countUnReadNoticeByManagerId(@Param("managerId") Integer managerId, @Param("status") Integer status);

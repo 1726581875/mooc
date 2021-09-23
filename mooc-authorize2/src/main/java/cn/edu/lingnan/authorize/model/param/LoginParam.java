@@ -1,6 +1,5 @@
 package cn.edu.lingnan.authorize.model.param;
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

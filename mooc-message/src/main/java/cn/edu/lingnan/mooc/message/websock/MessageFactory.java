@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.message.websock;
 
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
-import cn.edu.lingnan.mooc.message.menus.UserTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class MessageFactory {
      * 创建一条系统通知
      * @return
      */
-    public Notice getSystemNotice(Integer senderId,Integer acceptId,Integer type, String content){
+    public Notice getSystemNotice(Integer senderId, Integer acceptId, UserTypeEnum type, String content){
         Notice notice = new Notice();
         notice.setCourseId(null);
         notice.setCommentId(null);
@@ -42,7 +42,7 @@ public class MessageFactory {
         notice.setCommentId(null);
         notice.setReplyId(null);
         notice.setAcceptId(null);
-        notice.setUserType(UserTypeEnum.MANAGER.getType());
+        notice.setUserType(UserTypeEnum.MANAGER);
         notice.setType(NoticeTypeEnum.CREATE_COURSE.getType());
         notice.setSendId(senderId);
         notice.setContent("【新增课程】 " + content);
@@ -64,7 +64,7 @@ public class MessageFactory {
         notice.setCommentId(commentId);
         notice.setReplyId(null);
         notice.setAcceptId(acceptId);
-        notice.setUserType(UserTypeEnum.USER.getType());
+        notice.setUserType(UserTypeEnum.USER);
         notice.setType(NoticeTypeEnum.QUESTION.getType());
         notice.setSendId(senderId);
         notice.setContent("【课程提问】 " + content);
@@ -77,7 +77,7 @@ public class MessageFactory {
         notice.setCommentId(commentId);
         notice.setReplyId(replyId);
         notice.setAcceptId(acceptId);
-        notice.setUserType(UserTypeEnum.USER.getType());
+        notice.setUserType(UserTypeEnum.USER);
         notice.setType(NoticeTypeEnum.REPLY.getType());
         notice.setSendId(senderId);
         notice.setContent("【回复消息】 " + content);

@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.model.entity;
 
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 

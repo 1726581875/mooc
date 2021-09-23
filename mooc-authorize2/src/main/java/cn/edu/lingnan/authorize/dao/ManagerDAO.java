@@ -32,7 +32,7 @@ public class ManagerDAO extends BaseDAO {
     /**
      * 行映射
      */
-    private class  ManagerMapper implements RowMapper<MoocManager>{
+    private class ManagerMapper implements RowMapper<MoocManager> {
         @Override
         public MoocManager mapRow(ResultSet resultSet, int i) throws SQLException {
             return MoocManager.build().setId(resultSet.getLong("id"))
@@ -45,26 +45,28 @@ public class ManagerDAO extends BaseDAO {
 
     /**
      * 根据账号查找管理员
+     *
      * @param account
      * @return
      */
-    public MoocManager findManagerByAccount(String account){
+    public MoocManager findManagerByAccount(String account) {
 
         String sql = "select * from mooc_manager where account = ?";
         MoocManager moocManager = null;
-       try {
-           moocManager = jdbcTemplate.queryForObject(sql, new Object[]{account}, new ManagerMapper());
-        }catch (Exception e){
-           log.warn("根据账号户查询失败，account={}，msg={}",account, e.getMessage());
-       }
+        try {
+            moocManager = jdbcTemplate.queryForObject(sql, new Object[]{account}, new ManagerMapper());
+        } catch (Exception e) {
+            log.warn("根据账号户查询失败，account={}，msg={}", account, e.getMessage());
+        }
         return moocManager;
     }
 
     /**
      * 插入或者更新管理员
+     *
      * @param manager
      */
-    public int save(MoocManager manager){
+    public int save(MoocManager manager) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO mooc_manager(name,account,password,status) ");
         sql.append("VALUES ");
@@ -75,13 +77,13 @@ public class ManagerDAO extends BaseDAO {
                 , manager.getPassword(), manager.getStatus(), manager.getUpdateTime(), manager.getName());
     }
 
-    public long insert(MoocManager manager){
+    public long insert(MoocManager manager) {
         final String sql = "INSERT INTO mooc_manager(name,account,password,status) VALUES (?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps  = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setObject(1, manager.getName());
                 ps.setObject(2, manager.getAccount());
                 ps.setObject(3, manager.getPassword());
@@ -94,101 +96,106 @@ public class ManagerDAO extends BaseDAO {
 
     /**
      * 疲劳插入管理员角色关系
+     *
      * @param managerRoleRels
      * @return
      */
-    public void batchInsertManagerRoleRel(List<ManagerRoleRel> managerRoleRels){
-        String sql=  "insert into manager_role_rel (manager_id,role_id) values (? , ?)";
+    public void batchInsertManagerRoleRel(List<ManagerRoleRel> managerRoleRels) {
+        String sql = "insert into manager_role_rel (manager_id,role_id) values (? , ?)";
         List<Object[]> batchArgs = new ArrayList<>();
-        managerRoleRels.forEach(e -> batchArgs.add(new Object[]{e.getManagerId(),e.getRoleId()}));
+        managerRoleRels.forEach(e -> batchArgs.add(new Object[]{e.getManagerId(), e.getRoleId()}));
         jdbcTemplate.batchUpdate(sql, batchArgs);
     }
 
-    public void batchDeleteManager(List<Long> managerIdList){
-        String sql=  "delete from mooc_manager where id in ("
-                + managerIdList.stream().map(e->"?").collect(Collectors.joining(",")) + ")";
+    public void batchDeleteManager(List<Long> managerIdList) {
+        String sql = "delete from mooc_manager where id in ("
+                + managerIdList.stream().map(e -> "?").collect(Collectors.joining(",")) + ")";
         jdbcTemplate.queryForList(sql, new Object[]{managerIdList});
     }
 
     /**
      * 根据id查找
+     *
      * @param managerId
      * @return
      */
-    public MoocManager findById(Integer managerId){
+    public MoocManager findById(Integer managerId) {
         String sql = "select * from mooc_manager where id = ?";
         MoocManager moocManager = null;
         try {
             moocManager = jdbcTemplate.queryForObject(sql, new Object[]{managerId}, new ManagerMapper());
-        }catch (Exception e){
-            log.warn("数据库查询该账户失败，id={}，msg={}",managerId,e.getMessage());
+        } catch (Exception e) {
+            log.warn("数据库查询该账户失败，id={}，msg={}", managerId, e.getMessage());
         }
         return moocManager;
     }
 
     /**
      * 根据账号查找id
+     *
      * @param accountList
      * @return
      */
-    public List<Integer> findManagerIdByAccountList(List<String> accountList){
+    public List<Integer> findManagerIdByAccountList(List<String> accountList) {
 
         List<Integer> idList = new ArrayList<>();
         String sql = "select id from mooc_manager where account in ("
-                + accountList.stream().map(e->"?").collect(Collectors.joining(",")) + ")";
+                + accountList.stream().map(e -> "?").collect(Collectors.joining(",")) + ")";
         try {
-            idList = jdbcTemplate.queryForList(sql,new Object[]{accountList},Integer.class);
-        }catch (Exception e){
-            log.warn("==根据账号查询数据库id list失败，accountList{} ,errmsg={}",accountList,e.getMessage());
+            idList = jdbcTemplate.queryForList(sql, new Object[]{accountList}, Integer.class);
+        } catch (Exception e) {
+            log.warn("==根据账号查询数据库id list失败，accountList{} ,errmsg={}", accountList, e.getMessage());
         }
         return idList;
     }
 
-    public void updateLoginTime(Long id, Date loginTime){
+    public void updateLoginTime(Long id, Date loginTime) {
         String sql = "update mooc_user set login_time = ? where id = ?";
-        jdbcTemplate.update(sql,loginTime,id);
+        jdbcTemplate.update(sql, loginTime, id);
     }
 
     /**
      * 分页查询管理员列表
+     *
      * @param queryStr
      * @param pageIndex
      * @param pageSize
      * @return
      */
-    public PageVO<MoocManager> findManagePage(String queryStr,Integer pageIndex,Integer pageSize){
+    public PageVO<MoocManager> findManagePage(String queryStr, Integer pageIndex, Integer pageSize) {
 
         StringBuilder commonSql = new StringBuilder(" from mooc_manager ");
-        if(!StringUtils.isEmpty(queryStr)){
+        if (!StringUtils.isEmpty(queryStr)) {
             commonSql.append(" where name like concat('%',?, '%') or account like concat('%',?, '%') ");
         }
         //拼接sql, 统计总行数
         String countSql = SqlConstant.SELECT_COUNT + commonSql.toString();
-        Integer totalCount = !StringUtils.isEmpty(queryStr) ?
-                jdbcTemplate.queryForObject(countSql, new Object[]{queryStr,queryStr}, Integer.class)
-                : jdbcTemplate.queryForObject(countSql, Integer.class);
-        log.info("查询管理员信息 countSql={}",countSql);
-        if(totalCount == null || totalCount == 0){
-            return new PageVO<>(pageIndex, pageSize,0,0,new ArrayList<>());
+        Long totalCount = !StringUtils.isEmpty(queryStr) ?
+                jdbcTemplate.queryForObject(countSql, new Object[]{queryStr, queryStr}, Long.class)
+                : jdbcTemplate.queryForObject(countSql, Long.class);
+        log.info("查询管理员信息 countSql={}", countSql);
+        if (totalCount == null || totalCount == 0L) {
+            return new PageVO<>(pageIndex, pageSize, 0, 0L, new ArrayList<>());
         }
         //拼接查询sql，查询数据
-        String querySql = SqlConstant.SELECT_ALL + commonSql.toString() + "limit " + (pageIndex - 1)*pageSize + ", " + pageSize;
-        log.info("查询管理员信息 querySql={}",querySql);
+        String querySql = SqlConstant.SELECT_ALL + commonSql.toString() + "limit " + (pageIndex - 1) * pageSize + ", " + pageSize;
+        log.info("查询管理员信息 querySql={}", querySql);
         List<MoocManager> moocManagers = !StringUtils.isEmpty(queryStr) ?
-                jdbcTemplate.query(querySql, new Object[]{queryStr,queryStr}, new ManagerMapper())
-                : jdbcTemplate.query(querySql, new ManagerMapper()) ;
+                jdbcTemplate.query(querySql, new Object[]{queryStr, queryStr}, new ManagerMapper())
+                : jdbcTemplate.query(querySql, new ManagerMapper());
 
         //计算页数
-        Integer pageCount = totalCount%pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
+        Integer pageCount = Math.toIntExact(totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1);
         return new PageVO<>(pageIndex, pageSize, pageCount, totalCount, moocManagers);
     }
 
     /**
      * 删除管理员角色关系
+     *
      * @param managerId
      * @return
      */
-    public int deleteManagerRoleRefByManagerId(Long managerId){
+    public int deleteManagerRoleRefByManagerId(Long managerId) {
         String sql = "delete from manager_role_rel where manager_id = ?";
         return jdbcTemplate.update(sql, managerId);
     }

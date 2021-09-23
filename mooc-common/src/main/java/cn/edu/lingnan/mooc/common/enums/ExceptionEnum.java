@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.common.exception.enums;
+package cn.edu.lingnan.mooc.common.enums;
 
 import cn.edu.lingnan.mooc.common.exception.BaseException;
 

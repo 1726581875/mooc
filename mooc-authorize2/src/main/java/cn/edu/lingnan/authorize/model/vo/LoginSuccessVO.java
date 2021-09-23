@@ -1,6 +1,6 @@
 package cn.edu.lingnan.authorize.model.vo;
 
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

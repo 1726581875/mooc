@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.portal.util;
 
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.UserToken;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 

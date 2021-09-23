@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.common.model;
 
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;

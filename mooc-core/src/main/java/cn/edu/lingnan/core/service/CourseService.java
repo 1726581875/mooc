@@ -73,7 +73,7 @@ public class CourseService {
        pageVO.setPageIndex(pageIndex);
        pageVO.setPageSize(pageSize);
        pageVO.setPageCount(coursePage.getTotalPages());
-       pageVO.setTotalRow(coursePage.getNumberOfElements());
+       pageVO.setTotalRow(null);
        return pageVO;
    }
 

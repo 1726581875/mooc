@@ -38,16 +38,12 @@ public class OnlineUserController {
 
     @PostMapping("/offline/{account}")
     public RespResult offlineByAccount(@PathVariable String account){
-        List<String> accountList = new ArrayList<>(1);
-        accountList.add(account);
-        // 使用户下线
-        onlineService.offline(accountList);
+        onlineService.offline(Arrays.asList(account));
         return RespResult.success();
     }
 
     @PostMapping("/offline/list")
     public RespResult offlineByAccountList(@RequestBody List<String> accountList){
-        // 使用户下线
         onlineService.offline(accountList);
         return RespResult.success();
     }

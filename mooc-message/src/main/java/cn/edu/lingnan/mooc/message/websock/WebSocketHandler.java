@@ -1,8 +1,9 @@
 package cn.edu.lingnan.mooc.message.websock;
 
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.message.authentication.util.SpringContextHolder;
-import cn.edu.lingnan.mooc.message.menus.UserTypeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,13 +25,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @ServerEndpoint(value = "/webSocket/{type}/{userId}")
-public class MyWebSocket {
+public class WebSocketHandler {
 
-    private Integer userId;
+    private Long userId;
     /**
      * 1为管理员，2为教师/学生
      */
-    private int type;
+    private UserTypeEnum type;
     /**
      * 管理员前缀，管理员和教师属于不同的表，可能id会存在相同，所以通过前缀区分
      */
@@ -44,27 +47,20 @@ public class MyWebSocket {
     /**
      * 存储在线用户
      */
-    private static ConcurrentHashMap<String, MyWebSocket> webSocketMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, WebSocketHandler> webSocketMap = new ConcurrentHashMap<>();
+
+    private static Map<String, UserSession> userSessionMap = new ConcurrentHashMap<>();
+
 
     /**
      * 建立连接会调用的方法
      */
     @OnOpen
-    public void onOpen(@PathParam("userId") Integer userId, @PathParam("type") Integer type, Session session) {
-        this.session = session;
-        this.userId = userId;
-        this.type = type;
-        //如果是管理员，加上前缀区分
-        if (UserTypeEnum.MANAGER.equals(this.type)) {
-            webSocketMap.put(MANAGER_PRE + userId, this);
-            MessageDTO message = MessageDTO.createTips("欢迎登陆慕课后台管理系统~~~");
-            this.sendMessageToManager(message, userId);
-        } else {
-            webSocketMap.put(String.valueOf(userId), this);
-        }
+    public void onOpen(@PathParam("userId") Long userId, @PathParam("type") UserTypeEnum type, Session session) {
 
+        userSessionMap.put(type + ":" + userId, new UserSession(userId, type, session));
         log.info("[websocket消息] 有新的用户登录，当前websocket连接数：{}", webSocketMap.size());
-        log.info("[websocket消息] 连接用户为{} id===>{}", type == 1 ? "管理员" : "普通用户", userId);
+        log.info("[websocket消息] 连接用户为{} id===>{}", type, userId);
     }
 
     /**
@@ -90,7 +86,7 @@ public class MyWebSocket {
 
     public void sendMessage(MessageDTO message) {
 
-        for (MyWebSocket webSocket : webSocketMap.values()) {
+        for (WebSocketHandler webSocket : webSocketMap.values()) {
             try {
                 webSocket.session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
@@ -109,7 +105,7 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToUser(MessageDTO message, List<Integer> userIds) {
+    public void sendMessageToUser(MessageDTO message, List<Long> userIds) {
         userIds.forEach(userId -> {
             if (webSocketMap.get(String.valueOf(userId)) != null) {
                 try {
@@ -129,9 +125,9 @@ public class MyWebSocket {
      * @param message
      * @param userIds
      */
-    public void sendMessageToManager(MessageDTO message, List<Integer> userIds) {
+    public void sendMessageToManager(MessageDTO message, List<Long> userIds) {
         userIds.forEach(userId -> {
-            if (webSocketMap.get(MANAGER_PRE + userId) != null) {
+            if (webSocketMap.get(getManagerKey(userId)) != null) {
                 try {
                     webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向管理员{} 推送信息：message={}", userId, message);
@@ -141,6 +137,14 @@ public class MyWebSocket {
             }
         });
 
+    }
+
+    private String getManagerKey(Long userId) {
+        return getKey(UserTypeEnum.MANAGER, userId);
+    }
+
+    private String getKey(UserTypeEnum type, Long userId){
+        return type + ":" + userId;
     }
 
 
@@ -167,7 +171,7 @@ public class MyWebSocket {
      * @param message
      * @param toUserId
      */
-    public void sendMessageToManager(MessageDTO message, Integer toUserId) {
+    public void sendMessageToManager(MessageDTO message, Long toUserId) {
         if (webSocketMap != null && webSocketMap.get(MANAGER_PRE + userId) != null) {
             log.info("[websocket消息] 向{}发消息，message={}", MANAGER_PRE + userId, message);
             try {
@@ -176,6 +180,26 @@ public class MyWebSocket {
                 log.error("[websocket消息] 向{}发消息，message={},发生异常", MANAGER_PRE + userId, message, e);
             }
         }
+    }
+
+
+    @Data
+    class UserSession {
+
+        private Long userId;
+
+        private UserTypeEnum type;
+
+        private Session session;
+
+        public UserSession(){}
+
+        public UserSession(Long userId, UserTypeEnum type, Session session) {
+            this.userId = userId;
+            this.type = type;
+            this.session = session;
+        }
+
     }
 
 }

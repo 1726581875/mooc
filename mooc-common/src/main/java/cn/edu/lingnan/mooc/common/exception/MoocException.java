@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.common.exception;
 
-import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
+import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
 
 /**
  * @author xmz

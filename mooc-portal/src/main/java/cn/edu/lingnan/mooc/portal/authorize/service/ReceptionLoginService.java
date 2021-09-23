@@ -1,8 +1,8 @@
 package cn.edu.lingnan.mooc.portal.authorize.service;
 
 import cn.edu.lingnan.mooc.common.exception.MoocException;
-import cn.edu.lingnan.mooc.common.exception.enums.ExceptionEnum;
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.model.UserToken;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;

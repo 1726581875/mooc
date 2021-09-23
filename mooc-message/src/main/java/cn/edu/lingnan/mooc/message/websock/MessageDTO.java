@@ -54,4 +54,11 @@ public class MessageDTO {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "MessageDTO{" +
+                "type=" + type +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

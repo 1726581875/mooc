@@ -1,10 +1,11 @@
 package cn.edu.lingnan.mooc.message.service;
 
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.message.mapper.SendNoticeMapper;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.websock.MessageDTO;
 import cn.edu.lingnan.mooc.message.websock.MessageFactory;
-import cn.edu.lingnan.mooc.message.websock.MyWebSocket;
+import cn.edu.lingnan.mooc.message.websock.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class SendNoticeService {
     private SendNoticeMapper sendNoticeMapper;
 
     @Autowired
-    private MyWebSocket webSocket;
+    private WebSocketHandler webSocket;
 
     @Autowired
     private MessageFactory messageFactory;
@@ -69,9 +70,7 @@ public class SendNoticeService {
                 //踢除消息消息通知
                 List<Integer> userIdList = new ArrayList<>(1);
                 userIdList.add(notice.getAcceptId());
-                //判断类型
-                boolean isManager = notice.getUserType() != null && notice.getUserType() == 1 ? true : false;
-                this.sendOfflineNotice(userIdList,isManager);
+                this.sendOfflineNotice(userIdList, UserTypeEnum.MANAGER.equals(notice.getUserType()));
                 break;
             default:
                 log.error("===== 未知类型通知. notice={} ======", notice);
@@ -158,7 +157,7 @@ public class SendNoticeService {
     }
 
 
-    public void sendOfflineNotice(List<Integer> userIdList, Boolean isManager) {
+    public void sendOfflineNotice(List<Long> userIdList, Boolean isManager) {
 
         log.info("================= 发送踢除下线消息,用户数={},要发送的IdList={}", userIdList.size(), userIdList);
         //创建一个踢除下线消息

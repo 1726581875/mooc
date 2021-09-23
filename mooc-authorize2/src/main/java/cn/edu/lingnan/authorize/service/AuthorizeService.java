@@ -2,7 +2,7 @@ package cn.edu.lingnan.authorize.service;
 
 import cn.edu.lingnan.authorize.model.param.LoginParam;
 import cn.edu.lingnan.authorize.model.vo.LoginSuccessVO;
-import cn.edu.lingnan.mooc.common.exception.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 
 /**
  * @author xiaomingzhang
