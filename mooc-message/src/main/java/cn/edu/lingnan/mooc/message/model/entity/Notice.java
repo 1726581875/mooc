@@ -19,11 +19,11 @@ public class Notice {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer sendId;
+    private Long sendId;
 
-    private Integer acceptId;
+    private Long acceptId;
 
-    private Integer courseId;
+    private Long courseId;
 
     private Integer replyId;
 

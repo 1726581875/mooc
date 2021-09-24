@@ -7,7 +7,7 @@ public class  ReplyNoticeVO {
     /**
      * 对应课程ID
      */
-    private Integer courseId;
+    private Long courseId;
     /**
      * 课程名
      */
@@ -27,7 +27,7 @@ public class  ReplyNoticeVO {
     /**
      * 哪个用户发的
      */
-    private Integer fromUserId;
+    private Long fromUserId;
     /**
      * 哪个用户发的
      */

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @date: 2020/11/16
  */
 @Data
-public class UserToken implements Serializable {
+public class LoginUser implements Serializable {
 
     private static final long serialVersionUID = 5021055089779459121L;
 
@@ -22,9 +22,7 @@ public class UserToken implements Serializable {
     private String token;
 
     private Long userId;
-    /**
-     * 教师通过前缀teacher-区分
-     */
+
     private String account;
     /**
      * 类型 为管理员，教师,普通用户

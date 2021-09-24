@@ -18,7 +18,7 @@ public interface NoticeMapper {
      * @param status
      * @return
      */
-     int countUnReadNoticeByUserId(@Param("userId") Integer userId, @Param("status") Integer status);
+     int countUnReadNoticeByUserId(@Param("userId") Long userId, @Param("status") Integer status);
 
     /**
      * 统计管理员未读消息数
@@ -26,7 +26,7 @@ public interface NoticeMapper {
      * @param status
      * @return
      */
-    int countUnReadNoticeByManagerId(@Param("managerId") Integer managerId, @Param("status") Integer status);
+    int countUnReadNoticeByManagerId(@Param("managerId") Long managerId, @Param("status") Integer status);
 
     /**
      * 获取通知List
@@ -35,7 +35,7 @@ public interface NoticeMapper {
      * @param isManager
      * @return
      */
-    List<NoticeVO> getNoticeList(@Param("status") Integer status,@Param("userId")Integer userId,@Param("isManager")Boolean isManager);
+    List<NoticeVO> getNoticeList(@Param("status") Integer status,@Param("userId")Long userId,@Param("isManager")Boolean isManager);
 
     /**
      * 更新通知状态
@@ -49,7 +49,7 @@ public interface NoticeMapper {
      * 批量更新通知状态
      * @return
      */
-    int updateAllNoticeStatus(@Param("userId")Integer userId,@Param("fromStatus")Integer fromStatus,
+    int updateAllNoticeStatus(@Param("userId")Long userId,@Param("fromStatus")Integer fromStatus,
                               @Param("toStatus")Integer toStatus,@Param("isManager")Boolean isManager);
 
 
@@ -58,21 +58,21 @@ public interface NoticeMapper {
      * @param id
      * @return
      */
-    Notice findById(@Param("id")Integer id);
+    Notice findById(@Param("id")Long id);
 
     /**
      * 根据id查询课程名
      * @param id
      * @return
      */
-    String getCourseName(@Param("id")Integer id);
+    String getCourseName(@Param("id")Long id);
 
     /**
      * 根据id查询用户名
      * @param id
      * @return
      */
-    String getUserName(@Param("id")Integer id);
+    String getUserName(@Param("id")Long id);
 
     /**
      * 插入一条消息

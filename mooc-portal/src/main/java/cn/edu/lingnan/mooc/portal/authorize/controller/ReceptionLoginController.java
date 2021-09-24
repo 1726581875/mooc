@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.portal.authorize.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.LoginParam;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.RegisterParam;
@@ -72,7 +72,7 @@ public class ReceptionLoginController {
         if(token == null){
             return RespResult.success("登出成功");
         }
-        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
         if(token == null || userToken == null){
             return RespResult.fail("token失效");
         }
@@ -92,7 +92,7 @@ public class ReceptionLoginController {
         if(token == null){
             return RespResult.success(false);
         }
-        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
         if(token == null || userToken == null){
             return RespResult.success(false);
         }

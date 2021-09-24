@@ -2,7 +2,7 @@ package cn.edu.lingnan.mooc.portal.authorize.config;
 
 import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,7 @@ public class TokenFilter implements Filter {
         try {
             String token = request.getHeader("Authorization");
             // 获取和校验登录信息
-            UserToken loginInfo = getLoginInfo(token);
+            LoginUser loginInfo = getLoginInfo(token);
             // 设置用户信息
             UserUtil.setUserToken(loginInfo);
             filterChain.doFilter(request, response);
@@ -57,11 +57,11 @@ public class TokenFilter implements Filter {
 
     }
 
-    private UserToken getLoginInfo(String token){
+    private LoginUser getLoginInfo(String token){
         if (token == null) {
             throw new MoocException(HttpStatus.UNAUTHORIZED.value(), "你还没有登录");
         }
-        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
         if (userToken == null) {
             throw new MoocException(HttpStatus.UNAUTHORIZED.value(), "无效token");
         }

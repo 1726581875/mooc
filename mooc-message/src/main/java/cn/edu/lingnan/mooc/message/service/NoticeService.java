@@ -1,8 +1,9 @@
 package cn.edu.lingnan.mooc.message.service;
 
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.message.authentication.entity.UserToken;
-import cn.edu.lingnan.mooc.message.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
@@ -32,18 +33,16 @@ public class NoticeService {
      * @return
      */
     public Integer getUnReadNoticeNum(Integer status) {
-        UserToken userToken = UserUtil.getUserToken();
-        if(userToken == null){
+        LoginUser user = UserUtil.getLoginUser();
+        if(user == null){
             log.error("====== 统计未读消息发生异常 用户还没有登录======");
             return null;
         }
-        //获取用户Id
-        Integer userId = userToken.getUserId().intValue();
-        if(UserUtil.isTeacher()){
-            return noticeMapper.countUnReadNoticeByUserId(userId,status);
+        if(UserTypeEnum.TEACHER.equals(user.getType())){
+            return noticeMapper.countUnReadNoticeByUserId(user.getUserId(),status);
         }
 
-        return noticeMapper.countUnReadNoticeByManagerId(userId, status);
+        return noticeMapper.countUnReadNoticeByManagerId(user.getUserId(), status);
     }
 
     /**
@@ -55,14 +54,13 @@ public class NoticeService {
      */
     public PageVO<NoticeVO> getMessageList(Integer status,Integer pageIndex, Integer pageSize){
 
-        //获取用户Id
-        Integer userId = UserUtil.getUserId().intValue();
+        LoginUser loginUser = UserUtil.getLoginUser();
         PageHelper.startPage(pageIndex,pageSize,"create_time DESC");
         List<NoticeVO> noticeVOList = null;
-        if(UserUtil.isTeacher()){
-           noticeVOList = noticeMapper.getNoticeList(status,userId,false);
+        if(UserTypeEnum.TEACHER.equals(loginUser.getType())){
+           noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),false);
         }else {
-           noticeVOList = noticeMapper.getNoticeList(status,userId,true);
+           noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),true);
         }
         //使用分页插件分页，设置页面大小和第几页
         PageInfo<NoticeVO> pageInfo = new PageInfo<NoticeVO>(noticeVOList);
@@ -92,8 +90,8 @@ public class NoticeService {
      * @param status
      */
     public void updateAllNoticeStatus(Integer status){
-        Integer userId = UserUtil.getUserId();
-        Boolean isManager = !UserUtil.isTeacher();
+        Long userId = UserUtil.getUserId();
+        Boolean isManager = UserTypeEnum.MANAGER.equals(UserUtil.getLoginUser().getType());
         int successNum = 0;
         if(NoticeStatusEnum.READ.getStatus().equals(status)){
             //批量更改：未读=>已读
@@ -118,7 +116,7 @@ public class NoticeService {
      * @param id 消息id
      * @return
      */
-    public ReplyNoticeVO getReplyNoticeDetail(Integer id){
+    public ReplyNoticeVO getReplyNoticeDetail(Long id){
 
         Notice notice = noticeMapper.findById(id);
         if(notice == null){
@@ -126,8 +124,8 @@ public class NoticeService {
             return null;
         }
 
-        Integer senderId = notice.getSendId();
-        Integer courseId = notice.getCourseId();
+        Long senderId = notice.getSendId();
+        Long courseId = notice.getCourseId();
         String courseName = noticeMapper.getCourseName(courseId);
         String userName = noticeMapper.getUserName(senderId);
 

@@ -33,7 +33,7 @@ public class SendNoticeController {
     }
 
     @PostMapping("/createCourseNotice")
-    public RespResult sendCreateCourseNotice(@RequestParam("token") String token, Integer senderId, Integer courseId, String content){
+    public RespResult sendCreateCourseNotice(@RequestParam("token") String token, Long senderId, Long courseId, String content){
 
         boolean success = sendNoticeService.sendCreateCourseNotice(senderId, courseId, content);
 
@@ -42,21 +42,21 @@ public class SendNoticeController {
 
 
     @PutMapping("/offlineNotice")
-    public RespResult sendOfflineNotice(@RequestParam("token") String token,@RequestParam("userIdList") List<Integer> userIdList,@RequestParam("isManager") Boolean isManager){
+    public RespResult sendOfflineNotice(@RequestParam("token") String token,@RequestParam("userIdList") List<Long> userIdList,@RequestParam("isManager") Boolean isManager){
         sendNoticeService.sendOfflineNotice(userIdList,isManager);
         return  RespResult.success("消息发送成功");
     }
 
 
     @PutMapping("/questionNotice")
-    public RespResult sendQuestionNotice(@RequestParam("token") String token,Integer senderId,Integer acceptId,Integer courseId,Integer commentId, String content){
+    public RespResult sendQuestionNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Integer commentId, String content){
         sendNoticeService.sendQuestionNotice(senderId, acceptId, courseId, commentId,  content);
         return  RespResult.success("消息发送成功");
     }
 
 
     @PutMapping("/replyNotice")
-    public RespResult sendReplyNotice(@RequestParam("token") String token,Integer senderId,Integer acceptId,Integer courseId,Integer commentId, Integer replyId, String content){
+    public RespResult sendReplyNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Integer commentId, Integer replyId, String content){
         sendNoticeService.sendReplyNotice(senderId, acceptId, courseId, commentId,replyId,  content);
         return  RespResult.success("消息发送成功");
     }

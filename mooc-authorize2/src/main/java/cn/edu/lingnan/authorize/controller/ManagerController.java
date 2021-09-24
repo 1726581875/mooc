@@ -32,7 +32,7 @@ public class ManagerController {
 
         RespResult respResult = null;
         //教师、用户或者管理员位于不同的表，这里需要判断
-        if(UserTypeEnum.MANAGER.equals(UserUtil.getUserToken().getType())) {
+        if(UserTypeEnum.MANAGER.equals(UserUtil.getLoginUser().getType())) {
             respResult = managerService.updatePassword(passwordParam);
         }else {
             respResult = managerService.updatePassword(passwordParam);

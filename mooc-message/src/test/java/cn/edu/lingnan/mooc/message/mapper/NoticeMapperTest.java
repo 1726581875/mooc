@@ -33,7 +33,7 @@ public class NoticeMapperTest {
     @Test
     public void findByIdTest() {
         Notice notice = noticeMapper.findById(2);
-        System.out.println(notice);
+        System.out.println(notice.getUserType());
     }
 
 

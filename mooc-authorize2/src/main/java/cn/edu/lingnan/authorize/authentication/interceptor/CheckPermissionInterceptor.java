@@ -2,7 +2,7 @@ package cn.edu.lingnan.authorize.authentication.interceptor;
 
 import cn.edu.lingnan.mooc.common.annotation.CheckAuthority;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +52,7 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             return false;
         }
         // 2、去redis获取用户信息，如果获取不到，说明没有登录或者token过期
-        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
         if(userToken == null){
             responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"无效token");
             return false;

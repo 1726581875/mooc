@@ -20,7 +20,7 @@ import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
 import cn.edu.lingnan.authorize.dao.MenuTreeDAO;
 import cn.edu.lingnan.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -94,11 +94,11 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Override
     public void loginOut() {
         HttpServletRequest request = HttpServletUtil.getRequest();
-        String token = request.getHeader(UserToken.HTTP_TOKEN_HEAD);
+        String token = request.getHeader(LoginUser.HTTP_TOKEN_HEAD);
         if(token == null){
            return;
         }
-        UserToken userToken = RedisUtil.get(token, UserToken.class);
+        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
         if(token == null || userToken == null){
            throw new MoocException("token失效");
         }
@@ -273,7 +273,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
         // 设置UserToken（用户登录基本信息）
         String tokenKey = RedisKeyUtil.getRedisTokenKey(manager.getType(), token);
-        UserToken userToken = buildUserToken(manager, token, permissionStr);
+        LoginUser userToken = buildUserToken(manager, token, permissionStr);
         RedisUtil.set(tokenKey, userToken, LOGIN_EXPIRE_TIME);
 
         // 账户和token关联关系
@@ -289,8 +289,8 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     }
 
 
-    private UserToken buildUserToken(MoocManager manager, String token, String permissionStr){
-        UserToken userToken = new UserToken();
+    private LoginUser buildUserToken(MoocManager manager, String token, String permissionStr){
+        LoginUser userToken = new LoginUser();
         userToken.setUserId(manager.getId());
         userToken.setAccount(manager.getAccount());
         userToken.setToken(token);

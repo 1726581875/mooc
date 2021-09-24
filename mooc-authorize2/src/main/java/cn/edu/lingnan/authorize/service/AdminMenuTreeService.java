@@ -4,7 +4,7 @@ import cn.edu.lingnan.authorize.dao.jpa.MenuTreeRepository;
 import cn.edu.lingnan.authorize.model.dto.MenuTreeDTO;
 import cn.edu.lingnan.authorize.model.entity.MenuTree;
 import cn.edu.lingnan.authorize.model.vo.MenuTreeVO;
-import cn.edu.lingnan.authorize.util.CopyUtil;
+import cn.edu.lingnan.mooc.common.util.CopyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

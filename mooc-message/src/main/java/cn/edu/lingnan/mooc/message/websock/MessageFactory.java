@@ -16,7 +16,7 @@ public class MessageFactory {
      * 创建一条系统通知
      * @return
      */
-    public Notice getSystemNotice(Integer senderId, Integer acceptId, UserTypeEnum type, String content){
+    public Notice getSystemNotice(Long senderId, Long acceptId, UserTypeEnum type, String content){
         Notice notice = new Notice();
         notice.setCourseId(null);
         notice.setCommentId(null);
@@ -36,7 +36,7 @@ public class MessageFactory {
      * @param content
      * @return
      */
-    public Notice getCreateCourseNotice(Integer senderId,Integer courseId, String content){
+    public Notice getCreateCourseNotice(Long senderId, Long courseId, String content){
         Notice notice = new Notice();
         notice.setCourseId(courseId);
         notice.setCommentId(null);
@@ -58,7 +58,7 @@ public class MessageFactory {
      * @param content
      * @return
      */
-    public Notice getQuestionNotice(Integer senderId,Integer acceptId,Integer courseId,Integer commentId, String content){
+    public Notice getQuestionNotice(Long senderId,Long acceptId,Long courseId,Integer commentId, String content){
         Notice notice = new Notice();
         notice.setCourseId(courseId);
         notice.setCommentId(commentId);
@@ -71,7 +71,7 @@ public class MessageFactory {
         return notice;
     }
 
-    public Notice getReplyNotice(Integer senderId,Integer acceptId,Integer courseId,Integer commentId,Integer replyId, String content){
+    public Notice getReplyNotice(Long senderId,Long acceptId,Long courseId,Integer commentId,Integer replyId, String content){
         Notice notice = new Notice();
         notice.setCourseId(courseId);
         notice.setCommentId(commentId);

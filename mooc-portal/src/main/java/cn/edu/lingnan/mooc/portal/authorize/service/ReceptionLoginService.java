@@ -4,7 +4,7 @@ import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.constant.UserConstant;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
@@ -70,7 +70,7 @@ public class ReceptionLoginService {
 
     private void setUserToken(MoocUser user) {
         String token = UUID.randomUUID().toString();
-        UserToken userToken = buildUserToken(user, token);
+        LoginUser userToken = buildUserToken(user, token);
         // 设置账号与token关系
         RedisUtil.set(userToken.getAccount(), token, LOGIN_EXPIRE_TIME);
         // 设置token
@@ -82,8 +82,8 @@ public class ReceptionLoginService {
     }
 
 
-    private UserToken buildUserToken(MoocUser user, String token) {
-        UserToken userToken = new UserToken();
+    private LoginUser buildUserToken(MoocUser user, String token) {
+        LoginUser userToken = new LoginUser();
         userToken.setToken(token);
         userToken.setAccount(user.getAccount());
         userToken.setUserId(Long.valueOf(user.getId()));

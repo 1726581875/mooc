@@ -1,10 +1,10 @@
 package cn.edu.lingnan.mooc.message.websock;
 
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
-import cn.edu.lingnan.mooc.message.authentication.util.SpringContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -13,7 +13,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,22 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint(value = "/webSocket/{type}/{userId}")
 public class WebSocketHandler {
 
-    private Long userId;
-    /**
-     * 1为管理员，2为教师/学生
-     */
-    private UserTypeEnum type;
     /**
      * 管理员前缀，管理员和教师属于不同的表，可能id会存在相同，所以通过前缀区分
      */
     public final static String MANAGER_PRE = "manager_";
 
-    private Session session;
 
-    /**
-     * 用于对象和字符串转换
-     */
-    private final static ObjectMapper objectMapper = SpringContextHolder.getBean(ObjectMapper.class);
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 存储在线用户
@@ -86,9 +77,9 @@ public class WebSocketHandler {
 
     public void sendMessage(MessageDTO message) {
 
-        for (WebSocketHandler webSocket : webSocketMap.values()) {
+        for (UserSession userSession : userSessionMap.values()) {
             try {
-                webSocket.session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                userSession.getSession().getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
                 log.error("[websocket消息] 广播消息，message={},发生异常", message, e);
             }
@@ -107,9 +98,10 @@ public class WebSocketHandler {
      */
     public void sendMessageToUser(MessageDTO message, List<Long> userIds) {
         userIds.forEach(userId -> {
-            if (webSocketMap.get(String.valueOf(userId)) != null) {
+            UserSession userSession = userSessionMap.get(getUserKey(userId));
+            if (userSession != null) {
                 try {
-                    webSocketMap.get(String.valueOf(userId)).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                    userSession.getSession().getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向用户{} 推送信息：message={}", userId, message);
                 } catch (Exception exception) {
                     log.error("[websocket消息] 向用户{} 推送信息：message={} 异常：", userId, message, exception);
@@ -127,9 +119,10 @@ public class WebSocketHandler {
      */
     public void sendMessageToManager(MessageDTO message, List<Long> userIds) {
         userIds.forEach(userId -> {
-            if (webSocketMap.get(getManagerKey(userId)) != null) {
+            UserSession userSession = userSessionMap.get(getManagerKey(userId));
+            if (userSession != null) {
                 try {
-                    webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                    userSession.getSession().getBasicRemote().sendText(objectMapper.writeValueAsString(message));
                     log.info("[websocket消息] 向管理员{} 推送信息：message={}", userId, message);
                 } catch (Exception exception) {
                     log.error("[websocket消息] 向管理员{} 推送信息：message={} 异常：", userId, message, exception);
@@ -137,6 +130,10 @@ public class WebSocketHandler {
             }
         });
 
+    }
+
+    private String getUserKey(Long userId) {
+        return getKey(UserTypeEnum.USER, userId);
     }
 
     private String getManagerKey(Long userId) {
@@ -154,11 +151,12 @@ public class WebSocketHandler {
      * @param message
      * @param toUserId
      */
-    public void sendMessageToUser(MessageDTO message, Integer toUserId) {
-        if (webSocketMap != null && webSocketMap.get(String.valueOf(toUserId)) != null) {
+    public void sendMessageToUser(MessageDTO message, Long toUserId) {
+        UserSession userSession = userSessionMap.get(getManagerKey(toUserId));
+        if (webSocketMap.get(String.valueOf(toUserId)) != null) {
             log.info("[websocket消息] 向{}发消息，message={}", toUserId, message);
             try {
-                webSocketMap.get(String.valueOf(toUserId)).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                userSession.getSession().getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
                 log.error("[websocket消息] 向{}发消息，message={},发生异常", toUserId, message, e);
             }
@@ -172,12 +170,13 @@ public class WebSocketHandler {
      * @param toUserId
      */
     public void sendMessageToManager(MessageDTO message, Long toUserId) {
-        if (webSocketMap != null && webSocketMap.get(MANAGER_PRE + userId) != null) {
-            log.info("[websocket消息] 向{}发消息，message={}", MANAGER_PRE + userId, message);
+        UserSession userSession = userSessionMap.get(getManagerKey(toUserId));
+        if (userSession != null) {
+            log.info("[websocket消息] 向管理员{}发消息，message={}", toUserId, message);
             try {
-                webSocketMap.get(MANAGER_PRE + userId).session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+                userSession.getSession().getBasicRemote().sendText(objectMapper.writeValueAsString(message));
             } catch (Exception e) {
-                log.error("[websocket消息] 向{}发消息，message={},发生异常", MANAGER_PRE + userId, message, e);
+                log.error("[websocket消息] 向管理员{}发消息，message={},发生异常", toUserId, message, e);
             }
         }
     }

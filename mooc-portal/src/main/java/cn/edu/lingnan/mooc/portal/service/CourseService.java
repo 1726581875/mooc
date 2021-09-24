@@ -247,7 +247,7 @@ public class CourseService {
             List<ChapterVO> chapterVOList = receptionChapterService.findAllChapterByCourseId(courseId);
             courseDetailVO.setChapterList(chapterVOList);
             //4、判断是否已经收藏
-            if(UserUtil.getUserToken() != null) {
+            if(UserUtil.getLoginUser() != null) {
                 Collection collection = new Collection().setCourseId(courseId).setUserId(UserUtil.getUserId());
                 Optional<Collection> optional = collectionRepository.findOne(Example.of(collection));
                 Boolean isCollection = optional.isPresent() ? true : false;

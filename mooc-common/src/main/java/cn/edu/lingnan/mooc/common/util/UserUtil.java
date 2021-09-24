@@ -1,7 +1,9 @@
 package cn.edu.lingnan.mooc.common.util;
 
 
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
+import cn.edu.lingnan.mooc.common.exception.MoocException;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 
 /**
  * @author xmz
@@ -9,10 +11,10 @@ import cn.edu.lingnan.mooc.common.model.UserToken;
  */
 public class UserUtil {
 
-    private static ThreadLocal<UserToken> user = new ThreadLocal<>();
+    private static ThreadLocal<LoginUser> user = new ThreadLocal<>();
 
 
-    public static void setUserToken(UserToken userToken){
+    public static void setUserToken(LoginUser userToken){
         user.set(userToken);
     }
 
@@ -21,17 +23,21 @@ public class UserUtil {
      * 获取用户信息
      * @return
      */
-    public static UserToken getUserToken(){
-        return user.get();
+    public static LoginUser getLoginUser(){
+        LoginUser loginUser = user.get();
+        if(loginUser == null){
+            throw new MoocException(ExceptionEnum.UNAUTHORIZED_ERROR);
+        }
+        return loginUser;
     }
 
     /**
      * 获取用户id
-     * todo 因为很多地方都用了Integer类型，所以干脆做个适配
      * @return
      */
-    public static Integer getUserId(){
-        return user.get().getUserId().intValue();
+    public static Long getUserId() {
+        LoginUser userToken = getLoginUser();
+        return userToken.getUserId();
     }
 
     /**

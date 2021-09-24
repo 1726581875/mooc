@@ -16,6 +16,6 @@ public interface SendNoticeMapper {
    * 查询具有课程权限和消息通知权限的管理员ID
    * @return
    */
-  List<Integer> getCourseManagerIdList();
+  List<Long> getCourseManagerIdList();
 
 }

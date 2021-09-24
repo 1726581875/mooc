@@ -95,7 +95,7 @@ public class NoticeController {
      * @return
      */
     @GetMapping("/reply/detail")
-    public RespResult getReplyMessageDetail(@RequestParam Integer id){
+    public RespResult getReplyMessageDetail(@RequestParam Long id){
         return RespResult.success(noticeService.getReplyNoticeDetail(id));
     }
 

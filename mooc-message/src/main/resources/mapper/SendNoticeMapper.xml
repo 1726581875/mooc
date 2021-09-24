@@ -4,7 +4,7 @@
 
 <mapper namespace="cn.edu.lingnan.mooc.message.mapper.SendNoticeMapper">
 
-	<select id="getCourseManagerIdList" resultType="java.lang.Integer">
+	<select id="getCourseManagerIdList" resultType="java.lang.Long">
 		select id from mooc_manager;
 	</select>
 

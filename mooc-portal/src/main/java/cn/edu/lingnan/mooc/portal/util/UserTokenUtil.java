@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.portal.util;
 
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
-import cn.edu.lingnan.mooc.common.model.UserToken;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 
 import java.util.UUID;
@@ -18,7 +18,7 @@ public class UserTokenUtil {
      */
     public static String createToken(){
         String token = UUID.randomUUID().toString();
-        UserToken userToken = new UserToken();
+        LoginUser userToken = new LoginUser();
         userToken.setUserId(0L);
         userToken.setAccount("admin");
         userToken.setToken(token);
