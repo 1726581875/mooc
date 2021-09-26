@@ -47,7 +47,7 @@ public class ChapterService {
             chapterVOList.sort(Comparator.comparingInt(ChapterVO::getSort));
             //获取大章对应的小节,并赋值给VO对象
             List<Long> chapterIdList = chapterList.stream().map(Chapter::getId).collect(Collectors.toList());
-            Map<Integer, List<SectionVO>> sectionMap = findSectionMapByChapterIdList(chapterIdList);
+            Map<Long, List<SectionVO>> sectionMap = findSectionMapByChapterIdList(chapterIdList);
             chapterVOList.forEach(chapterVO-> {
                 List<SectionVO> sectionVOList = sectionMap.getOrDefault(chapterVO.getId(), new ArrayList<>());
                 sectionVOList.sort(Comparator.comparingInt(SectionVO::getSort));
@@ -61,7 +61,7 @@ public class ChapterService {
      * 根据chapterIdList 大章idList查询对应小节List
      * @return
      */
-    public Map<Integer,List<SectionVO>> findSectionMapByChapterIdList(List<Long> chapterIdList){
+    public Map<Long,List<SectionVO>> findSectionMapByChapterIdList(List<Long> chapterIdList){
         List<Section> sectionList = sectionRepository.findAllByChapterIdIn(chapterIdList);
         List<SectionVO> sectionVOList = CopyUtil.copyList(sectionList, SectionVO.class);
         if(CollectionUtils.isEmpty(sectionVOList)){
