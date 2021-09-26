@@ -6,7 +6,6 @@ import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
-import cn.edu.lingnan.mooc.portal.authorize.constant.UserConstant;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.OnlineUser;
 import cn.edu.lingnan.mooc.portal.authorize.model.enums.UserStatusEnum;
@@ -35,7 +34,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class ReceptionLoginService {
+public class LoginService {
 
     @Value("${mooc.rsa.privateKey}")
     private String RSA_PRI_KEY;
@@ -78,7 +77,7 @@ public class ReceptionLoginService {
 
         // 设置用户在线信息
         OnlineUser onlineUser = buildOnlineUser(user);
-        RedisUtil.set(UserConstant.ONLINE_USER_PREFIX + "user-" + userToken.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
+        RedisUtil.set(user.getUserType() + ":" + userToken.getAccount(), onlineUser, LOGIN_EXPIRE_TIME);
     }
 
 
@@ -170,17 +169,10 @@ public class ReceptionLoginService {
         MoocUser moocUser = new MoocUser();
         moocUser.setAccount(registerParam.getAccount());
         Random random = new Random();
-        if ("教师".equals(registerParam.getUserType())) {
-            moocUser.setName("教师" + random.nextInt(123456));
-        } else {
-            moocUser.setName("用户" + random.nextInt(123456));
-        }
+        moocUser.setName(registerParam.getUserType().name() + random.nextInt(123456));
         //如果是教师角色，需要插入用户状态为0，表示未审批
-        if ("教师".equals(registerParam.getUserType())) {
-            moocUser.setStatus(0);
-        } else {
-            moocUser.setStatus(1);
-        }
+        moocUser.setStatus(UserTypeEnum.TEACHER.equals(registerParam.getUserType()) ?
+                UserStatusEnum.DRAFT.getStatus() : UserStatusEnum.NORMAL.getStatus());
         moocUser.setUserImage("/file/default.png");
         moocUser.setUserType(registerParam.getUserType());
         moocUser.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
@@ -191,9 +183,9 @@ public class ReceptionLoginService {
      * 登出
      * @param account
      */
-    public void delRedisTokenOnline(String account){
+    public void delRedisTokenOnline(String account, UserTypeEnum userType) {
         // 删除用户在线息
-        RedisUtil.delete(UserConstant.ONLINE_USER_PREFIX + account);
+        RedisUtil.delete(userType + ":" + account);
         String token = RedisUtil.get(account);
         if(token != null){
             // 删除用户token, 登录信息

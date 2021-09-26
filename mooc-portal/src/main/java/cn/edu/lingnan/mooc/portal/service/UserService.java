@@ -21,7 +21,7 @@ public class UserService {
     @Autowired
     private MoocUserRepository moocUserRepository;
 
-    public UserDetailVO findUserDetailById(Integer userId){
+    public UserDetailVO findUserDetailById(Long userId){
         Optional<MoocUser> userOptional = moocUserRepository.findById(userId);
         if(userOptional.isPresent()){
             return CopyUtil.copy(userOptional.get(),UserDetailVO.class);
@@ -34,11 +34,11 @@ public class UserService {
      * @param userIdList
      * @return
      */
-    public Map<Integer,MoocUser> getUserMap(List<Integer> userIdList){
+    public Map<Long,MoocUser> getUserMap(List<Long> userIdList){
 
         List<MoocUser> moocUserList = moocUserRepository.findAllById(new HashSet<>(userIdList));
-        Map<Integer, List<MoocUser>> userMapList = moocUserList.stream().collect(Collectors.groupingBy(MoocUser::getId));
-        Map<Integer,MoocUser> resultMap = new HashMap<>();
+        Map<Long, List<MoocUser>> userMapList = moocUserList.stream().collect(Collectors.groupingBy(MoocUser::getId));
+        Map<Long,MoocUser> resultMap = new HashMap<>();
         userMapList.forEach((k,v) -> resultMap.put(k,v.get(0)));
         return resultMap;
 

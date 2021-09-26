@@ -61,7 +61,7 @@ public class CommentService {
      * @param pageSize
      * @return
      */
-    public PageVO<CommentAndReplyVO> findAllCommentByCourseId(Integer courseId, Integer type, Integer pageIndex, Integer pageSize){
+    public PageVO<CommentAndReplyVO> findAllCommentByCourseId(Long courseId, Integer type, Integer pageIndex, Integer pageSize){
 
         CourseComment courseComment = new CourseComment();
         courseComment.setCourseId(courseId);
@@ -71,12 +71,12 @@ public class CommentService {
         List<CourseComment> courseCommentList = courseCommentPage.getContent();
 
         List<CommentAndReplyVO> courseCommentVOList = new ArrayList<>();
-        List<Integer> commentIdList = courseCommentList.stream().map(CourseComment::getId).collect(Collectors.toList());
-        List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
+        List<Long> commentIdList = courseCommentList.stream().map(CourseComment::getId).collect(Collectors.toList());
+        List<Long> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = userService.getUserMap(userIdList);
+        Map<Long, MoocUser> userMap = userService.getUserMap(userIdList);
         //获取评论回复Map
-        Map<Integer, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
+        Map<Long, List<ReplyerDTO>> replyMap = getReplyListMapByCommentIdList(commentIdList);
 
         //courseCommentList -> CommentAndReplyVO
         courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentAndReplyVO(comment, userMap, replyMap)));
@@ -100,7 +100,7 @@ public class CommentService {
      * @return
      */
     private CommentAndReplyVO createCommentAndReplyVO(CourseComment comment,
-                                                      Map<Integer, MoocUser> userMap, Map<Integer, List<ReplyerDTO>> replyMap){
+                                                      Map<Long, MoocUser> userMap, Map<Long, List<ReplyerDTO>> replyMap){
         CommentAndReplyVO commentAndReplyVO = CopyUtil.copy(comment,CommentAndReplyVO.class);
         commentAndReplyVO.setCommentId(comment.getId());
         commentAndReplyVO.setUserName(userMap.get(comment.getUserId()).getName());
@@ -115,21 +115,21 @@ public class CommentService {
      * @param commentIdList
      * @return
      */
-    public Map<Integer, List<ReplyerDTO>> getReplyListMapByCommentIdList(List<Integer> commentIdList){
+    public Map<Long, List<ReplyerDTO>> getReplyListMapByCommentIdList(List<Long> commentIdList){
         List<CommentReply> commentReplyList = replyRepository.findAllByCommentIdIn(commentIdList);
-        List<Integer> userIdList = commentReplyList.stream().map(CommentReply::getUserId).collect(Collectors.toList());
-        List<Integer> toUserIdList = commentReplyList.stream().map(CommentReply::getToUserId).collect(Collectors.toList());
-        Set<Integer> allUserIdSet = new HashSet<>();
+        List<Long> userIdList = commentReplyList.stream().map(CommentReply::getUserId).collect(Collectors.toList());
+        List<Long> toUserIdList = commentReplyList.stream().map(CommentReply::getToUserId).collect(Collectors.toList());
+        Set<Long> allUserIdSet = new HashSet<>();
         allUserIdSet.addAll(userIdList);
         allUserIdSet.addAll(toUserIdList);
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = userService.getUserMap(new ArrayList<>(allUserIdSet));
+        Map<Long, MoocUser> userMap = userService.getUserMap(new ArrayList<>(allUserIdSet));
 
         List<ReplyerDTO> replyerDTOList = commentReplyList.stream()
                 .map(reply->createReplyerDTO(reply,userMap)).collect(Collectors.toList());
 
         //根据commentId分组
-        Map<Integer, List<ReplyerDTO>> replyListMap = replyerDTOList.stream().collect(Collectors.groupingBy(ReplyerDTO::getCommentId));
+        Map<Long, List<ReplyerDTO>> replyListMap = replyerDTOList.stream().collect(Collectors.groupingBy(ReplyerDTO::getCommentId));
 
         //按照时间排序
         replyListMap.forEach((k,v) -> {
@@ -139,7 +139,7 @@ public class CommentService {
     }
 
 
-    private ReplyerDTO createReplyerDTO(CommentReply reply, Map<Integer,MoocUser> userMap){
+    private ReplyerDTO createReplyerDTO(CommentReply reply, Map<Long,MoocUser> userMap){
         ReplyerDTO replyerDTO = CopyUtil.copy(reply, ReplyerDTO.class);
         replyerDTO.setReplyerName(userMap.get(reply.getUserId()).getName());
         replyerDTO.setReplyerImage(userMap.get(reply.getUserId()).getUserImage());
@@ -217,7 +217,7 @@ public class CommentService {
 
     }
 
-    private NoticeDTO buildCommentNotion(CommentParam commentParam, Course course, Integer commentId){
+    private NoticeDTO buildCommentNotion(CommentParam commentParam, Course course, Long commentId){
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setSendId(commentParam.getUserId());
         noticeDTO.setAcceptId(course.getTeacherId());
@@ -227,98 +227,6 @@ public class CommentService {
         noticeDTO.setType(2);
         return noticeDTO;
     }
-
-
-    public boolean insertCommentOrReply(Integer courseId, Integer commentId, Integer replyId,
-                                        Integer userId, Integer toUserId, String content,Integer type) {
-
-
-        //1、判断是不是要插入回复，toUserId不为null就说明是回复
-        if(!StringUtils.isEmpty(commentId) && !StringUtils.isEmpty(toUserId)){
-            CommentReply reply = new CommentReply();
-            reply.setCommentId(commentId);
-            reply.setUserId(userId);
-            reply.setToUserId(toUserId);
-            reply.setReplyContent(content);
-            if(replyId != null) {
-                reply.setParentId(replyId);
-            }
-            //插入回复信息
-            CommentReply commentReply = replyRepository.save(reply);
-            if(commentReply == null){
-                return false;
-            }
-            //评论回复数+1,加锁避免多线程下回复数混乱
-            synchronized (CommentService.class) {
-                Optional<CourseComment> commentOptional = commentRepository.findById(commentId);
-                if (commentOptional.isPresent()) {
-                    CourseComment comment = commentOptional.get();
-                    //评论的回复数数加一，并保存到数据库
-                    comment.setReplyNum(comment.getReplyNum() + 1);
-                    commentRepository.save(comment);
-                } else {
-                    log.error("====== 获取课程信息评论信息失败，评论不存在courseId={}, commentId={} ====", courseId, commentId);
-                }
-            }
-
-            NoticeDTO noticeDTO = new NoticeDTO();
-            noticeDTO.setSendId(userId);
-            noticeDTO.setAcceptId(toUserId);
-            noticeDTO.setCourseId(courseId);
-            noticeDTO.setCommentId(commentReply.getCommentId());
-            noticeDTO.setReplyId(commentReply.getId());
-            noticeDTO.setContent(content);
-            noticeDTO.setType(3);
-            amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
-            return true;
-        }
-
-        //2、插入课程评论
-        CourseComment comment = new CourseComment();
-        comment.setCourseId(courseId);
-        comment.setUserId(userId);
-        comment.setCommentContent(content);
-        comment.setType(type);
-        CourseComment articleComment = commentRepository.save(comment);
-        if(articleComment == null){
-            return false;
-        }
-
-        Optional<Course> optional = courseRepository.findById(courseId);
-        //判断是课程评论还是课程问答
-        String redisKey = type == 0 ? RedisPrefixConstant.COMMENT_NUM_PRE + courseId : RedisPrefixConstant.QUESTION_NUM_PRE + courseId;
-        //评论数+1，缓存里没有就设置到缓存
-        if(RedisUtil.isExist(redisKey)) {
-            //评论数+1
-            RedisUtil.getRedisTemplate().opsForValue().increment(redisKey,1L);
-        }else {
-            if(optional.isPresent()) {
-                Course course = optional.get();
-                //缓存
-                RedisUtil.setIfAbsent(redisKey, course.getCommentNum().toString());
-                //评论数+1
-                RedisUtil.getRedisTemplate().opsForValue().increment(redisKey, 1L);
-            }else {
-                log.error("====== 获取课程信息失败，课程不存在 courseId={} ====",courseId);
-                return false;
-            }
-        }
-
-        //发送消息
-        Course course = optional.get();
-
-        NoticeDTO noticeDTO = new NoticeDTO();
-        noticeDTO.setSendId(userId);
-        noticeDTO.setAcceptId(course.getTeacherId());
-        noticeDTO.setCourseId(course.getId());
-        noticeDTO.setCommentId(articleComment.getId());
-        noticeDTO.setContent(content);
-        noticeDTO.setType(2);
-        amqpTemplate.convertAndSend(RabbitMqConstant.messageQueueName, JsonUtil.toJson(noticeDTO));
-        return true;
-    }
-
-
 
     /**
      * 根据课程courseId查询评论
@@ -337,15 +245,15 @@ public class CommentService {
         List<CommentListVO> courseCommentVOList = new ArrayList<>();
 
         //获取用户信息map
-        List<Integer> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
-        Map<Integer, MoocUser> userMap = userService.getUserMap(userIdList);
+        List<Long> userIdList = courseCommentList.stream().map(CourseComment::getUserId).collect(Collectors.toList());
+        Map<Long, MoocUser> userMap = userService.getUserMap(userIdList);
         //获取课程名
-        List<Integer> courseIdList = courseCommentList.stream().map(CourseComment::getCourseId).collect(Collectors.toList());
-        Map<Integer, String> courseNameMap = courseService.getCourseNameMap(courseIdList);
+        List<Long> courseIdList = courseCommentList.stream().map(CourseComment::getCourseId).collect(Collectors.toList());
+        Map<Long, String> courseNameMap = courseService.getCourseNameMap(courseIdList);
 
 
         //courseComment -> CommentListVO
-        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentListVO(comment,userMap,courseNameMap)));
+        courseCommentList.forEach(comment -> courseCommentVOList.add(createCommentListVO(comment,userMap, courseNameMap)));
 
         /* 4. 封装到自定义分页结果 */
         PageVO<CommentListVO> pageVO = new PageVO<>();
@@ -356,7 +264,7 @@ public class CommentService {
         return pageVO;
     }
 
-    private CommentListVO createCommentListVO(CourseComment comment,Map<Integer, MoocUser> userMap,Map<Integer, String> courseNameMap){
+    private CommentListVO createCommentListVO(CourseComment comment,Map<Long, MoocUser> userMap,Map<Long, String> courseNameMap){
         CommentListVO commentListVO = CopyUtil.copy(comment,CommentListVO.class);
         commentListVO.setCommentId(comment.getId());
         commentListVO.setStarNum(comment.getCommentStar());
@@ -369,7 +277,7 @@ public class CommentService {
         return commentListVO;
     }
 
-    public CommentDetailVO getCommentDetail(Integer commentId){
+    public CommentDetailVO getCommentDetail(Long commentId){
 
         Optional<CourseComment> commentOptional = commentRepository.findById(commentId);
         if(!commentOptional.isPresent()){
@@ -378,11 +286,11 @@ public class CommentService {
         }
         CourseComment courseComment = commentOptional.get();
         //获取用户信息map
-        Map<Integer, MoocUser> userMap = userService.getUserMap(Lists.newArrayList(courseComment.getUserId()));
+        Map<Long, MoocUser> userMap = userService.getUserMap(Lists.newArrayList(courseComment.getUserId()));
         //获取课程名
-        Map<Integer, String> courseNameMap = courseService.getCourseNameMap(Lists.newArrayList(courseComment.getCourseId()));
+        Map<Long, String> courseNameMap = courseService.getCourseNameMap(Lists.newArrayList(courseComment.getCourseId()));
         //获取评论的回复List
-        Map<Integer, List<ReplyerDTO>> replyListMap = this.getReplyListMapByCommentIdList(Lists.newArrayList(commentId));
+        Map<Long, List<ReplyerDTO>> replyListMap = this.getReplyListMapByCommentIdList(Lists.newArrayList(commentId));
 
         //构造返回对象
         CommentDetailVO commentDetailVO = CopyUtil.copy(courseComment,CommentDetailVO.class);

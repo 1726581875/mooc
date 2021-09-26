@@ -155,31 +155,6 @@ public class StatisticsListService {
         Integer userId = UserUtil.getUserId();
 
         List<String> accountList = null;
-        // 查询关键字
-/*        if (StringUtils.isNotBlank(query.getKeyword())){
-            log.info("===========课程统计报表===========查询关键字===========");
-            ResultMessage<List<String>> keywordListResult = logAuditFeign.listPermissionAccountByKeyword(null, query.getKeyword(), dsfUserId, null, false,false);
-            accountList = keywordListResult.getData();
-            if (CollectionUtils.isEmpty(accountList)){
-                return new PageUtils(0L, query.getPageSize(), 0L, 0);
-            }
-        }
-        // 查询有权限的人员
-        if (!Constant.SUPER_DSF_USER_ID.equals(dsfUserId) && StringUtils.isBlank(query.getKeyword())) {
-            log.info("===========课程统计报表===========查询有权限的人员===========");
-            long accountBeginTime = System.currentTimeMillis();
-            // 先查询是否有根部门的权限
-            Boolean isAdminPermission = addressbookService.isOwnTopDeptIdByAdminId(dsfUserId);
-            if (!isAdminPermission) {
-                // 如果有根部门权限，走超管逻辑；没有根部门权限，再获取有权限的人员
-                ResultMessage<List<String>> accountListResult = logAuditFeign.listPermissionAccountByKeyword(null, query.getKeyword(), dsfUserId, null, false,false);
-                accountList = accountListResult.getData();
-                if (CollectionUtils.isEmpty(accountList)) {
-                    return new PageUtils(0L, query.getPageSize(), 0L, 0);
-                }
-            }
-            log.info("==========人员总数耗时:{}===========", System.currentTimeMillis() - accountBeginTime);
-        }*/
         // 判断时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Long beginTime = null;
@@ -204,7 +179,7 @@ public class StatisticsListService {
         log.info("==========查询总数耗时:{}===========", countEndTime - countBeginTime);
 
         if (totalCount == null || totalCount < 1) {
-            return new PageVO<>(1,10,0,0,null);
+            return new PageVO<>(1,10,0,0L,null);
         }
         // 总页数
         Integer pageSize = query.getPageSize();
@@ -251,7 +226,7 @@ public class StatisticsListService {
             CourseRecordVOMap.put(courseId, courseRecordVO);
         });
         if (CourseRecordVOMap.size() == 0) {
-            return new PageVO<>(1,10,0,0,null);
+            return new PageVO<>(1,10,0,0L,null);
         }
         //获取课程idList
         List<Integer> courseIdList = new ArrayList<>(CourseRecordVOMap.keySet());
@@ -286,28 +261,6 @@ public class StatisticsListService {
 
         });
 
-
-
-        log.info("===========课程统计报表===========根据课程Id查询教师、课程名===========");
-        // 根据账号查询人员姓名、部门
-/*        Set<String> resultAccountSet = CourseRecordVOMap.keySet();
-        ResultMessage<Map<String, AddressBookPersonPageVo>> userInfoResult = logAuditFeign.getNameAndImageByAccounts(TokenUtils.createRequestToken(), resultAccountSet.toArray(new String[0]));
-        Map<String, AddressBookPersonPageVo> userInfoMap = userInfoResult.getData();
-        ResultMessage<Map<String, AddressBookPersonPageVo>> departmentInfoResult = logAuditFeign.getDepartmentNameByAccounts(TokenUtils.createRequestToken(), resultAccountSet.toArray(new String[0]));
-        Map<String, AddressBookPersonPageVo> departmentInfoMap = departmentInfoResult.getData();
-        CourseRecordVOMap.forEach((account, sendMessageVO) -> {
-            AddressBookPersonPageVo userInfo = userInfoMap.get(account);
-            if (userInfo != null){
-                sendMessageVO.setUsername(userInfo.getName());
-            }
-            AddressBookPersonPageVo departmentInfo = departmentInfoMap.get(account);
-            if (departmentInfo != null){
-                sendMessageVO.setDepartmentName(departmentInfo.getDepartmentName());
-            }
-        });*/
-        log.info("===========课程统计报表===========根据课程Id查询教师、课程名===========");
-
-
         log.info("===========课程统计报表===========end===========");
         List<CourseRecordStatisticsVO> recordStatisticsVOList = new ArrayList<>(CourseRecordVOMap.values());
         PageVO<CourseRecordStatisticsVO> pageVO = new PageVO<>();
@@ -317,7 +270,7 @@ public class StatisticsListService {
         pageVO.setPageCount(totalPage);
         pageVO.setPageIndex(currPage);
         pageVO.setPageSize(pageSize);
-        pageVO.setTotalRow(totalCount);
+        pageVO.setTotalRow(Long.valueOf(totalCount));
         return pageVO;
     }
 

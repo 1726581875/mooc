@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public class ReplyParam {
 
-    private Integer courseId;
-    private Integer commentId;
-    private Integer replyId;
-    private Integer userId;
-    private Integer toUserId;
+    private Long courseId;
+    private Long commentId;
+    private Long replyId;
+    private Long userId;
+    private Long toUserId;
     private String content;
 
 }

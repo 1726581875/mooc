@@ -10,43 +10,68 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * @author xmz
+ * @date: 2021/09/16
+ */
+@Data
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "course")
-@Data
 public class Course {
-    // 主键id   
-    @Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
-    // 课程名称   
-    private String name;
-    // 讲师id   
-    private Integer teacherId;
-    // 课程概述   
-    private String summary;
-    // 时长|单位秒   
-    private Integer duration;
-    // 封面图片   
-    private String image;
-    // 学习人数（观看人数）
-    private Integer learningNum;
-    // 评论数   
-    private Integer commentNum;
     /**
-     * 课程问答数
+     * 主键id
      */
-    private Integer questionNum;
+    @Id
+  	@GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+    /**
+     * 课程名称
+     */
+    private String name;
+    /**
+     * 讲师id
+     */
+    private Long teacherId;
+    /**
+     * 课程概述
+     */
+    private String summary;
+    /**
+     * 时长|单位秒
+     */
+    private Integer duration;
+    /**
+     * 封面图片
+     */
+    private String image;
+    /**
+     * 学习人数（观看视频人数）
+     */
+    private Long learningNum;
     /**
      * 收藏人数
      */
-    private Integer collectionNum;
-
-    // 状态|0未审核/1已审核/2禁用/3已删除/4审核不通过
+    private Long collectionNum;
+    /**
+     * 评论数
+     */
+    private Long commentNum;
+    /**
+     * 课程问答数
+     */
+    private Long questionNum;
+    /**
+     * 状态|0草稿/1发布/2禁用/3已删除
+     */
     private Integer status;
-    // 创建时间   
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    // 修改时间   
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

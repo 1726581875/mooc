@@ -17,21 +17,35 @@ import java.util.Date;
 @Entity(name = "chapter")
 @Accessors(chain=true)
 public class Chapter {
-    // id   
+    /**
+     * id
+     */
     @Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
-    // 课程id   
-    private Integer courseId;
-    // 名称   
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+    /**
+     * 课程id
+     */
+    private Long courseId;
+    /**
+     * 名称
+     */
     private String name;
-    // 大章总时长，单位s 秒
+    /**
+     * 时长|单位秒
+     */
     private Integer duration;
-    // 排序
+    /**
+     * 顺序
+     */
     private Integer sort;
-    // 创建时间   
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    // 修改时间   
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

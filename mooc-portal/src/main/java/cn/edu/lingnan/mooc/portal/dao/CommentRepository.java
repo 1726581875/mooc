@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 * 2021-03-31
 * 
 */
-public interface CommentRepository extends JpaRepository<CourseComment, Integer>, JpaSpecificationExecutor<CourseComment> {
+public interface CommentRepository extends JpaRepository<CourseComment, Long>, JpaSpecificationExecutor<CourseComment> {
 	
 }

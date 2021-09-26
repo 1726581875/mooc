@@ -20,7 +20,7 @@ public class UserController {
     private UserService receptionUserService;
 
     @GetMapping("/{userId}")
-    public RespResult findUserById(@PathVariable Integer userId){
+    public RespResult findUserById(@PathVariable Long userId){
         return RespResult.success(receptionUserService.findUserDetailById(userId));
     }
 

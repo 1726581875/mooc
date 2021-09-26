@@ -13,19 +13,19 @@ import java.util.Date;
 @Data
 public class ReplyerDTO {
 
-	private Integer commentId;
+	private Long commentId;
 
-	private Integer parentId;
+	private Long parentId;
 
-	private Integer replyId;
+	private Long replyId;
 	
-	private Integer userId;
+	private Long userId;
 	
 	private String replyerName;
 	
 	private String replyerImage;
 	
-	private Integer toUserId;
+	private Long toUserId;
 	
 	private String toUserName;
 	

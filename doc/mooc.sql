@@ -8,9 +8,9 @@ use mooc;
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course`
 (
-    `id`           bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `id`           bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `name`         varchar(20)     NOT NULL COMMENT '课程名称',
-    `teacher_id`   INT             NOT NULL COMMENT '讲师id',
+    `teacher_id`   bigint(20)             NOT NULL COMMENT '讲师id',
     `summary`      varchar(2000) COMMENT '课程概述',
     `duration`     INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '时长|单位秒',
     `image`        varchar(100)    NOT NULL COMMENT '封面图片',
@@ -72,7 +72,7 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag`
 (
     `id`          int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-    category_id   int UNSIGNED NOT NULL COMMENT '分类id',
+    `category_id`   int UNSIGNED NOT NULL COMMENT '分类id',
     `name`        varchar(30)  NOT NULL COMMENT '标签名',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
@@ -93,8 +93,8 @@ values (2, 'java'),
 DROP TABLE IF EXISTS `course_tag_rel`;
 CREATE TABLE `course_tag_rel`
 (
-    `id`          int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-    `course_id`   int UNSIGNED NOT NULL COMMENT '课程id',
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `course_id`   bigint(20) NOT NULL COMMENT '课程id',
     `tag_id`      int UNSIGNED NOT NULL COMMENT '标签id',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`)
@@ -108,8 +108,8 @@ values (1,1),(2,2),(3,1),(4,2),(5,1),(6,2),(7,1),(8,2),(9,1),(10,2),(11,1),(12,2
 DROP TABLE IF EXISTS `chapter`;
 CREATE TABLE `chapter`
 (
-    `id`          bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-    `course_id`   bigint UNSIGNED NOT NULL COMMENT '课程id',
+    `id`          bigint(20)  NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `course_id`   bigint(20)  NOT NULL COMMENT '课程id',
     `name`        varchar(30)     NOT NULL COMMENT '名称',
     `duration`    INT                      DEFAULT 0 COMMENT '时长|单位秒',
     `sort`        int                      DEFAULT 999 COMMENT '顺序',
@@ -157,10 +157,10 @@ values (1, '测试大章17', 17);
 DROP TABLE IF EXISTS `chapter_section`;
 create table `chapter_section`
 (
-    `id`          bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
     `title`       varchar(50)     NOT NULL COMMENT '标题',
-    `course_id`   bigint UNSIGNED COMMENT '课程id',
-    `chapter_id`  bigint UNSIGNED NOT NULL COMMENT '章节id',
+    `course_id`   bigint  COMMENT '课程id',
+    `chapter_id`  bigint  NOT NULL COMMENT '章节id',
     `video`       varchar(200) COMMENT '视频',
     `file_id`     int COMMENT '文件表Id',
     `duration`    INT                      DEFAULT 0 COMMENT '时长|单位秒',
@@ -221,7 +221,7 @@ CREATE TABLE `mooc_file`
 DROP TABLE IF EXISTS `login_log`;
 CREATE TABLE `login_log`
 (
-    `id`          int       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `id`          bigint(20)       NOT NULL AUTO_INCREMENT COMMENT '主键',
     `log_name`    varchar(255) NOT NULL COMMENT '日志名称',
     `account`     varchar(50)  NOT NULL COMMENT '管理员账号',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -236,9 +236,9 @@ CREATE TABLE `login_log`
 DROP TABLE IF EXISTS `course_monitor_record`;
 CREATE TABLE `course_monitor_record`
 (
-    `id`          bigint          NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `teacher_id`  bigint UNSIGNED NOT NULL COMMENT '教师id',
-    `course_id`   bigint UNSIGNED NOT NULL COMMENT '课程id',
+    `id`          bigint(20)          NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `teacher_id`  bigint(20) NOT NULL COMMENT '教师id',
+    `course_id`   bigint(20) NOT NULL COMMENT '课程id',
     `message`     varchar(255) COMMENT '具体消息',
     `record_type` varchar(6)      NOT NULL COMMENT '类型|新增课程、上传视频、删除课程',
     `ip`          varchar(255)             DEFAULT NULL COMMENT '登录ip',
@@ -260,7 +260,7 @@ values (7, 1, '新增了课程 《我是大傻逼》', '新增课程', '127.0.0.
 DROP TABLE IF EXISTS `mooc_user`;
 CREATE TABLE `mooc_user`
 (
-    `id`          bigint        NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `id`          bigint(20)        NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `user_image`  varchar(50)   NOT NULL COMMENT '用户头像',
     `name`        varchar(40)   NOT NULL COMMENT '用户昵称',
     `account`     varchar(20)   NOT NULL COMMENT '登录账号',
@@ -571,9 +571,9 @@ values ('DDoS攻击者2','127.0.0.2'),('DDoS攻击者3','127.0.0.3'),('DDoS攻�
 DROP TABLE IF EXISTS `course_comment`;
 -- 创建评论表
 CREATE TABLE `course_comment`(
-`id` int NOT NULL AUTO_INCREMENT COMMENT '评论id',
-`user_id` int NOT NULL COMMENT '评论者id',
-`course_id` int NOT NULL COMMENT '对应课程id',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '评论id',
+`user_id` bigint(20) NOT NULL COMMENT '评论者id',
+`course_id` bigint(20) NOT NULL COMMENT '对应课程id',
 `comment_content` varchar(512) NOT NULL COMMENT '评论内容',
 `reply_num` int DEFAULT 0 COMMENT '回复数',
 `comment_star` int DEFAULT 0 COMMENT '点赞数',
@@ -613,11 +613,11 @@ values
 DROP TABLE IF EXISTS `comment_reply`;
 -- 创建评论回复表
 CREATE TABLE `comment_reply`(
-`id` int NOT NULL AUTO_INCREMENT COMMENT '回复表主键',
-`comment_id` int NOT NULL COMMENT '对应的评论id',
-`parent_id` int default 0 COMMENT '对应父回复id | 0表示回复对象是comment表下的回复',
-`user_id` int NOT NULL COMMENT '回复者id',
-`to_user_id` int NOT NULL COMMENT '回复对象id',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '回复表主键',
+`comment_id` bigint(20) NOT NULL COMMENT '对应的评论id',
+`parent_id` bigint(20) default 0 COMMENT '对应父回复id | 0表示回复对象是comment表下的回复',
+`user_id` bigint(20) NOT NULL COMMENT '回复者id',
+`to_user_id` bigint(20) NOT NULL COMMENT '回复对象id',
 `reply_content` varchar(512) NOT NULL COMMENT '评论内容',
 `reply_star` int DEFAULT 0 COMMENT '回复点赞数',
 `status` int DEFAULT 0 COMMENT '状态是否已读,0未读,1已读,2已回复',
@@ -639,12 +639,12 @@ values
 -- 创建通知表
 DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice`(
-`id` int NOT NULL AUTO_INCREMENT COMMENT '通知id',
-`send_id` int default NULL  COMMENT '发送方的用户Id',
-`accept_id` int default NULL COMMENT '接收方的用户id',
-`course_id` int default NULL COMMENT '课程id，如果是创建课程不为null',
-`comment_id` int default NULL  COMMENT '评论id,如果是评论通知不为null',
-`reply_id` int default NULL  COMMENT '回复id,如果是回复不为null',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '通知id',
+`send_id` bigint(20) default NULL  COMMENT '发送方的用户Id',
+`accept_id` bigint(20) default NULL COMMENT '接收方的用户id',
+`course_id` bigint(20) default NULL COMMENT '课程id，如果是创建课程不为null',
+`comment_id` bigint(20) default NULL  COMMENT '评论id,如果是评论通知不为null',
+`reply_id` bigint(20) default NULL  COMMENT '回复id,如果是回复不为null',
 `content` varchar(512) not null COMMENT '消息内容',
 `user_type` varchar(20) NOT NULL COMMENT '用户类型,管理员MANAGER，教师TEACHER, 普通用户USER',
 `type` int NOT NULL DEFAULT 1 COMMENT '消息类型,1新增课程，2课程提问，3评论回复，4、系统通知',

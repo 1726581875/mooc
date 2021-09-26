@@ -17,7 +17,7 @@ public class CourseVO {
     /**
      * id
      */
-    private Integer id;
+    private Long id;
     /**
      * 封面图片
      */
@@ -30,7 +30,7 @@ public class CourseVO {
     /**
      * 讲师id
      */
-    private Integer teacherId;
+    private Long teacherId;
     /**
      * 讲师名字
      */

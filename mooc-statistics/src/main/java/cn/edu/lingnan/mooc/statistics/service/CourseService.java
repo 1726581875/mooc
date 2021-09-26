@@ -55,7 +55,7 @@ public class CourseService {
         Integer totalCount = countCourseNum(boolQuery);
 
         if (totalCount < 1) {
-            return new PageVO<>(1,10,0,0,new ArrayList<>());
+            return new PageVO<>(1,10,0,0L,new ArrayList<>());
         }
 
         // 总页数
@@ -124,7 +124,7 @@ public class CourseService {
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(totalPage);
-        pageVO.setTotalRow(totalCount);
+        pageVO.setTotalRow(Long.valueOf(totalCount));
 
         log.info("===========课程搜索===========结束===========");
         return pageVO;

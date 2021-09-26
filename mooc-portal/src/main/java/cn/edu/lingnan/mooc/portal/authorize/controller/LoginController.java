@@ -5,7 +5,7 @@ import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.LoginParam;
 import cn.edu.lingnan.mooc.portal.authorize.model.param.RegisterParam;
-import cn.edu.lingnan.mooc.portal.authorize.service.ReceptionLoginService;
+import cn.edu.lingnan.mooc.portal.authorize.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -22,10 +22,10 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/user")
-public class ReceptionLoginController {
+public class LoginController {
 
     @Autowired
-    private ReceptionLoginService receptionLoginService;
+    private LoginService receptionLoginService;
 
 
     /**
@@ -72,11 +72,11 @@ public class ReceptionLoginController {
         if(token == null){
             return RespResult.success("登出成功");
         }
-        LoginUser userToken = RedisUtil.get(token, LoginUser.class);
-        if(token == null || userToken == null){
+        LoginUser loginUser = RedisUtil.get(token, LoginUser.class);
+        if(token == null || loginUser == null){
             return RespResult.fail("token失效");
         }
-        receptionLoginService.delRedisTokenOnline(userToken.getAccount());
+        receptionLoginService.delRedisTokenOnline(loginUser.getAccount(), loginUser.getType());
         return RespResult.success("登出成功");
     }
 

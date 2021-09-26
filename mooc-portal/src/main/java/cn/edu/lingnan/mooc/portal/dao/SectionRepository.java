@@ -11,12 +11,12 @@ import java.util.List;
  * @see JpaRepository 支持常用增删查改
  * @see JpaSpecificationExecutor 支持多条件分页
  */
-public interface SectionRepository extends JpaRepository<Section, Integer>,JpaSpecificationExecutor<Section> {
+public interface SectionRepository extends JpaRepository<Section, Long>,JpaSpecificationExecutor<Section> {
 
     /**
      * 根据chapterIdList 大章idList查询对应小节List
      * @param chapterIdList
      * @return
      */
-    List<Section> findAllByChapterIdIn(List<Integer> chapterIdList);
+    List<Section> findAllByChapterIdIn(List<Long> chapterIdList);
 }

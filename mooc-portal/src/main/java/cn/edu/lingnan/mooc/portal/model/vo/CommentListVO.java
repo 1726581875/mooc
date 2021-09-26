@@ -11,9 +11,9 @@ import java.util.Date;
 @Data
 public class CommentListVO {
 
-    private Integer commentId;
+    private Long commentId;
 
-    private Integer userId;
+    private Long userId;
 
     private String userName;
 
@@ -43,7 +43,7 @@ public class CommentListVO {
     /**
      * 课程id
      */
-    private Integer courseId;
+    private Long courseId;
     /**
      * 课程名
      */

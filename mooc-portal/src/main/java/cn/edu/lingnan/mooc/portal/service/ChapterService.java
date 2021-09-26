@@ -37,7 +37,7 @@ public class ChapterService {
      * @param courseId
      * @return
      */
-    public List<ChapterVO> findAllChapterByCourseId(Integer courseId) {
+    public List<ChapterVO> findAllChapterByCourseId(Long courseId) {
         //查询全部大章 List
         Example<Chapter> example = Example.of(new Chapter().setCourseId(courseId));
         List<Chapter> chapterList = chapterRepository.findAll(example);
@@ -46,7 +46,7 @@ public class ChapterService {
             //大章List按sort字段升序排序
             chapterVOList.sort(Comparator.comparingInt(ChapterVO::getSort));
             //获取大章对应的小节,并赋值给VO对象
-            List<Integer> chapterIdList = chapterList.stream().map(Chapter::getId).collect(Collectors.toList());
+            List<Long> chapterIdList = chapterList.stream().map(Chapter::getId).collect(Collectors.toList());
             Map<Integer, List<SectionVO>> sectionMap = findSectionMapByChapterIdList(chapterIdList);
             chapterVOList.forEach(chapterVO-> {
                 List<SectionVO> sectionVOList = sectionMap.getOrDefault(chapterVO.getId(), new ArrayList<>());
@@ -61,7 +61,7 @@ public class ChapterService {
      * 根据chapterIdList 大章idList查询对应小节List
      * @return
      */
-    public Map<Integer,List<SectionVO>> findSectionMapByChapterIdList(List<Integer> chapterIdList){
+    public Map<Integer,List<SectionVO>> findSectionMapByChapterIdList(List<Long> chapterIdList){
         List<Section> sectionList = sectionRepository.findAllByChapterIdIn(chapterIdList);
         List<SectionVO> sectionVOList = CopyUtil.copyList(sectionList, SectionVO.class);
         if(CollectionUtils.isEmpty(sectionVOList)){

@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @see JpaRepository 支持常用增删查改
  * @see JpaSpecificationExecutor 支持多条件分页
  */
-public interface MoocUserRepository extends JpaRepository<MoocUser, Integer>,JpaSpecificationExecutor<MoocUser> {
+public interface MoocUserRepository extends JpaRepository<MoocUser, Long>,JpaSpecificationExecutor<MoocUser> {
 
 }

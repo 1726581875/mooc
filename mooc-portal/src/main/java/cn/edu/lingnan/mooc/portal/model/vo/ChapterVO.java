@@ -18,20 +18,22 @@ public class ChapterVO {
     /**
      * 大章id
      */
-    private Integer id;
-    /*
+    private Long id;
+    /**
      * 对应课程id
      */
-    private Integer courseId;
-    /*
+    private Long courseId;
+    /**
      * 课程名称
      */
-    private String courseName;
+    private Long courseName;
     /**
      * 章节名称
      */
     private String name;
-    // 大章总时长，单位s 秒
+    /**
+     * 大章总时长，单位s 秒
+     */
     private Integer duration;
     /**
      * 排序
@@ -48,6 +50,6 @@ public class ChapterVO {
      */
     private List<SectionVO> sectionList;
 
-    private boolean hasSection = true;
+    private Boolean hasSection = true;
 
 }

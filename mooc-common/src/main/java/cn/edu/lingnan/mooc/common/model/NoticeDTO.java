@@ -16,17 +16,17 @@ public class NoticeDTO implements Serializable {
 
     private static final long serialVersionUID = 6343950671330615279L;
 
-    private Integer id;
+    private Long id;
 
-    private Integer sendId;
+    private Long sendId;
 
-    private Integer acceptId;
+    private Long acceptId;
 
-    private Integer courseId;
+    private Long courseId;
 
-    private Integer replyId;
+    private Long replyId;
 
-    private Integer commentId;
+    private Long commentId;
 
     private String content;
     /**
