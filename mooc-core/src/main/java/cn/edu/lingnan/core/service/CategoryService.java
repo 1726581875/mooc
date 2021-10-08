@@ -1,6 +1,5 @@
 package cn.edu.lingnan.core.service;
 
-import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.Category;
 import cn.edu.lingnan.core.entity.Tag;
 import cn.edu.lingnan.core.param.CategoryParam;
@@ -13,7 +12,6 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

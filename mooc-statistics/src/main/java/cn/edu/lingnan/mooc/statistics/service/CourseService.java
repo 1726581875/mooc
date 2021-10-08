@@ -1,10 +1,10 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.statistics.entity.mysql.Course;
-import cn.edu.lingnan.mooc.statistics.entity.vo.CourseSearchVO;
-import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
-import cn.edu.lingnan.mooc.statistics.repository.es.EsCourseRepository;
+import cn.edu.lingnan.mooc.statistics.model.entity.mysql.Course;
+import cn.edu.lingnan.mooc.statistics.model.vo.CourseSearchVO;
+import cn.edu.lingnan.mooc.statistics.dao.mapper.CourseMapper;
+import cn.edu.lingnan.mooc.statistics.dao.repository.es.EsCourseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;

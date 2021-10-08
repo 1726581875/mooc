@@ -1,11 +1,9 @@
 package cn.edu.lingnan.mooc.statistics.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
+import cn.edu.lingnan.mooc.statistics.model.vo.StatisticsListViewQuery;
 import cn.edu.lingnan.mooc.statistics.service.StatisticsListService;
-import cn.edu.lingnan.mooc.statistics.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/statistics")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class StatisticsListController {
 
     @Autowired

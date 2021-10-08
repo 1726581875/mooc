@@ -1,12 +1,11 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.statistics.entity.vo.CourseSearchVO;
+import cn.edu.lingnan.mooc.statistics.model.vo.CourseSearchVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
 import java.util.List;
 
 @SpringBootTest

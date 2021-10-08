@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/statistics")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class StatisticsController {
 
     @Autowired

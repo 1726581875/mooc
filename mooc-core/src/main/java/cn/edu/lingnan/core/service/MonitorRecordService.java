@@ -1,21 +1,20 @@
 package cn.edu.lingnan.core.service;
 
-import cn.edu.lingnan.core.authentication.util.UserUtil;
-import cn.edu.lingnan.core.entity.LoginLog;
+
 import cn.edu.lingnan.core.entity.MonitorRecord;
 import cn.edu.lingnan.core.entity.MoocUser;
-import cn.edu.lingnan.core.param.LoginLogParam;
 import cn.edu.lingnan.core.param.MonitorRecordParam;
 import cn.edu.lingnan.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.ConvertTimeUtil;
 import cn.edu.lingnan.core.util.CopyUtil;
-import cn.edu.lingnan.core.vo.LoginLogVO;
 import cn.edu.lingnan.core.vo.MonitorRecordVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -65,7 +64,7 @@ public class MonitorRecordService {
         //如果是教师登录，查询当前教师的监控记录信息
         Integer teacherId = null;
         if(UserUtil.isTeacher()){
-            teacherId = UserUtil.getUserId();
+            teacherId = Math.toIntExact(UserUtil.getUserId());
         }
 
         // 构造查询参数

@@ -41,6 +41,14 @@ public class InterceptorConfig implements WebMvcConfigurer {
         excludePathList.add("/admin/loginLogs/export");
         excludePathList.add("/admin/ipBlacklists/export");
         excludePathList.add("/admin/ipBlacklists/import");
+        // 3、statistics
+        excludePathList.add("/download/*");
+        excludePathList.add("/file/");
+        //查询排名前10的课程
+        excludePathList.add("/courses/listTop10");
+        //查询课程
+        excludePathList.add("/courses/search");
+
 
         registry.addInterceptor(checkPermissionInterceptor)
                 .addPathPatterns("/**")

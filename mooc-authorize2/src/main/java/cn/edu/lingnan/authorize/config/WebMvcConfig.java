@@ -1,6 +1,5 @@
 package cn.edu.lingnan.authorize.config;
-import cn.edu.lingnan.authorize.util.SpringContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.edu.lingnan.mooc.common.util.SpringContextHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;

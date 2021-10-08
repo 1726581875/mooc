@@ -1,13 +1,13 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.statistics.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.statistics.constant.Constant;
 import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
-import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
-import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
-import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
+import cn.edu.lingnan.mooc.statistics.dao.mapper.CourseMapper;
+import cn.edu.lingnan.mooc.statistics.model.vo.CourseRecordStatisticsVO;
+import cn.edu.lingnan.mooc.statistics.model.vo.StatisticsListViewQuery;
+import cn.edu.lingnan.mooc.statistics.model.vo.TopCourseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -150,9 +150,9 @@ public class StatisticsListService {
     public PageVO<CourseRecordStatisticsVO> getCourseStatisticsList(StatisticsListViewQuery query) {
 
         log.info("===========课程统计报表===========start===========");
-        Map<Integer, CourseRecordStatisticsVO> CourseRecordVOMap = new HashMap<>();
+        Map<Long, CourseRecordStatisticsVO> courseRecordVOMap = new HashMap<>();
         //获取用户id
-        Integer userId = UserUtil.getUserId();
+        Long userId = UserUtil.getUserId();
 
         List<String> accountList = null;
         // 判断时间
@@ -211,25 +211,25 @@ public class StatisticsListService {
 
             CourseRecordStatisticsVO courseRecordVO = new CourseRecordStatisticsVO();
             // 帐号
-            Integer courseId = ((Long) bucket.getKey()).intValue();
+            Long courseId = ((Long) bucket.getKey());
             courseRecordVO.setCourseId(courseId);
             // 点赞数
             ParsedSum viewAgg = bucket.getAggregations().get(EsConstant.VIEW_NUM_AGG);
             if (viewAgg != null){
-                courseRecordVO.setViewNum(((Double)viewAgg.getValue()).intValue());
+                courseRecordVO.setViewNum(((Double)viewAgg.getValue()).longValue());
             }
             // 收藏数
             ParsedSum collectionAgg = bucket.getAggregations().get(EsConstant.COLLECTION_NUM_AGG);
             if (collectionAgg != null){
-                courseRecordVO.setCollectionNum(((Double)collectionAgg.getValue()).intValue());
+                courseRecordVO.setCollectionNum(((Double)collectionAgg.getValue()).longValue());
             }
-            CourseRecordVOMap.put(courseId, courseRecordVO);
+            courseRecordVOMap.put(courseId, courseRecordVO);
         });
-        if (CourseRecordVOMap.size() == 0) {
+        if (courseRecordVOMap.size() == 0) {
             return new PageVO<>(1,10,0,0L,null);
         }
         //获取课程idList
-        List<Integer> courseIdList = new ArrayList<>(CourseRecordVOMap.keySet());
+        List<Long> courseIdList = new ArrayList<>(courseRecordVOMap.keySet());
 
         //2、根据课程ID查询其他统计字段
         TermsAggregationBuilder detailAgg = getSendMessageAllAggBuilder(query.getOrderField(), query.getIsAsc());
@@ -247,22 +247,22 @@ public class StatisticsListService {
         detailTerms.getBuckets().stream().forEach(bucket -> {
             // 帐号
             Integer courseId = ((Long) bucket.getKey()).intValue();
-            CourseRecordStatisticsVO courseRecordVO = CourseRecordVOMap.get(courseId);
+            CourseRecordStatisticsVO courseRecordVO = courseRecordVOMap.get(courseId);
             // 观看数
             if (courseRecordVO.getViewNum() == null){
                 ParsedSum viewAgg = bucket.getAggregations().get(EsConstant.VIEW_NUM_AGG);
-                courseRecordVO.setViewNum(((Double)viewAgg.getValue()).intValue());
+                courseRecordVO.setViewNum(((Double)viewAgg.getValue()).longValue());
             }
             // 收藏数
             if (courseRecordVO.getCollectionNum() == null){
                 ParsedSum collectionAgg = bucket.getAggregations().get(EsConstant.COLLECTION_NUM_AGG);
-                courseRecordVO.setCollectionNum(((Double)collectionAgg.getValue()).intValue());
+                courseRecordVO.setCollectionNum(((Double)collectionAgg.getValue()).longValue());
             }
 
         });
 
         log.info("===========课程统计报表===========end===========");
-        List<CourseRecordStatisticsVO> recordStatisticsVOList = new ArrayList<>(CourseRecordVOMap.values());
+        List<CourseRecordStatisticsVO> recordStatisticsVOList = new ArrayList<>(courseRecordVOMap.values());
         PageVO<CourseRecordStatisticsVO> pageVO = new PageVO<>();
         //内容
         pageVO.setContent(recordStatisticsVOList);
@@ -281,7 +281,7 @@ public class StatisticsListService {
      * @param endTime
      * @return
      */
-    private BoolQueryBuilder getCourseRecordBoolQueryAgg(Integer teacherId, Long beginTime, Long endTime){
+    private BoolQueryBuilder getCourseRecordBoolQueryAgg(Long teacherId, Long beginTime, Long endTime){
         //1、构建查询条件boolQuery
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         //课程Id

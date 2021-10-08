@@ -5,7 +5,6 @@ import cn.edu.lingnan.mooc.statistics.service.CourseService;
 import cn.edu.lingnan.mooc.statistics.service.StatisticsListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,6 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequestMapping("/courses")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -51,6 +49,13 @@ public class CourseController {
     }
 
 
+    /**
+     * 根据课程关键字搜索
+     * @param keyWord
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/search")
     public RespResult searchCourseByKeyWord(@RequestParam(value = "keyWord",defaultValue = "") String keyWord,
                                             @RequestParam(value = "pageIndex",defaultValue = "0") Integer pageIndex,
