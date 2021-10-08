@@ -1,6 +1,6 @@
-package cn.edu.lingnan.core.vo;
+package cn.edu.lingnan.mooc.portal.model.vo;
 
-import cn.edu.lingnan.core.entity.Tag;
+import cn.edu.lingnan.mooc.portal.model.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;

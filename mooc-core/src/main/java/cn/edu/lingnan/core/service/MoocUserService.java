@@ -1,11 +1,9 @@
 package cn.edu.lingnan.core.service;
 
-import cn.edu.lingnan.core.authentication.util.UserUtil;
 import cn.edu.lingnan.core.entity.MoocUser;
 import cn.edu.lingnan.core.param.UserParam;
 import cn.edu.lingnan.core.repository.MoocUserRepository;
 import cn.edu.lingnan.core.util.CopyUtil;
-import cn.edu.lingnan.core.vo.reception.UserDetailVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,36 +43,8 @@ public class MoocUserService {
         Map<Integer,MoocUser> resultMap = new HashMap<>();
         userMapList.forEach((k,v) -> resultMap.put(k,v.get(0)));
         return resultMap;
-
-/*        // 构造sql
-        StringBuilder sqlBuilder = new StringBuilder("select id,user_image , name, account,status,login_time,create_time," +
-                "update_time from mooc_user u where u.id in (");
-        sqlBuilder.append(userIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
-        sqlBuilder.append(")");
-        log.info("get user name sql is sql:{}",sqlBuilder.toString());
-        // 执行语句
-        Query query = entityManager.createNativeQuery(sqlBuilder.toString());
-        // 获取和构造返回结果
-        List<Object[]> resultList = query.getResultList();
-        Map<Integer,MoocUser> resultMap = new HashMap<>();
-        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),(MoocUser)o[1]));
-        return resultMap;
-        */
-
     }
 
-    /**
-     * 获取用户信息
-     * @return
-     */
-    public UserDetailVO getOwnDetail(){
-        Optional<MoocUser> optional = moocUserRepository.findById(UserUtil.getUserId());
-        if(!optional.isPresent()){
-            return null;
-        }
-        UserDetailVO userDetailVO = CopyUtil.copy(optional.get(),UserDetailVO.class);
-        return userDetailVO;
-    }
     /**
      * 根据Id查找
      * @param id

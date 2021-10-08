@@ -3,10 +3,10 @@ package cn.edu.lingnan.authorize.aspect;
 import cn.edu.lingnan.authorize.dao.LoginLogDAO;
 import cn.edu.lingnan.authorize.model.entity.LoginLog;
 import cn.edu.lingnan.authorize.model.param.LoginParam;
-import cn.edu.lingnan.authorize.model.UserToken;
-import cn.edu.lingnan.authorize.util.HttpServletUtil;
-import cn.edu.lingnan.authorize.util.RedisUtil;
+import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
+import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -43,7 +43,7 @@ public class LoginLogAspect {
 
         // 3、记录登录日志
         String succeed = respResult.isSuccess() ? "成功" : "失败";
-        String ip = HttpServletUtil.getIpAddress(request);
+        String ip = HttpServletUtil.getIpAddress();
         LoginLog loginLog = new LoginLog();
         loginLog.setLogName("登录日志");
         loginLog.setSystemType("windows");
@@ -66,9 +66,9 @@ public class LoginLogAspect {
         String token = request.getHeader("Authorization");
         String account = "获取账号异常";
         if(token != null){
-            UserToken userToken = RedisUtil.get(token, UserToken.class);
-            if(userToken != null){
-                account = userToken.getAccount();
+            LoginUser loginUser = RedisUtil.get(token, LoginUser.class);
+            if(loginUser != null){
+                account = loginUser.getAccount();
             }
         }
 
@@ -77,7 +77,7 @@ public class LoginLogAspect {
 
         // 3、记录登出日志
         String succeed = respResult.isSuccess() ? "成功" : "失败";
-        String ip = HttpServletUtil.getIpAddress(request);
+        String ip = HttpServletUtil.getIpAddress();
         LoginLog loginLog = new LoginLog();
         loginLog.setLogName("登出日志");
         loginLog.setSystemType("windows");

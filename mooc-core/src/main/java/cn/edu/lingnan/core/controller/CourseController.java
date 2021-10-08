@@ -1,17 +1,13 @@
 package cn.edu.lingnan.core.controller;
 
-import cn.edu.lingnan.core.authentication.annotation.Check;
 import cn.edu.lingnan.core.enums.CourseEnum;
 import cn.edu.lingnan.core.param.CourseParam;
 import cn.edu.lingnan.core.param.reception.QueryCourseParam;
 import cn.edu.lingnan.core.repository.CourseRepository;
-import cn.edu.lingnan.core.util.CopyUtil;
-import cn.edu.lingnan.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.core.entity.Course;
 import cn.edu.lingnan.core.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

@@ -15,7 +15,17 @@ import org.springframework.web.bind.annotation.*;
 public class CourseController {
 
     @Autowired
-    private CourseService receptionCourseService;
+    private CourseService courseService;
+
+
+    /**
+     * 分查询所有分类信息
+     * @return
+     */
+    @GetMapping("/all")
+    public RespResult findAllCategory() {
+        return RespResult.success(courseService.findAllCategoryTag());
+    }
 
     /**
      * 根据标签查询课程
@@ -31,7 +41,7 @@ public class CourseController {
         if (queryCourseParam.getPageSize() == null) {
             queryCourseParam.setPageSize(15);
         }
-        return RespResult.success(receptionCourseService.getCourseByTagList(queryCourseParam.getTagIdList(),
+        return RespResult.success(courseService.getCourseByTagList(queryCourseParam.getTagIdList(),
                 queryCourseParam.getPageIndex(), queryCourseParam.getPageSize()));
     }
 
@@ -43,7 +53,7 @@ public class CourseController {
      */
     @GetMapping("/{id}")
     public RespResult findCourseById(@PathVariable Long id) {
-        return RespResult.success(receptionCourseService.findCourseDetailById(id));
+        return RespResult.success(courseService.findCourseDetailById(id));
     }
 
     /**
@@ -59,7 +69,7 @@ public class CourseController {
                                           @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
                                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
 
-        return RespResult.success(receptionCourseService.findCourseByTeachId(userId, pageIndex, pageSize));
+        return RespResult.success(courseService.findCourseByTeachId(userId, pageIndex, pageSize));
     }
 
 
@@ -76,7 +86,7 @@ public class CourseController {
                                                    @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
                                                    @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
 
-        return RespResult.success(receptionCourseService.findCollectionCourseByUserId(userId, pageIndex, pageSize));
+        return RespResult.success(courseService.findCollectionCourseByUserId(userId, pageIndex, pageSize));
     }
 
     /**
@@ -86,7 +96,7 @@ public class CourseController {
      */
     @PutMapping("/collectionOrCancel/{courseId}")
     public RespResult collectionOrCancel(@PathVariable Long courseId) {
-        receptionCourseService.collectionOrCancel(courseId);
+        courseService.collectionOrCancel(courseId);
         return RespResult.success();
     }
 

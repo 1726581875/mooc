@@ -6,16 +6,13 @@ import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.util.CopyUtil;
 import cn.edu.lingnan.mooc.portal.constant.RedisPrefixConstant;
-import cn.edu.lingnan.mooc.portal.dao.CollectionRepository;
-import cn.edu.lingnan.mooc.portal.dao.CourseRepository;
-import cn.edu.lingnan.mooc.portal.dao.MonitorRecordRepository;
-import cn.edu.lingnan.mooc.portal.dao.MoocUserRepository;
-import cn.edu.lingnan.mooc.portal.model.entity.Collection;
-import cn.edu.lingnan.mooc.portal.model.entity.Course;
-import cn.edu.lingnan.mooc.portal.model.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.portal.dao.*;
+import cn.edu.lingnan.mooc.portal.model.entity.*;
+import cn.edu.lingnan.mooc.portal.model.vo.CategoryVO;
 import cn.edu.lingnan.mooc.portal.model.vo.ChapterVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CourseDetailVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CourseVO;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -56,9 +53,29 @@ public class CourseService {
     private ChapterService receptionChapterService;
     @Autowired
     private MonitorRecordRepository monitorRecordRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private TagRepository tagRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<CategoryVO> findAllCategoryTag(){
+        // get all categoryList
+        List<Category> categoryList = categoryRepository.findAll();
+        // get categoryIdList
+        List<Integer> categoryIdList = categoryList.stream().map(Category::getId).collect(Collectors.toList());
+        // get tagList
+        List<Tag> tagList = tagRepository.findAllByCategoryIdIn(categoryIdList);
+        // categoryId/tagList map
+        Map<Integer, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getCategoryId));
+        //categoryList转换为categoryVOList
+        List<CategoryVO> categoryVOList = CopyUtil.copyList(categoryList, CategoryVO.class);
+        //set tagList
+        categoryVOList.stream().forEach(e->e.setTagList(tagMap.getOrDefault(e.getId(), Lists.newArrayList())));
+        return categoryVOList;
+    }
 
     /**
      * 前台调用
@@ -93,7 +110,7 @@ public class CourseService {
     public PageVO<CourseVO> getCourseByTagList(List<Integer> tagIdList, Integer pageIndex, Integer pageSize){
 
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
-        Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList,pageable);
+        Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList, pageable);
         List<Course> courseList = coursePage.getContent();
         List<CourseVO> courseVOList = CopyUtil.copyList(courseList, CourseVO.class);
         /* 4. 封装到自定义分页结果 */
