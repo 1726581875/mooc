@@ -119,7 +119,7 @@ public class ManagerDAO extends BaseDAO {
      * @param managerId
      * @return
      */
-    public MoocManager findById(Integer managerId) {
+    public MoocManager findById(Long managerId) {
         String sql = "select * from mooc_manager where id = ?";
         MoocManager moocManager = null;
         try {

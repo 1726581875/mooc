@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author xmz
  * @date: 2021/02/07
  */
-@Configuration
+//@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired

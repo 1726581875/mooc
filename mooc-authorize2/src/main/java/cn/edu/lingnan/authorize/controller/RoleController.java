@@ -1,9 +1,9 @@
 package cn.edu.lingnan.authorize.controller;
 
-import cn.edu.lingnan.authorize.authentication.annotation.CheckAuthority;
 import cn.edu.lingnan.authorize.model.entity.Role;
 import cn.edu.lingnan.authorize.model.param.RoLeParam;
 import cn.edu.lingnan.authorize.service.RoleService;
+import cn.edu.lingnan.mooc.common.annotation.CheckAuthority;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
