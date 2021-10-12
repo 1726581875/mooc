@@ -15,7 +15,7 @@ import java.util.List;
  * @see JpaRepository 支持常用增删查改
  * @see JpaSpecificationExecutor 支持多条件分页
  */
-public interface CourseRepository extends JpaRepository<Course, Integer>,JpaSpecificationExecutor<Course> {
+public interface CourseRepository extends JpaRepository<Course, Long>,JpaSpecificationExecutor<Course> {
 
     /**
      * 根据标签id查询课程

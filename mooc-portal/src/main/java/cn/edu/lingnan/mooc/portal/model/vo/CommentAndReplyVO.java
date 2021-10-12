@@ -15,9 +15,9 @@ import java.util.List;
 @Data
 public class CommentAndReplyVO {
 
-	private Integer commentId;
+	private Long commentId;
 	
-	private Integer userId;
+	private Long userId;
 	
 	private String userName;
 	

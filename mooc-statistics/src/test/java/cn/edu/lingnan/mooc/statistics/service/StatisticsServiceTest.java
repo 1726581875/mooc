@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsVO;
+import cn.edu.lingnan.mooc.statistics.model.vo.StatisticsVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

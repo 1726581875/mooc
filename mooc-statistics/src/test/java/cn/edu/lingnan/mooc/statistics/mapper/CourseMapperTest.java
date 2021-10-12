@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.statistics.mapper;
 
+import cn.edu.lingnan.mooc.statistics.dao.mapper.CourseMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -32,7 +33,7 @@ public class CourseMapperTest {
                 });
         //课程分类 by teacherId
         System.out.println("===============sql 3===============");
-        Integer teacherId = 7;
+        Long teacherId = 7L;
         courseMapper.countCourseCategoryByUserId(teacherId)
                 .forEach(map -> {
                     map.forEach((k, v)->System.out.println("k=" + k + ",v=" + v));
@@ -64,7 +65,7 @@ public class CourseMapperTest {
         });
 
         //统计teacherId =7的所属课程的全部评论
-        Integer teacherId = 7;
+        Long teacherId = 7L;
         List<Map<String, Object>> mapList2 = courseMapper.countCommentGroupByTime(teacherId,calendar.getTime(),new Date());
         mapList2.forEach(map -> {
             map.forEach((k, v)->System.out.println("k=" + k + ",v=" + v));

@@ -6,16 +6,13 @@ import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.portal.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.portal.authorize.util.CopyUtil;
 import cn.edu.lingnan.mooc.portal.constant.RedisPrefixConstant;
-import cn.edu.lingnan.mooc.portal.dao.CollectionRepository;
-import cn.edu.lingnan.mooc.portal.dao.CourseRepository;
-import cn.edu.lingnan.mooc.portal.dao.MonitorRecordRepository;
-import cn.edu.lingnan.mooc.portal.dao.MoocUserRepository;
-import cn.edu.lingnan.mooc.portal.model.entity.Collection;
-import cn.edu.lingnan.mooc.portal.model.entity.Course;
-import cn.edu.lingnan.mooc.portal.model.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.portal.dao.*;
+import cn.edu.lingnan.mooc.portal.model.entity.*;
+import cn.edu.lingnan.mooc.portal.model.vo.CategoryVO;
 import cn.edu.lingnan.mooc.portal.model.vo.ChapterVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CourseDetailVO;
 import cn.edu.lingnan.mooc.portal.model.vo.CourseVO;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -56,9 +53,29 @@ public class CourseService {
     private ChapterService receptionChapterService;
     @Autowired
     private MonitorRecordRepository monitorRecordRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private TagRepository tagRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<CategoryVO> findAllCategoryTag(){
+        // get all categoryList
+        List<Category> categoryList = categoryRepository.findAll();
+        // get categoryIdList
+        List<Integer> categoryIdList = categoryList.stream().map(Category::getId).collect(Collectors.toList());
+        // get tagList
+        List<Tag> tagList = tagRepository.findAllByCategoryIdIn(categoryIdList);
+        // categoryId/tagList map
+        Map<Integer, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getCategoryId));
+        //categoryList转换为categoryVOList
+        List<CategoryVO> categoryVOList = CopyUtil.copyList(categoryList, CategoryVO.class);
+        //set tagList
+        categoryVOList.stream().forEach(e->e.setTagList(tagMap.getOrDefault(e.getId(), Lists.newArrayList())));
+        return categoryVOList;
+    }
 
     /**
      * 前台调用
@@ -66,7 +83,7 @@ public class CourseService {
      * @param courseIdList
      * @return
      */
-    public Map<Integer,String> getCourseNameMap(List<Integer> courseIdList){
+    public Map<Long,String> getCourseNameMap(List<Long> courseIdList){
         // 构造sql
         StringBuilder sqlBuilder = new StringBuilder("select id,name from course where id in (");
         sqlBuilder.append(courseIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
@@ -76,8 +93,8 @@ public class CourseService {
         Query query = entityManager.createNativeQuery(sqlBuilder.toString());
         // 获取和构造返回结果
         List<Object[]> resultList = query.getResultList();
-        Map<Integer,String> resultMap = new HashMap<>();
-        resultList.forEach(o -> resultMap.put(Integer.valueOf(o[0].toString()),o[1].toString()));
+        Map<Long,String> resultMap = new HashMap<>();
+        resultList.forEach(o -> resultMap.put(Long.valueOf(o[0].toString()),o[1].toString()));
         return resultMap;
     }
 
@@ -93,7 +110,7 @@ public class CourseService {
     public PageVO<CourseVO> getCourseByTagList(List<Integer> tagIdList, Integer pageIndex, Integer pageSize){
 
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize, Sort.Direction.DESC,"create_time");
-        Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList,pageable);
+        Page<Course> coursePage = courseRepository.findCourseByTagList(tagIdList, pageable);
         List<Course> courseList = coursePage.getContent();
         List<CourseVO> courseVOList = CopyUtil.copyList(courseList, CourseVO.class);
         /* 4. 封装到自定义分页结果 */
@@ -102,7 +119,7 @@ public class CourseService {
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
         pageVO.setPageCount(coursePage.getTotalPages());
-        pageVO.setTotalRow(coursePage.getNumberOfElements());
+        pageVO.setTotalRow(coursePage.getTotalElements());
         return pageVO;
     }
 
@@ -115,7 +132,7 @@ public class CourseService {
      * -- 若收藏记录存在，表示是取消收藏操作，删除记录，redis计数-1
      * @param courseId
      */
-    public void collectionOrCancel(Integer courseId){
+    public void collectionOrCancel(Long courseId){
 
         String collectionNumKey = RedisPrefixConstant.COLLECTION_NUM_PRE + courseId;
         //1、检查redis里是否有该收藏数缓存，没有则设置
@@ -148,7 +165,7 @@ public class CourseService {
     }
 
 
-    public void insertMonitorRecord(Integer courseId,Integer userId,String type){
+    public void insertMonitorRecord(Long courseId,Long userId,String type){
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if(!courseOptional.isPresent()){
             log.error("插入监控记录失败，点赞的课程不存在，courseId={}",courseId);
@@ -179,7 +196,7 @@ public class CourseService {
      * 如果没有缓存，则设置缓存
      * @param courseId
      */
-    public Integer getCollectionNumByCache(Integer courseId){
+    public Long getCollectionNumByCache(Long courseId){
         String collectionNumKey = RedisPrefixConstant.COLLECTION_NUM_PRE + courseId;
         if(RedisUtil.isNotExist(collectionNumKey)){
             Optional<Course> courseOptional = courseRepository.findById(courseId);
@@ -191,7 +208,7 @@ public class CourseService {
             //缓存两天
             RedisUtil.set(collectionNumKey,course.getCollectionNum(),RedisPrefixConstant.CACHE_DAY_NUM, TimeUnit.DAYS);
         }
-        return RedisUtil.get(collectionNumKey,Integer.class);
+        return RedisUtil.get(collectionNumKey,Long.class);
     }
 
 
@@ -205,7 +222,7 @@ public class CourseService {
      * @param courseId
      * @return
      */
-    public CourseDetailVO findCourseDetailById(Integer courseId){
+    public CourseDetailVO findCourseDetailById(Long courseId){
 
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if(courseOptional.isPresent()){
@@ -213,7 +230,7 @@ public class CourseService {
             Course course = courseOptional.get();
             CourseDetailVO courseDetailVO = CopyUtil.copy(course, CourseDetailVO.class);
             //从缓存里获取收藏数/观看数（redis缓存）
-            Integer collectionNum = this.getCollectionNumByCache(courseId);
+            Long collectionNum = this.getCollectionNumByCache(courseId);
             courseDetailVO.setCollectionNum(collectionNum);
             //设置观看数（redis缓存）
             if(RedisUtil.isExist(RedisPrefixConstant.VIEW_NUM_PRE + courseId)) {
@@ -230,14 +247,14 @@ public class CourseService {
                 courseDetailVO.setCommentNum(course.getCommentNum());
             }else{
                 //去缓存中拿
-                courseDetailVO.setCommentNum(RedisUtil.get(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,Integer.class));
+                courseDetailVO.setCommentNum(RedisUtil.get(RedisPrefixConstant.COMMENT_NUM_PRE + courseId,Long.class));
             }
             //设置课程问答数缓存
             if(RedisUtil.setIfAbsent(RedisPrefixConstant.QUESTION_NUM_PRE + courseId,String.valueOf(course.getQuestionNum()))){
                 courseDetailVO.setQuestionNum(course.getQuestionNum());
             }else{
                 //去缓存中拿
-                courseDetailVO.setQuestionNum(RedisUtil.get(RedisPrefixConstant.QUESTION_NUM_PRE + courseId,Integer.class));
+                courseDetailVO.setQuestionNum(RedisUtil.get(RedisPrefixConstant.QUESTION_NUM_PRE + courseId,Long.class));
             }
 
             //2、获取教师基本信息,设置到VO对象
@@ -270,7 +287,7 @@ public class CourseService {
      * @param pageSize
      * @return
      */
-   public PageVO<CourseVO> findCourseByTeachId(Integer teacherId, Integer pageIndex, Integer pageSize){
+   public PageVO<CourseVO> findCourseByTeachId(Long teacherId, Integer pageIndex, Integer pageSize){
        //构造匹配条件Example对象
        Course matchObject = new Course();
        matchObject.setTeacherId(teacherId);
@@ -299,19 +316,19 @@ public class CourseService {
      * @param pageSize
      * @return
      */
-    public PageVO<CourseVO> findCollectionCourseByUserId(Integer userId, Integer pageIndex, Integer pageSize){
+    public PageVO<CourseVO> findCollectionCourseByUserId(Long userId, Integer pageIndex, Integer pageSize){
 
         //获取课程id
         Collection collection = new Collection();
         collection.setUserId(userId);
         List<Collection> collectionList = collectionRepository.findAll(Example.of(collection));
-        List<Integer> courseIdList = collectionList.stream().map(Collection::getCourseId).collect(Collectors.toList());
+        List<Long> courseIdList = collectionList.stream().map(Collection::getCourseId).collect(Collectors.toList());
 
         //构造查询条件 in查询
         Specification<Course> specification = new Specification<Course>() {
             @Override
             public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                CriteriaBuilder.In<Integer> in = cb.in(root.get("id"));
+                CriteriaBuilder.In<Long> in = cb.in(root.get("id"));
                 courseIdList.forEach(id->in.value(id));
                 return  cb.and(in);
             }

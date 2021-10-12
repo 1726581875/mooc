@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.portal.authorize.model.param;
 
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -28,5 +29,5 @@ public class RegisterParam {
     /**
      * 用户类型，教师/普通用户
      */
-    private String userType;
+    private UserTypeEnum userType;
 }

@@ -1,10 +1,10 @@
 package cn.edu.lingnan.mooc.statistics.job;
 
-import cn.edu.lingnan.mooc.statistics.entity.es.CourseRecord;
-import cn.edu.lingnan.mooc.statistics.entity.es.EsCourse;
-import cn.edu.lingnan.mooc.statistics.entity.mysql.Course;
-import cn.edu.lingnan.mooc.statistics.repository.CourseRepository;
-import cn.edu.lingnan.mooc.statistics.repository.es.EsCourseRepository;
+import cn.edu.lingnan.mooc.statistics.model.entity.es.CourseRecord;
+import cn.edu.lingnan.mooc.statistics.model.entity.es.EsCourse;
+import cn.edu.lingnan.mooc.statistics.model.entity.mysql.Course;
+import cn.edu.lingnan.mooc.statistics.dao.repository.CourseRepository;
+import cn.edu.lingnan.mooc.statistics.dao.repository.es.EsCourseRepository;
 import cn.edu.lingnan.mooc.statistics.util.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author xmz

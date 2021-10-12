@@ -20,33 +20,48 @@ import java.util.Date;
 @DynamicInsert
 @DynamicUpdate
 public class CommentReply {
-    
-	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Integer id;
-	/**
-	 * 对应评论表id
-	 */
-	private Integer commentId;
-	/**
-	 * 父回复id
-	 */
-	private Integer parentId;
-	
-	private Integer toUserId;
-	/**
-	 * 用户id
-	 */
-	private Integer userId;
-	
-	private String replyContent;
-	
-	private Integer replyStar;
-	
-	private Integer status;
-	
-	private Date createTime;
 
+	/**
+	 * 回复表主键
+	 */
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	/**
+	 * 对应的评论id
+	 */
+	private Long commentId;
+	/**
+	 * 对应父回复id | 0表示回复对象是comment表下的回复
+	 */
+	private Long parentId;
+	/**
+	 * 回复者id
+	 */
+	private Long userId;
+	/**
+	 * 回复对象id
+	 */
+	private Long toUserId;
+	/**
+	 * 评论内容
+	 */
+	private String replyContent;
+	/**
+	 * 回复点赞数
+	 */
+	private Integer replyStar;
+	/**
+	 * 状态是否已读,0未读,1已读,2已回复
+	 */
+	private Integer status;
+	/**
+	 * 创建时间
+	 */
+	private Date createTime;
+	/**
+	 * 修改时间
+	 */
 	private Date updateTime;
 
 

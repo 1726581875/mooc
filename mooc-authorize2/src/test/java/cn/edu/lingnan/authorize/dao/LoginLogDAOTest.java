@@ -4,6 +4,7 @@ import cn.edu.lingnan.authorize.model.entity.LoginLog;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 import java.util.Date;
 
@@ -17,6 +18,9 @@ public class LoginLogDAOTest {
     @Autowired
     private LoginLogDAO loginLogDAO;
 
+    @Autowired
+    private InterceptorRegistry interceptorRegistry;
+
     @Test
     public void insertLoginLogTest(){
         LoginLog loginLog = new LoginLog();
@@ -29,6 +33,9 @@ public class LoginLogDAOTest {
         loginLog.setSystemType("1111");
         loginLog.setLogName("登录日志");
         loginLogDAO.insertLoginLog(loginLog);
+    }
+
+    public void testGetInterceptor(){
     }
 
 

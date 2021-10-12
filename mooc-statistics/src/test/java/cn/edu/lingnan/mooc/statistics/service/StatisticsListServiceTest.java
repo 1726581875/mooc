@@ -2,9 +2,9 @@ package cn.edu.lingnan.mooc.statistics.service;
 
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.statistics.entity.CourseRecordStatisticsVO;
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsListViewQuery;
-import cn.edu.lingnan.mooc.statistics.entity.TopCourseVO;
+import cn.edu.lingnan.mooc.statistics.model.vo.CourseRecordStatisticsVO;
+import cn.edu.lingnan.mooc.statistics.model.vo.StatisticsListViewQuery;
+import cn.edu.lingnan.mooc.statistics.model.vo.TopCourseVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

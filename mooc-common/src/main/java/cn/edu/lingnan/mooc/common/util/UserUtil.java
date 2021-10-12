@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.common.util;
 
 
 import cn.edu.lingnan.mooc.common.enums.ExceptionEnum;
+import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
 
@@ -31,13 +32,13 @@ public class UserUtil {
         return loginUser;
     }
 
-    /**
-     * 获取用户id
-     * @return
-     */
+    public static boolean isTeacher(){
+        return UserTypeEnum.TEACHER.equals(getLoginUser().getType());
+    }
+
     public static Long getUserId() {
-        LoginUser userToken = getLoginUser();
-        return userToken.getUserId();
+        LoginUser loginUser = getLoginUser();
+        return loginUser.getUserId();
     }
 
     /**

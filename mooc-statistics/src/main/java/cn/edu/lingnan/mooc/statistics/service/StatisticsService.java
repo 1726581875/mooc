@@ -1,11 +1,10 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.statistics.authentication.entity.UserToken;
-import cn.edu.lingnan.mooc.statistics.authentication.util.UserUtil;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.statistics.constant.EsConstant;
-import cn.edu.lingnan.mooc.statistics.entity.StatisticsVO;
-import cn.edu.lingnan.mooc.statistics.mapper.CourseMapper;
+import cn.edu.lingnan.mooc.statistics.model.vo.StatisticsVO;
+import cn.edu.lingnan.mooc.statistics.dao.mapper.CourseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -72,7 +71,7 @@ public class StatisticsService {
     public List<Map<String,Object>> getClassificationStatistics() {
         //如果是教师，只统计当前教师
         if(UserUtil.isTeacher()){
-            Integer userId = UserUtil.getUserId();
+            Long userId = UserUtil.getUserId();
             return courseMapper.countCourseCategoryByUserId(userId);
         }
         //否则就是管理员，统计全部
@@ -85,7 +84,7 @@ public class StatisticsService {
      */
     public Map<String,Long> getCourseCommentStatistics(){
         //如果是教师，只统计当前教师
-        Integer teacherId = null;
+        Long teacherId = null;
         if(UserUtil.isTeacher()){
             teacherId = UserUtil.getUserId();
         }

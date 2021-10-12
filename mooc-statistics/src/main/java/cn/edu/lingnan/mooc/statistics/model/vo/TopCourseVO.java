@@ -1,0 +1,20 @@
+package cn.edu.lingnan.mooc.statistics.model.vo;
+
+import lombok.Data;
+
+/**
+ * @author xiaomingzhang
+ * @date 2021/04/14
+ */
+@Data
+public class TopCourseVO {
+
+    private Integer courseId;
+
+    private String courseImage;
+
+    private String courseName;
+
+    private Integer count;
+
+}

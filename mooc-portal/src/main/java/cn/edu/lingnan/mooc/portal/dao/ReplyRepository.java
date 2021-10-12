@@ -14,6 +14,6 @@ import java.util.List;
 */
 public interface ReplyRepository extends JpaRepository<CommentReply, Integer>, JpaSpecificationExecutor<CommentReply> {
 
-    List<CommentReply> findAllByCommentIdIn(List<Integer> commentIdList);
+    List<CommentReply> findAllByCommentIdIn(List<Long> commentIdList);
 
 }

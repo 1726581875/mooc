@@ -15,13 +15,13 @@ import java.util.List;
 @Data
 @ToString
 public class CategoryVO {
-    // ID
+
     private Integer id;
-    // 分类名称
+
     private String name;
-    // 分类描述
+
     private String description;
-    // 创建时间
+
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
     /**

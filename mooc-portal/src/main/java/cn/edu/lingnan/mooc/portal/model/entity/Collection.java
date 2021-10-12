@@ -25,11 +25,11 @@ public class Collection {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private Integer courseId;
+    private Long courseId;
 
-    private Integer userId;
+    private Long userId;
 
     private Date createTime;
 

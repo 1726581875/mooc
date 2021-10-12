@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.statistics.job;
-import cn.edu.lingnan.mooc.statistics.entity.mysql.LoginAmountCount;
-import cn.edu.lingnan.mooc.statistics.repository.LoginAmountCountRepository;
+import cn.edu.lingnan.mooc.statistics.model.entity.mysql.LoginAmountCount;
+import cn.edu.lingnan.mooc.statistics.dao.repository.LoginAmountCountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.scheduling.annotation.Scheduled;

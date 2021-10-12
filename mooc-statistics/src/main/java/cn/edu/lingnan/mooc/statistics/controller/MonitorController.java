@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.statistics.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.statistics.constant.Constant;
 import cn.edu.lingnan.mooc.statistics.service.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/monitor")
-@CrossOrigin(allowedHeaders = "*",allowCredentials = "true")
 public class MonitorController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class MonitorController {
     @GetMapping("/countNewCourse")
     public RespResult getCourseCount(@RequestParam(value = "type", defaultValue = "week") String type) {
         Map<String, Long> countMap = null;
-        if ("week".equals(type)) {
+        if (Constant.WEEK.equals(type)) {
             countMap = monitorService.countWeekCourse();
         } else {
             countMap = monitorService.countMonthCourse();
@@ -45,7 +45,7 @@ public class MonitorController {
     @GetMapping("/countLoginUser")
     public RespResult getUserCount(@RequestParam(value = "type", defaultValue = "week") String type){
         Map<String, Long> countMap = null;
-        if ("week".equals(type)) {
+        if (Constant.WEEK.equals(type)) {
             countMap = monitorService.countWeekPerson();
         } else {
             countMap = monitorService.countMonthPerson();

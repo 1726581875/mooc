@@ -17,7 +17,7 @@ public class CourseDetailVO {
     /**
      * id
      */
-    private Integer id;
+    private Long id;
     /**
      * 封面图片
      */
@@ -29,7 +29,7 @@ public class CourseDetailVO {
     /**
      * 讲师id
      */
-    private Integer teacherId;
+    private Long teacherId;
     /**
      * 讲师名字
      */
@@ -49,15 +49,15 @@ public class CourseDetailVO {
     /**
      * 收藏人数
      */
-    private Integer collectionNum;
+    private Long collectionNum;
     /**
      * 评论人数
      */
-    private Integer commentNum;
+    private Long commentNum;
     /**
      * 课程问答人数
      */
-    private Integer questionNum;
+    private Long questionNum;
 
     /**
      * 创建时间
