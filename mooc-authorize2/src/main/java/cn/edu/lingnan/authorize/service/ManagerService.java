@@ -50,7 +50,7 @@ public class ManagerService {
      */
     public RespResult updatePassword(PasswordParam passwordParam){
         //获取id，根据id查询管理员
-        Integer managerId = UserUtil.getUserId();
+        Long managerId = UserUtil.getUserId();
         MoocManager manager = managerDAO.findById(managerId);
         if(manager == null){
             log.error("该用户不存在,managerId={}",managerId);
@@ -91,7 +91,7 @@ public class ManagerService {
      * @param userType 1是管理员，2是用户
      * @return
      */
-    public RespResult randomNewPassword(Integer userId,Integer userType){
+    public RespResult randomNewPassword(Long userId,Integer userType){
 
         String newPassword = UUID.randomUUID().toString();
         log.info("随机新密码：{}" ,newPassword);

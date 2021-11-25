@@ -17,7 +17,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -119,7 +118,7 @@ public class ManagerDAO extends BaseDAO {
      * @param managerId
      * @return
      */
-    public MoocManager findById(Integer managerId) {
+    public MoocManager findById(Long managerId) {
         String sql = "select * from mooc_manager where id = ?";
         MoocManager moocManager = null;
         try {

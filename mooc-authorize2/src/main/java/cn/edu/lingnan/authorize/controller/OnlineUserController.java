@@ -3,11 +3,8 @@ package cn.edu.lingnan.authorize.controller;
 import cn.edu.lingnan.authorize.service.OnlineService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

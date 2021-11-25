@@ -78,7 +78,7 @@ public class UserDAO extends BaseDAO {
      *  @param userId
      * @return
      */
-    public MoocUser findUserById(Integer userId){
+    public MoocUser findUserById(Long userId){
 
         String sql = "select * from mooc_user where id = ?";
         MoocUser moocUser = null;

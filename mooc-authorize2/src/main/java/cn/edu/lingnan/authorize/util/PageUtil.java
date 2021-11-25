@@ -22,7 +22,7 @@ public class PageUtil{
         PageVO pageVO = new PageVO<>();
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
-        pageVO.setTotalRow(items.size());
+        pageVO.setTotalRow((long) items.size());
         pageVO.setPageCount(pageCount);
         pageVO.setContent(items.subList(startIndex,startIndex + limit));
         return pageVO;
