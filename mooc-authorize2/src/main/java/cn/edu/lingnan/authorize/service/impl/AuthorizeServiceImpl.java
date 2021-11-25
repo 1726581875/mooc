@@ -65,13 +65,17 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     @Value("${mooc.superAdmin.password:root}")
     private String superAdminPassword;
+    @Value("${mooc.checkVerifyCode:false}")
+    private Boolean checkVerifyCode;
 
     @Override
     public LoginSuccessVO login(LoginParam loginParam){
 
 
         // check verification code
-        checkVerificationCode(loginParam.getCode());
+        if(checkVerifyCode) {
+            checkVerificationCode(loginParam.getCode());
+        }
 
         // get manager
         MoocManager manager = getMoocManager(loginParam.getUsername(),loginParam.getType());

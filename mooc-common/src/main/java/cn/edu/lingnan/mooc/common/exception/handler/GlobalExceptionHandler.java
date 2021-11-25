@@ -19,14 +19,14 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = MoocException.class)
     public RespResult handleMoocException(MoocException exception){
-        log.info("=====> 捕获了一个MoocException");
+        log.error("=====> 捕获了一个MoocException", exception);
         return RespResult.fail(exception.getCode(), exception.getMsg());
     }
 
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public RespResult handleException(Exception exception){
-        log.info("=====> 捕获了一个Exception");
+        log.error("=====> 捕获了一个Exception", exception);
         return RespResult.failUnKnownError();
     }
 

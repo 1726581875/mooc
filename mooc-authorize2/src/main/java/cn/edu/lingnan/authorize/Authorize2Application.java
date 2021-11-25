@@ -20,7 +20,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 //Hystrix
 @EnableCircuitBreaker
 @EnableEurekaClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages =
+        {"cn.edu.lingnan.mooc.common","cn.edu.lingnan.authorize"})
 public class Authorize2Application implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(Authorize2Application.class);

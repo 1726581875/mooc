@@ -1,7 +1,6 @@
 package cn.edu.lingnan.authorize.util;
 
-import cn.edu.lingnan.authorize.util.RedisUtil;
-import cn.edu.lingnan.authorize.util.RsaUtil;
+import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
