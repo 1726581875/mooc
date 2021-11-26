@@ -7,14 +7,14 @@ spring:
   #配置数据库连接参数
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://39.97.184.214:3306/mooc?characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://47.99.220.103:3306/mooc?characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
     password: y1234567
 #redis配置  host地址  端口port redis默认是6379 还有密码
   redis:
-    host: localhost
+    host: 47.99.220.103
     port: 6379
-    password: root
+    password: y1234567
 
 #rsa公钥、私钥
 mooc:

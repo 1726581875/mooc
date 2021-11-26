@@ -1,4 +1,4 @@
 #选择加载开发环境dev、测试环境qa、本地环境local
 spring:
   profiles:
-    active: local
+    active: dev
