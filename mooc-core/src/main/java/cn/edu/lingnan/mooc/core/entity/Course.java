@@ -18,7 +18,7 @@ public class Course{
     // 主键id   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     // 课程名称   
     private String name;
     // 讲师id   

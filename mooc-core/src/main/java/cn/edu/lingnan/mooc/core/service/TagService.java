@@ -36,7 +36,7 @@ public class TagService {
      * @param id
      * @return 如果找不到返回null
      */
-    public Tag findById(Integer id){
+    public Tag findById(Long id){
         Optional<Tag> optional = tagRepository.findById(id);
         if(!optional.isPresent()){
             return null;
@@ -143,7 +143,7 @@ public class TagService {
     }
 
 
-    public Integer deleteById(Integer id){
+    public Integer deleteById(Long id){
         tagRepository.deleteById(id);
         return  findById(id) == null ? 1 : 0;
     }
@@ -153,7 +153,7 @@ public class TagService {
      * @param tagIdList  id list
      * @return 删除条数
      */
-    public Integer deleteAllByIds(List<Integer> tagIdList){
+    public Integer deleteAllByIds(List<Long> tagIdList){
         List<Tag> delTagList = tagRepository.findAllById(tagIdList);
         tagRepository.deleteInBatch(delTagList);
         return delTagList.size();

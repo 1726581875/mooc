@@ -92,7 +92,7 @@ public class MonitorRecordController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public RespResult delete(@PathVariable Integer id) {
+    public RespResult delete(@PathVariable Long id) {
         Integer flag = monitorRecordService.deleteById(id);
         if (flag == 0) {
             return RespResult.fail("删除MonitorRecord失败");
@@ -108,7 +108,7 @@ public class MonitorRecordController {
      * @return
      */
     @PostMapping("/batch/delete")
-    public RespResult deleteMultiple(@RequestBody List<Integer> monitorRecordIdList) {
+    public RespResult deleteMultiple(@RequestBody List<Long> monitorRecordIdList) {
         monitorRecordService.deleteAllByIds(monitorRecordIdList);
         return RespResult.success("批量删除MonitorRecord成功");
     }

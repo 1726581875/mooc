@@ -14,7 +14,7 @@ import java.util.Date;
  * @see JpaRepository 支持常用增删查改
  * @see JpaSpecificationExecutor 支持多条件分页
  */
-public interface MonitorRecordRepository extends JpaRepository<MonitorRecord, Integer>,JpaSpecificationExecutor<MonitorRecord> {
+public interface MonitorRecordRepository extends JpaRepository<MonitorRecord, Long>,JpaSpecificationExecutor<MonitorRecord> {
     /**
      * 分页条件查询
      * @param nameOrAccount 账号或者昵称匹配,传null默认匹配所有

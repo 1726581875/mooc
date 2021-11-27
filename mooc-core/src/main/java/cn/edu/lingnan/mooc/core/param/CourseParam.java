@@ -12,13 +12,13 @@ import java.util.List;
 @Data
 public class CourseParam {
 
-    private Integer id;
+    private Long id;
     // 封面图片
     private String image;
     // 课程名称
     private String name;
     // 讲师id
-    private Integer teacherId;
+    private Long teacherId;
     /**
      *  课程概述
      */

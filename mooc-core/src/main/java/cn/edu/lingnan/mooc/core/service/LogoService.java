@@ -190,6 +190,7 @@ public class LogoService{
      * @return
      */
     public LogoVO findLogo() {
+
         Optional<MoocLogo> optional = logoRepository.findById(LOGO_ID);
         if (optional.isPresent()) {
             MoocLogo tbLogo = optional.get();

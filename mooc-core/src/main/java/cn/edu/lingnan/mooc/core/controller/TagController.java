@@ -75,7 +75,7 @@ public class TagController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public RespResult delete(@PathVariable Integer id) {
+    public RespResult delete(@PathVariable Long id) {
         Integer flag = tagService.deleteById(id);
         if (flag == 0) {
             return RespResult.fail("删除Tag失败");
@@ -91,7 +91,7 @@ public class TagController {
      * @return
      */
     @PostMapping("/batch/delete")
-    public RespResult deleteMultiple(@RequestBody List<Integer> tagIdList) {
+    public RespResult deleteMultiple(@RequestBody List<Long> tagIdList) {
         tagService.deleteAllByIds(tagIdList);
         return RespResult.success("批量删除Tag成功");
     }

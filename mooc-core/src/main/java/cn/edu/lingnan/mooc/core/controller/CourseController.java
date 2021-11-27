@@ -61,7 +61,7 @@ public class CourseController {
      * @return
      */
     @GetMapping("/{courseId}")
-    public RespResult findById(@PathVariable("courseId") Integer courseId) {
+    public RespResult findById(@PathVariable("courseId") Long courseId) {
         return RespResult.success(courseService.findById(courseId));
     }
 
@@ -105,7 +105,7 @@ public class CourseController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public RespResult delete(@PathVariable Integer id) {
+    public RespResult delete(@PathVariable Long id) {
         Optional<Course> courseOptional = courseRepository.findById(id);
         if(!courseOptional.isPresent()){
             return RespResult.fail("课程不存在");
@@ -127,7 +127,7 @@ public class CourseController {
      * @return
      */
     @PostMapping("/batch/delete")
-    public RespResult deleteMultiple(@RequestBody List<Integer> courseIdList) {
+    public RespResult deleteMultiple(@RequestBody List<Long> courseIdList) {
         courseService.deleteAllByIds(courseIdList);
         return RespResult.success("批量删除Course成功");
     }

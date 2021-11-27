@@ -8,7 +8,7 @@ public class MonitorRecordVO {
     // 主键
     private Integer id;
     // 教师id
-    private Integer teacherId;
+    private Long teacherId;
     // 教师昵称+账号
     private String nameAccount;
     // 课程id   

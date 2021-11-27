@@ -74,7 +74,7 @@ public class CourseService {
      * @param id
      * @return 如果找不到返回null
      */
-    public CourseVO findById(Integer id){
+    public CourseVO findById(Long id){
         Optional<Course> optional = courseRepository.findById(id);
         if(!optional.isPresent()){
             return null;
@@ -275,7 +275,7 @@ public class CourseService {
     }
 
 
-    public Integer deleteById(Integer id){
+    public Integer deleteById(Long id){
         courseRepository.deleteById(id);
         return  findById(id) == null ? 1 : 0;
     }
@@ -285,7 +285,7 @@ public class CourseService {
      * @param courseIdList  id list
      * @return 删除条数
      */
-    public Integer deleteAllByIds(List<Integer> courseIdList){
+    public Integer deleteAllByIds(List<Long> courseIdList){
         List<Course> delCourseList = courseRepository.findAllById(courseIdList);
         delCourseList.forEach(course -> course.setStatus(3));
         courseRepository.saveAll(delCourseList);

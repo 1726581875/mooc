@@ -12,13 +12,13 @@ import java.util.List;
  * @see JpaRepository 支持常用增删查改
  * @see JpaSpecificationExecutor 支持多条件分页
  */
-public interface TagRepository extends JpaRepository<Tag, Integer>,JpaSpecificationExecutor<Tag> {
+public interface TagRepository extends JpaRepository<Tag, Long>,JpaSpecificationExecutor<Tag> {
 
     List<Tag> findAllByCategoryId(Integer categoryId);
 
     List<Tag> findAllByCategoryIdIn(List<Integer> categoryIdList);
 
     @Query(value="select t.* from tag t,course_tag_rel cr where t.id = cr.tag_id and cr.course_id=?1",nativeQuery=true)
-    List<Tag> findTagListByCourseId(Integer courseId);
+    List<Tag> findTagListByCourseId(Long courseId);
 
 }

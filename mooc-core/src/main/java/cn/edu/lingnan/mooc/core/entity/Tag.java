@@ -15,7 +15,7 @@ public class Tag{
     // id   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     // 分类id   
     private Integer categoryId;
     // 标签名   

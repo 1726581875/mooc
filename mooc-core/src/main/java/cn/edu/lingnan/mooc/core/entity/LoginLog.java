@@ -1,4 +1,5 @@
 package cn.edu.lingnan.mooc.core.entity;
+
 import javax.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -8,23 +9,24 @@ import java.util.Date;
 @Data
 @DynamicUpdate
 @DynamicInsert
-@Entity(name = "course_monitor_record")
-public class MonitorRecord{
+@Entity(name = "login_log")
+public class LoginLog{
     // 主键   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+    // 日志名称   
+    private String logName;
     // 管理员账号   
-    private Long teacherId;
-    // 课程id   
-    private Long courseId;
-    // 具体消息   
-    private String message;
-    // 类型|新增课程、上传视频、删除课程、课程点赞、取消点赞
-    private String recordType;
-    // 登录ip   
-    private String ip;
+    private String account;
     // 创建时间   
     private Date createTime;
-    
+    // 是否执行成功   
+    private String succeed;
+    // 具体消息   
+    private String message;
+    // 登录ip   
+    private String ip;
+    // 系统类型   
+    private String systemType;
 }
