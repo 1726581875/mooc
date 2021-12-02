@@ -17,11 +17,11 @@ public class ChapterVO {
     /**
      * 大章id
      */
-    private Integer id;
+    private Long id;
     /*
      * 对应课程id
      */
-    private Integer courseId;
+    private Long courseId;
     /*
      * 课程名称
      */

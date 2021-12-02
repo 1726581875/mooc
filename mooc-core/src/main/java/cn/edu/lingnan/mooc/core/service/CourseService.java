@@ -3,10 +3,7 @@ package cn.edu.lingnan.mooc.core.service;
 import cn.edu.lingnan.mooc.core.entity.*;
 import cn.edu.lingnan.mooc.core.enums.CourseEnum;
 import cn.edu.lingnan.mooc.core.param.CourseParam;
-import cn.edu.lingnan.mooc.core.repository.CourseRepository;
-import cn.edu.lingnan.mooc.core.repository.CourseTagRelRepository;
-import cn.edu.lingnan.mooc.core.repository.MonitorRecordRepository;
-import cn.edu.lingnan.mooc.core.repository.TagRepository;
+import cn.edu.lingnan.mooc.core.repository.*;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.core.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -25,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +44,9 @@ public class CourseService {
     private MonitorRecordRepository monitorRecordRepository;
     @Resource
     private CourseTagRelRepository courseTagRelRepository;
+
+    @Resource
+    private MoocUserRepository userRepository;
 
     /**
      * 前台调用
@@ -126,21 +127,15 @@ public class CourseService {
 
         List<CourseVO> courseVOList = new ArrayList<>();
         List<Long> teacherIdList = courseList.stream().map(Course::getTeacherId).collect(Collectors.toList());
-        // 获取教师名字map
-        // todo
-        //Map<Long, MoocUser> teacherMap = moocUserService.getUserMap(teacherIdList);
-        Map<Long, MoocUser> teacherMap = new HashMap<>();
+        // 获取教师信息
+        List<MoocUser> teacherList = userRepository.findAllById(teacherIdList);
+        Map<Long, MoocUser> teacherMap = teacherList.stream().collect(Collectors.toMap(MoocUser::getId, e -> e, (a,b) -> a));
 
         // courseList -> courseVOList
         courseList.forEach(course -> courseVOList.add(createCourseVO(course, teacherMap)));
 
         /* 4. 封装到自定义分页结果 */
-        PageVO<CourseVO> pageVO = new PageVO<>();
-        pageVO.setContent(courseVOList);
-        pageVO.setPageIndex(pageIndex);
-        pageVO.setPageSize(pageSize);
-        pageVO.setPageCount(coursePage.getTotalPages());
-        return pageVO;
+        return new PageVO<>(pageIndex, pageSize, coursePage.getTotalPages(), courseVOList);
     }
 
     private CourseVO createCourseVO(Course course,Map<Long, MoocUser> teacherMap){

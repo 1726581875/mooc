@@ -15,13 +15,13 @@ import java.util.List;
 @Data
 @ToString
 public class CourseVO {
-    private Integer id;
+    private Long id;
     // 封面图片
     private String image;
     // 课程名称
     private String name;
     // 讲师id
-    private Integer teacherId;
+    private Long teacherId;
     // 讲师名字
     private String teacherName;
     /**
