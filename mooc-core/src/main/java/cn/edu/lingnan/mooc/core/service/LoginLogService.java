@@ -9,7 +9,6 @@ import cn.edu.lingnan.mooc.core.util.ConvertTimeUtil;
 import cn.edu.lingnan.mooc.core.vo.LoginLogVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import com.alibaba.excel.EasyExcel;
-import com.sun.deploy.net.URLEncoder;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

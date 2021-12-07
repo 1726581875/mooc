@@ -9,7 +9,6 @@ import cn.edu.lingnan.mooc.core.service.IpBlacklistService;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import com.alibaba.excel.EasyExcel;
-import com.sun.deploy.net.URLEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
