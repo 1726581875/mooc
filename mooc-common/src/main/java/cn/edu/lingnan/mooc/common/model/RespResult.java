@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.common.model;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.MDC;
 
 import java.io.Serializable;
 
@@ -28,12 +29,20 @@ public class RespResult implements Serializable {
      */
     private Object data;
 
-    public RespResult() {}
+    /**
+     * 链路追踪id,方便日志排查
+     */
+    private String traceId;
+
+    public RespResult() {
+        this.traceId = MDC.get("trace.id");
+    }
 
     public RespResult(Integer status, String msg, Object data) {
         this.status = status;
         this.msg = msg;
         this.data = data;
+        this.traceId = MDC.get("trace.id");
     }
 
     public static RespResult build(){

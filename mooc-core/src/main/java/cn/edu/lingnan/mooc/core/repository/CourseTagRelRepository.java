@@ -1,5 +1,5 @@
 package cn.edu.lingnan.mooc.core.repository;
-import cn.edu.lingnan.mooc.core.entity.CourseTagRel;
+import cn.edu.lingnan.mooc.core.model.entity.CourseTagRel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

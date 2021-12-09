@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.core.controller;
 
-import cn.edu.lingnan.mooc.core.entity.Category;
-import cn.edu.lingnan.mooc.core.param.CategoryParam;
+import cn.edu.lingnan.mooc.core.model.entity.Category;
+import cn.edu.lingnan.mooc.core.model.param.CategoryParam;
 import cn.edu.lingnan.mooc.core.service.CategoryService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;

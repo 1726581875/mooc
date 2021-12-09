@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.controller;
 
-import cn.edu.lingnan.mooc.core.entity.Tag;
+import cn.edu.lingnan.mooc.core.model.entity.Tag;
 import cn.edu.lingnan.mooc.core.service.TagService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;

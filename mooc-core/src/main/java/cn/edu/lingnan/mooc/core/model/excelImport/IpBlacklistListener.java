@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.model.excelImport;
 
-import cn.edu.lingnan.mooc.core.entity.IpBlacklist;
+import cn.edu.lingnan.mooc.core.model.entity.IpBlacklist;
 import cn.edu.lingnan.mooc.core.repository.IpBlacklistRepository;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;

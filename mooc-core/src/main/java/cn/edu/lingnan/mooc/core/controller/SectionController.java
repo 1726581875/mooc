@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.core.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.core.entity.Section;
+import cn.edu.lingnan.mooc.core.model.entity.Section;
 import cn.edu.lingnan.mooc.core.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

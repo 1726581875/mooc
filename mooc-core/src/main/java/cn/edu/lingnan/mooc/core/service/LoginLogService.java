@@ -1,12 +1,12 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.LoginLog;
+import cn.edu.lingnan.mooc.core.model.entity.LoginLog;
 import cn.edu.lingnan.mooc.core.model.export.LoginLogExport;
-import cn.edu.lingnan.mooc.core.param.LoginLogParam;
+import cn.edu.lingnan.mooc.core.model.param.LoginLogParam;
 import cn.edu.lingnan.mooc.core.repository.LoginLogRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.core.util.ConvertTimeUtil;
-import cn.edu.lingnan.mooc.core.vo.LoginLogVO;
+import cn.edu.lingnan.mooc.core.model.vo.LoginLogVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import com.alibaba.excel.EasyExcel;
 import org.apache.commons.lang.StringUtils;

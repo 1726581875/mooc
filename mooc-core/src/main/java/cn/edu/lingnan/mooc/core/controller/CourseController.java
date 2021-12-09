@@ -1,10 +1,10 @@
 package cn.edu.lingnan.mooc.core.controller;
 
-import cn.edu.lingnan.mooc.core.enums.CourseEnum;
-import cn.edu.lingnan.mooc.core.param.CourseParam;
+import cn.edu.lingnan.mooc.core.model.enums.CourseEnum;
+import cn.edu.lingnan.mooc.core.model.param.CourseParam;
 import cn.edu.lingnan.mooc.core.repository.CourseRepository;
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.core.entity.Course;
+import cn.edu.lingnan.mooc.core.model.entity.Course;
 import cn.edu.lingnan.mooc.core.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

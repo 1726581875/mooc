@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.core.controller;
 
-import cn.edu.lingnan.mooc.core.entity.MonitorRecord;
-import cn.edu.lingnan.mooc.core.param.MonitorRecordParam;
+import cn.edu.lingnan.mooc.core.model.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.core.model.param.MonitorRecordParam;
 import cn.edu.lingnan.mooc.core.service.MonitorRecordService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;

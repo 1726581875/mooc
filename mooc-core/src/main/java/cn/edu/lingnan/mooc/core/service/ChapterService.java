@@ -2,10 +2,10 @@ package cn.edu.lingnan.mooc.core.service;
 
 import cn.edu.lingnan.mooc.core.repository.ChapterRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
-import cn.edu.lingnan.mooc.core.vo.ChapterVO;
-import cn.edu.lingnan.mooc.core.vo.CourseVO;
+import cn.edu.lingnan.mooc.core.model.vo.ChapterVO;
+import cn.edu.lingnan.mooc.core.model.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.core.entity.Chapter;
+import cn.edu.lingnan.mooc.core.model.entity.Chapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

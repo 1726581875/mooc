@@ -1,8 +1,8 @@
 package cn.edu.lingnan.mooc.core.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.core.entity.MoocUser;
-import cn.edu.lingnan.mooc.core.param.UserParam;
+import cn.edu.lingnan.mooc.core.model.entity.MoocUser;
+import cn.edu.lingnan.mooc.core.model.param.UserParam;
 import cn.edu.lingnan.mooc.core.service.MoocUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

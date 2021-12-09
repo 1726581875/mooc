@@ -1,12 +1,12 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.Category;
-import cn.edu.lingnan.mooc.core.entity.Tag;
-import cn.edu.lingnan.mooc.core.param.CategoryParam;
+import cn.edu.lingnan.mooc.core.model.entity.Category;
+import cn.edu.lingnan.mooc.core.model.entity.Tag;
+import cn.edu.lingnan.mooc.core.model.param.CategoryParam;
 import cn.edu.lingnan.mooc.core.repository.CategoryRepository;
 import cn.edu.lingnan.mooc.core.repository.TagRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
-import cn.edu.lingnan.mooc.core.vo.CategoryVO;
+import cn.edu.lingnan.mooc.core.model.vo.CategoryVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;

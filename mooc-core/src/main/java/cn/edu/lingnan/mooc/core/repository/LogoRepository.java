@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.repository;
 
-import cn.edu.lingnan.mooc.core.entity.MoocLogo;
+import cn.edu.lingnan.mooc.core.model.entity.MoocLogo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

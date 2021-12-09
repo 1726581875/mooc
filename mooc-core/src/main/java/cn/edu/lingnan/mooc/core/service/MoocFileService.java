@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.core.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.core.entity.MoocFile;
+import cn.edu.lingnan.mooc.core.model.entity.MoocFile;
 import cn.edu.lingnan.mooc.core.repository.MoocFileRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import org.springframework.stereotype.Service;

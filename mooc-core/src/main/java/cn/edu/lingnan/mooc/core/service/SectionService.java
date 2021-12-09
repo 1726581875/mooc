@@ -1,9 +1,9 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.MoocFile;
-import cn.edu.lingnan.mooc.core.vo.SectionVO;
+import cn.edu.lingnan.mooc.core.model.entity.MoocFile;
+import cn.edu.lingnan.mooc.core.model.vo.SectionVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.core.entity.Section;
+import cn.edu.lingnan.mooc.core.model.entity.Section;
 import cn.edu.lingnan.mooc.core.repository.SectionRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import lombok.extern.slf4j.Slf4j;

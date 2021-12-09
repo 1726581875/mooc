@@ -1,5 +1,5 @@
 package cn.edu.lingnan.mooc.core.controller;
-import cn.edu.lingnan.mooc.core.param.LoginLogParam;
+import cn.edu.lingnan.mooc.core.model.param.LoginLogParam;
 import cn.edu.lingnan.mooc.core.service.LoginLogService;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;

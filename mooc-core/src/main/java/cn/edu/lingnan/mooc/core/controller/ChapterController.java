@@ -1,8 +1,8 @@
 package cn.edu.lingnan.mooc.core.controller;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
-import cn.edu.lingnan.mooc.core.dto.ChapterDTO;
-import cn.edu.lingnan.mooc.core.entity.Chapter;
+import cn.edu.lingnan.mooc.core.model.dto.ChapterDTO;
+import cn.edu.lingnan.mooc.core.model.entity.Chapter;
 import cn.edu.lingnan.mooc.core.service.ChapterService;
 import com.alibaba.excel.EasyExcel;
 import lombok.extern.slf4j.Slf4j;

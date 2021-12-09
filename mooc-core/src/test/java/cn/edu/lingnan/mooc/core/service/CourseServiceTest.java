@@ -1,7 +1,7 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.Course;
-import cn.edu.lingnan.mooc.core.enums.CourseEnum;
+import cn.edu.lingnan.mooc.core.model.entity.Course;
+import cn.edu.lingnan.mooc.core.model.enums.CourseEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

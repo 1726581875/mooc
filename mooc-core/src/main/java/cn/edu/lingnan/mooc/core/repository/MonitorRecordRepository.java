@@ -1,5 +1,5 @@
 package cn.edu.lingnan.mooc.core.repository;
-import cn.edu.lingnan.mooc.core.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.core.model.entity.MonitorRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

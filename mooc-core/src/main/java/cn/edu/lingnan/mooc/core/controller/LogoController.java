@@ -1,9 +1,9 @@
 package cn.edu.lingnan.mooc.core.controller;
 
 import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
-import cn.edu.lingnan.mooc.core.entity.MoocLogo;
+import cn.edu.lingnan.mooc.core.model.entity.MoocLogo;
 import cn.edu.lingnan.mooc.core.service.LogoService;
-import cn.edu.lingnan.mooc.core.vo.LogoVO;
+import cn.edu.lingnan.mooc.core.model.vo.LogoVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

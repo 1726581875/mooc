@@ -2,8 +2,8 @@ package cn.edu.lingnan.mooc.core.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.util.CopyUtil;
-import cn.edu.lingnan.mooc.core.entity.MoocUser;
-import cn.edu.lingnan.mooc.core.param.UserParam;
+import cn.edu.lingnan.mooc.core.model.entity.MoocUser;
+import cn.edu.lingnan.mooc.core.model.param.UserParam;
 import cn.edu.lingnan.mooc.core.repository.MoocUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;

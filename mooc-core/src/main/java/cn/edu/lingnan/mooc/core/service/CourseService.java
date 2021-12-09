@@ -1,16 +1,14 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.*;
-import cn.edu.lingnan.mooc.core.enums.CourseEnum;
-import cn.edu.lingnan.mooc.core.param.CourseParam;
+import cn.edu.lingnan.mooc.core.model.entity.*;
+import cn.edu.lingnan.mooc.core.model.enums.CourseEnum;
+import cn.edu.lingnan.mooc.core.model.param.CourseParam;
 import cn.edu.lingnan.mooc.core.repository.*;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
-import cn.edu.lingnan.mooc.core.vo.CourseVO;
+import cn.edu.lingnan.mooc.core.model.vo.CourseVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**

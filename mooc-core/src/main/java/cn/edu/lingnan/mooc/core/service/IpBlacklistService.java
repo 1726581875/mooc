@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.service;
 
-import cn.edu.lingnan.mooc.core.entity.IpBlacklist;
+import cn.edu.lingnan.mooc.core.model.entity.IpBlacklist;
 import cn.edu.lingnan.mooc.core.repository.IpBlacklistRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;

@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.repository;
 
-import cn.edu.lingnan.mooc.core.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.core.model.entity.MonitorRecord;
 import cn.edu.lingnan.mooc.core.util.ConvertTimeUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;

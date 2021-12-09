@@ -1,6 +1,6 @@
 package cn.edu.lingnan.mooc.core.controller;
 
-import cn.edu.lingnan.mooc.core.entity.IpBlacklist;
+import cn.edu.lingnan.mooc.core.model.entity.IpBlacklist;
 import cn.edu.lingnan.mooc.core.model.excelImport.IpBlacklistImport;
 import cn.edu.lingnan.mooc.core.model.excelImport.IpBlacklistListener;
 import cn.edu.lingnan.mooc.core.model.export.IpBlacklistExport;

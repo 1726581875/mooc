@@ -1,16 +1,17 @@
 package cn.edu.lingnan.mooc.core.service;
 
 
-import cn.edu.lingnan.mooc.core.entity.MonitorRecord;
-import cn.edu.lingnan.mooc.core.entity.MoocUser;
-import cn.edu.lingnan.mooc.core.param.MonitorRecordParam;
+import cn.edu.lingnan.mooc.core.model.entity.MonitorRecord;
+import cn.edu.lingnan.mooc.core.model.entity.MoocUser;
+import cn.edu.lingnan.mooc.core.model.param.MonitorRecordParam;
 import cn.edu.lingnan.mooc.core.repository.MonitorRecordRepository;
 import cn.edu.lingnan.mooc.core.repository.MoocUserRepository;
 import cn.edu.lingnan.mooc.core.util.ConvertTimeUtil;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
-import cn.edu.lingnan.mooc.core.vo.MonitorRecordVO;
+import cn.edu.lingnan.mooc.core.model.vo.MonitorRecordVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
  * @author xmz
  * @date: 2021/01/02
  */
+@Slf4j
 @Service
 public class MonitorRecordService {
 
@@ -33,6 +34,8 @@ public class MonitorRecordService {
     @Autowired
     private MoocUserRepository moocUserRepository;
 
+    @Autowired
+    private LogoService logoService;
 
     public PageVO<MonitorRecordVO> findPageByCondition(MonitorRecordParam monitorRecordParam, Integer pageIndex, Integer pageSize){
         // 如果不传账号或名字默使用null，null表示不使用名字匹配
@@ -79,7 +82,7 @@ public class MonitorRecordService {
         // 设置用户名 + 账号
         List<Long> teacherIdList = monitorRecordList.stream().map(MonitorRecord::getTeacherId)
                 .collect(Collectors.toList());
-        List<MoocUser> teacherList = moocUserRepository.findAllById(teacherIdList);
+        List<MoocUser> teacherList = moocUserRepository.findAllById(new HashSet<>(teacherIdList));
         Map<Long, MoocUser> userMap = teacherList.stream().collect(Collectors.toMap(MoocUser::getId, e -> e, (u1,u2) -> u1));
         monitorRecordVOList.forEach(e -> {
             MoocUser teacher = userMap.get(e.getTeacherId());
@@ -93,8 +96,20 @@ public class MonitorRecordService {
         pageVO.setPageIndex(pageIndex);
         //页数
         pageVO.setPageCount(monitorRecordPage.getTotalPages());
+
+        logoService.syncLog();
+
+        log.info("async。。。结束。。。");
+
+        new Thread(() -> {
+            log.info("另开的线程。。。。异步。。。");
+            log.info("do。。。。异步。。。");
+            log.info("end。。。。异步。。。");
+        }).start();
+
         return pageVO;
     }
+
 
     /**
      * 根据Id查找

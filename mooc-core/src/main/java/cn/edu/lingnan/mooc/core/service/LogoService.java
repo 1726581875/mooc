@@ -1,14 +1,15 @@
 package cn.edu.lingnan.mooc.core.service;
 
 import cn.edu.lingnan.mooc.core.constant.Constant;
-import cn.edu.lingnan.mooc.core.entity.MoocLogo;
+import cn.edu.lingnan.mooc.core.model.entity.MoocLogo;
 import cn.edu.lingnan.mooc.core.repository.LogoRepository;
 import cn.edu.lingnan.mooc.core.util.FileUtil;
-import cn.edu.lingnan.mooc.core.vo.LogoVO;
+import cn.edu.lingnan.mooc.core.model.vo.LogoVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +62,13 @@ public class LogoService{
      * 压缩大小KB
      */
     private final static long COMPRESSION_SIZE = 10L;
+
+    @Async
+    public void syncLog(){
+        log.info("async。。。。异步。。。");
+        log.info("async。。。。异步。。。");
+        log.info("async。。。。异步。。。");
+    }
 
     /**
      * 插入或更新logo信息

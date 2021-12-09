@@ -1,5 +1,5 @@
 package cn.edu.lingnan.mooc.core.service;
-import cn.edu.lingnan.mooc.core.entity.Tag;
+import cn.edu.lingnan.mooc.core.model.entity.Tag;
 import cn.edu.lingnan.mooc.core.repository.TagRepository;
 import cn.edu.lingnan.mooc.core.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.model.PageVO;
