@@ -1,5 +1,7 @@
 package cn.edu.lingnan.mooc.core;
 
+import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.core.client.AuthorizeClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -7,6 +9,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @Author xmz
@@ -22,9 +28,21 @@ import org.springframework.scheduling.annotation.EnableAsync;
         ,"cn.edu.lingnan.mooc.common"})
 @EnableEurekaClient
 @EnableAsync
+@RestController
 public class CoreApplication {
+
+    @Resource
+    private AuthorizeClient authorizeClient;
+
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class,args);
     }
+
+    @GetMapping("/hello")
+    public RespResult sayHello(){
+        return RespResult.success(authorizeClient.getHello());
+    }
+
+
 
 }

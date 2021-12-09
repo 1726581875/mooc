@@ -1,8 +1,24 @@
-问题：微服务互相调用、mq的使用、定时任务等等会使得日志日志输出非常混乱，特别是一个功能可能调用多个微服务，如果出现问题，在大量日志下将很难定位本次请求的整个链路。
-处理方法是：利用日志的MDC机制，新增traceId来标识整个链路的调用。
-支持链路traceId跟踪范围：
-当前线程、使用@Async注解的异步、feign调用其他服务（待测试）
 
+一、处理问题：
+微服务互相调用、mq的使用、定时任务等等会使得日志日志输出非常混乱，特别是一个功能可能调用多个微服务，如果出现问题，在大量日志下将很难定位本次请求的整个链路。
+
+二、处理方法：
+利用日志的MDC机制和elastic-apm-agent-1.27.0.jar包，日志里新增traceId来标识整个链路的调用。
+
+三、优点
+无入侵实现接口逻辑链路追踪，方便开发能精准定位问题
+
+四、跟踪范围
+链路traceId跟踪范围（不同服务不同线程traceId是否可以保持传递）
+经过验证，以下场景可以追踪：
+1、当前线程 2、使用@Async注解的异步 3、feign跨服务调用 4、mq发送和消费(待测试)
+
+以下情况traceId没有传递：
+自己new线程的异步
+如
+new Thread(() -> {to do something}).start();
+
+五、集成方法
 1、logback日志配置pattern加上以上配置
 traceId:[%X{trace.id}]
 
@@ -22,6 +38,7 @@ traceId 通过 MDC.get("trace.id") 获取
 -Delastic.apm.disable_send=true #elastic.apm不收集数据
 
 
+问题：
 运行时发现日志里出现这样的ERROR信息
 main ERROR No Log4j 2 configuration file found. Using default configuration (logging only errors to the console), or user programmatically provided configurations. Set system property 'log4j2.debug' to show Log4j 2 internal initialization logging.
 猜测原因是使用了elastic-apm-agent-1.27.0.jar包里面使用了log4j2的依赖，而我们resources目录下没有log4j2.xml文件

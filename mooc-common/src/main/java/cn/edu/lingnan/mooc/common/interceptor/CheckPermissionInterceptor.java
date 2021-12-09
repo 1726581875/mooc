@@ -40,9 +40,9 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         superMan.setAccount("admin");
         UserUtil.setUserToken(superMan);*/
         //所有请求都放行
-/*        if(true){
+        if(true){
             return true;
-        }*/
+        }
 
 
         // 1、获取请求头携带的token
