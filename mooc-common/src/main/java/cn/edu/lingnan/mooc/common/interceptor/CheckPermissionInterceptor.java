@@ -1,11 +1,14 @@
 package cn.edu.lingnan.mooc.common.interceptor;
 
 import cn.edu.lingnan.mooc.common.annotation.CheckAuthority;
+import cn.edu.lingnan.mooc.common.constant.CommonConstant;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -33,6 +36,13 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // 设置traceId
+        String traceId = request.getHeader(CommonConstant.TRACE_ID);
+        if(StringUtils.isNotEmpty(traceId)){
+            MDC.put(CommonConstant.TRACE_ID, traceId);
+        }
+
+
         //todo 为了方便开发
         //构造超管用户
 /*        UserToken superMan = new UserToken();
@@ -40,13 +50,12 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         superMan.setAccount("admin");
         UserUtil.setUserToken(superMan);*/
         //所有请求都放行
-/*        if(true){
+        if(true){
             return true;
-        }*/
-
+        }
 
         // 1、获取请求头携带的token
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(CommonConstant.HTTP_TOKEN_HEAD);
         if(token == null){
             responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"你还没有登录");
             return false;
@@ -77,7 +86,6 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
             }
             CheckAuthority checkAnnotation = method.getAnnotation(CheckAuthority.class);
             String permission = checkAnnotation.value();
-            System.out.println("permission=" + permission);
 
             // 判断是否是超管,如果没有权限
             boolean isSuperManager = userToken.getUserId().equals(0L) ? true : false;
@@ -98,6 +106,7 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        MDC.remove(CommonConstant.TRACE_ID);
         ///最后要释放ThreadLocal,防止内存泄露
         UserUtil.remove();
     }

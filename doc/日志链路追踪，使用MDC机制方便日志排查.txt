@@ -14,9 +14,10 @@
 1、当前线程 2、使用@Async注解的异步 3、feign跨服务调用 4、mq发送和消费(待测试)
 
 以下情况traceId没有传递：
-自己new线程的异步
-如
-new Thread(() -> {to do something}).start();
+1、自己new线程的异步new Thread(() -> {to do something}).start()不支持传递;
+2、spring定时任务@Scheduled注解
+3、定时任务里通过feign调用其他服务（定时任务里通过手动MDC.put("trace.id", UUID.randomUUID().toString())设置traceId
+，调用其他服务，链路会断开，另外一个服务是新生成了不同的traceId)
 
 五、集成方法
 1、logback日志配置pattern加上以上配置

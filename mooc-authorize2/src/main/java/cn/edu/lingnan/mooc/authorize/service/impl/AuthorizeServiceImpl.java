@@ -98,6 +98,9 @@ public class AuthorizeServiceImpl implements AuthorizeService {
     @Override
     public void loginOut() {
         HttpServletRequest request = HttpServletUtil.getRequest();
+        if(request == null){
+            throw new MoocException("获取不到当前请求");
+        }
         String token = request.getHeader(LoginUser.HTTP_TOKEN_HEAD);
         if(token == null){
            return;
@@ -217,6 +220,9 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     private void checkVerificationCode(String inputCode){
         HttpServletRequest request = HttpServletUtil.getRequest();
+        if(request == null){
+            throw new MoocException("获取不到当前请求");
+        }
         String verificationCode = RedisUtil.get(request.getSession().getId());
         if(verificationCode == null || !verificationCode.equalsIgnoreCase(inputCode)){
             throw new MoocException(AuthorizeExceptionEnum.INCORRECT_VERIFICATION_CODE);

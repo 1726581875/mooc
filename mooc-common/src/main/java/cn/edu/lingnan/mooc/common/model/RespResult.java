@@ -1,5 +1,6 @@
 package cn.edu.lingnan.mooc.common.model;
 
+import cn.edu.lingnan.mooc.common.constant.CommonConstant;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.MDC;
@@ -35,14 +36,14 @@ public class RespResult implements Serializable {
     private String traceId;
 
     public RespResult() {
-        this.traceId = MDC.get("trace.id");
+        this.traceId = MDC.get(CommonConstant.TRACE_ID);
     }
 
     public RespResult(Integer status, String msg, Object data) {
         this.status = status;
         this.msg = msg;
         this.data = data;
-        this.traceId = MDC.get("trace.id");
+        this.traceId = MDC.get(CommonConstant.TRACE_ID);
     }
 
     public static RespResult build(){

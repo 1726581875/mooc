@@ -16,11 +16,13 @@ public class HttpServletUtil {
 
     /**
      * 获取用户ip地址
-     * @param request
      * @return
      */
     public static String getIpAddress() {
         HttpServletRequest request = getRequest();
+        if(request == null){
+            throw new MoocException("获取不到当前请求");
+        }
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
@@ -50,7 +52,7 @@ public class HttpServletUtil {
     public static HttpServletRequest getRequest() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         if (Objects.isNull(attributes)) {
-            throw new MoocException("获取request失败");
+            return null;
         }
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) attributes;
         return requestAttributes.getRequest();
