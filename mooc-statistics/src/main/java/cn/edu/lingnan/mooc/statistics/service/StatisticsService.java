@@ -241,7 +241,7 @@ public class StatisticsService {
         log.info("===========统计时间段内每天的发起申请数 或 新增客户数 或 删除/拉黑客户数===========begin===========");
         Map<String, Long> dailyCount = initDailyCount(beginTime, endTime);
         // 构造agg
-        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram(EsConstant.DATA_AGG).field(EsConstant.CREATE_TIME).timeZone(DateTimeZone.forOffsetHours(8));
+        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram(EsConstant.DATA_AGG).field(EsConstant.CREATE_TIME);
         dateAgg.dateHistogramInterval(DateHistogramInterval.days(1));
         dateAgg.subAggregation(AggregationBuilders.sum(EsConstant.COUNT_AGG).field(countField));
 

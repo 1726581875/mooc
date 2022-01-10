@@ -1,10 +1,10 @@
 package cn.edu.lingnan.mooc.statistics.service;
 
 import cn.edu.lingnan.mooc.common.model.PageVO;
-import cn.edu.lingnan.mooc.statistics.model.entity.mysql.Course;
-import cn.edu.lingnan.mooc.statistics.model.vo.CourseSearchVO;
 import cn.edu.lingnan.mooc.statistics.dao.mapper.CourseMapper;
 import cn.edu.lingnan.mooc.statistics.dao.repository.es.EsCourseRepository;
+import cn.edu.lingnan.mooc.statistics.model.entity.mysql.Course;
+import cn.edu.lingnan.mooc.statistics.model.vo.CourseSearchVO;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -16,8 +16,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
-import org.elasticsearch.search.aggregations.metrics.cardinality.ParsedCardinality;
+import org.elasticsearch.search.aggregations.metrics.CardinalityAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.stereotype.Service;

@@ -5,18 +5,18 @@ import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author xmz
  * @date 2021/12/09
- * Feign调用传递token
+ * Feign调用其他服务时需要传递token和设置traceId
  */
 @Configuration
 public class FeignRequestInterceptor implements RequestInterceptor {
@@ -33,7 +33,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
             }
             // 链路跟踪，设置traceId，通过Http header 传递给服务提供方，服务提供方需要设置拦截并设置traceId
             String traceId = MDC.get(CommonConstant.TRACE_ID);
-            if (!StringUtils.isEmpty(traceId)) {
+            if (StringUtils.isNotEmpty(traceId)) {
                 requestTemplate.header(CommonConstant.TRACE_ID, traceId);
             }
 

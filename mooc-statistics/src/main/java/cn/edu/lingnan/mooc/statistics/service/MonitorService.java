@@ -19,7 +19,6 @@ import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggre
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +101,7 @@ public class MonitorService {
         // 初始化map
         Map<String, Long> dailyCountMap = initDailyCount(beginTime, endTime);
         // 构造时间聚合
-        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram("dateAgg").field("createTime").timeZone(DateTimeZone.forOffsetHours(8));
+        DateHistogramAggregationBuilder dateAgg = AggregationBuilders.dateHistogram("dateAgg").field("createTime");
         dateAgg.dateHistogramInterval(DateHistogramInterval.days(1));
 
         // 构造bool条件

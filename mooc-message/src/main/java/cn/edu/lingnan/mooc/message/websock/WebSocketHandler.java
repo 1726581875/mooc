@@ -47,9 +47,9 @@ public class WebSocketHandler {
      * 建立连接会调用的方法
      */
     @OnOpen
-    public void onOpen(@PathParam("userId") Long userId, @PathParam("type") UserTypeEnum type, Session session) {
-
-        userSessionMap.put(type + ":" + userId, new UserSession(userId, type, session));
+    public void onOpen(@PathParam("userId") Long userId, @PathParam("type") String type, Session session) {
+        UserTypeEnum userTypeEnum = UserTypeEnum.valueOf(type);
+        userSessionMap.put(type + ":" + userId, new UserSession(userId, userTypeEnum, session));
         log.info("[websocket消息] 有新的用户登录，当前websocket连接数：{}", webSocketMap.size());
         log.info("[websocket消息] 连接用户为{} id===>{}", type, userId);
     }

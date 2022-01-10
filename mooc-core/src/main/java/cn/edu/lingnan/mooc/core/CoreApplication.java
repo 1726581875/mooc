@@ -1,7 +1,12 @@
 package cn.edu.lingnan.mooc.core;
 
 import cn.edu.lingnan.mooc.common.model.RespResult;
+import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.core.client.AuthorizeClient;
+import cn.edu.lingnan.mooc.core.client.DocmanClient;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @Author xmz
@@ -33,10 +39,13 @@ import javax.annotation.Resource;
 // 开启定时任务
 @EnableScheduling
 @RestController
+@Slf4j
 public class CoreApplication {
 
     @Resource
     private AuthorizeClient authorizeClient;
+    @Autowired
+    private DocmanClient docmanClient;
 
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class,args);
@@ -44,7 +53,21 @@ public class CoreApplication {
 
     @GetMapping("/hello")
     public RespResult sayHello(){
-        return RespResult.success(authorizeClient.getHello());
+/*        String managerList = docmanClient.getManagerList();
+        log.info(managerList);
+        return RespResult.success(authorizeClient.getHello());*/
+
+        log.info("userId=" + UserUtil.getUserId());
+       // 新开线程，拷贝MDC上下文
+        Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
+        new Thread(() -> {
+            MDC.setContextMap(copyOfContextMap);
+            log.info("=== begin ===");
+            log.info("thread-userId=" + UserUtil.getUserId());
+            log.info("=== end ===");
+        }).start();
+
+        return RespResult.success();
     }
 
 

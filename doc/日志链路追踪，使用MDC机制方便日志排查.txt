@@ -6,7 +6,7 @@
 利用日志的MDC机制和elastic-apm-agent-1.27.0.jar包，日志里新增traceId来标识整个链路的调用。
 
 三、优点
-无入侵实现接口逻辑链路追踪，方便开发能精准定位问题
+无入侵实现接口逻辑链路追踪，方便开发人员精准定位问题
 
 四、跟踪范围
 链路traceId跟踪范围（不同服务不同线程traceId是否可以保持传递）
@@ -18,6 +18,7 @@
 2、spring定时任务@Scheduled注解
 3、定时任务里通过feign调用其他服务（定时任务里通过手动MDC.put("trace.id", UUID.randomUUID().toString())设置traceId
 ，调用其他服务，链路会断开，另外一个服务是新生成了不同的traceId)
+
 
 五、集成方法
 1、logback日志配置pattern加上以上配置

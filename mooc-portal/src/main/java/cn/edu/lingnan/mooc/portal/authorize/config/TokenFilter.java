@@ -47,7 +47,7 @@ public class TokenFilter implements Filter {
             // 设置用户信息
             UserUtil.setUserToken(loginInfo);
             filterChain.doFilter(request, response);
-        }catch (MoocException e) {
+        } catch (MoocException e) {
             responseMsg(response, e.getCode(), e.getMsg());
         } catch (Exception e){
             log.error("发生错误", e);

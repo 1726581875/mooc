@@ -21,9 +21,9 @@ public class NoticeMapperTest {
     @Test
     public void countTest() {
 
-        int msgCount1 = noticeMapper.countUnReadNoticeByUserId(1, 0);
+        int msgCount1 = noticeMapper.countUnReadNoticeByUserId(1L, 0);
 
-        int msgCount2 = noticeMapper.countUnReadNoticeByManagerId(1,0);
+        int msgCount2 = noticeMapper.countUnReadNoticeByManagerId(1L,0);
 
         System.out.println("=======user UnReadMessage count =" + msgCount1);
         System.out.println("=======manager UnReadMessage count =" + msgCount2);
@@ -32,7 +32,7 @@ public class NoticeMapperTest {
 
     @Test
     public void findByIdTest() {
-        Notice notice = noticeMapper.findById(2);
+        Notice notice = noticeMapper.findById(2L);
         System.out.println(notice.getUserType());
     }
 

@@ -148,7 +148,7 @@ public class MoocFileService {
         // 3、 传入条件、分页参数，调用方法
         Page<MoocFile> moocFilePage = moocFileRepository.findAll(example, pageable);
         if(moocFilePage.getNumberOfElements() == 0){
-            return new PageVO<>(pageIndex,pageSize,0,0,new ArrayList<>());
+            return new PageVO<>(pageIndex,pageSize,0,0L,new ArrayList<>());
         }
         //获取page对象里的list
         List<MoocFile> moocFileList = moocFilePage.getContent();

@@ -12,10 +12,15 @@ import cn.edu.lingnan.mooc.common.model.LoginUser;
  */
 public class UserUtil {
 
-    private static ThreadLocal<LoginUser> user = new ThreadLocal<>();
+    // ThreadLocal新建子线程该上下文内容不会被继承
+    //private static ThreadLocal<LoginUser> user = new ThreadLocal<>();
+    /**
+     * InheritableThreadLocal 里存储的值会在新建子线程的时候被继承
+     */
+    private static ThreadLocal<LoginUser> user = new InheritableThreadLocal<>();
 
 
-    public static void setUserToken(LoginUser userToken){
+    public static void setUserToken(LoginUser userToken) {
         user.set(userToken);
     }
 
