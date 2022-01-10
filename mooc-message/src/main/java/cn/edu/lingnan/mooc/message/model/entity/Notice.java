@@ -17,7 +17,7 @@ public class Notice {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private Long sendId;
 
@@ -25,9 +25,9 @@ public class Notice {
 
     private Long courseId;
 
-    private Integer replyId;
+    private Long replyId;
 
-    private Integer commentId;
+    private Long commentId;
 
     private String content;
     /**

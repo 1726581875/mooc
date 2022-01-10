@@ -15,13 +15,24 @@ import javax.annotation.Resource;
 @Configuration
 public class RabbitConfig {
 
-    @Resource
-    private RabbitMqConstant rabbitMqConstant;
+    /**
+     * 消息接收队列
+     */
+    public static final String MESSAGE_QUEUE_NAME = "mooc.mq.messageQueue";
+
+    public static final String HELLO_WORLD_QUEUE = "mooc.mq.hello.world";
+
 
 
     @Bean
-    public Queue setGroupInfoQueue(){
-        return new Queue(rabbitMqConstant.getMessageQueueName());
+    public Queue createMessageQueue(){
+        return new Queue(MESSAGE_QUEUE_NAME);
+    }
+
+
+    @Bean
+    public Queue createHelloWorldQueue(){
+        return new Queue(HELLO_WORLD_QUEUE);
     }
 
 

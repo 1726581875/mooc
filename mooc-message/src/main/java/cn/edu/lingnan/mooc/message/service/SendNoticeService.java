@@ -1,6 +1,9 @@
 package cn.edu.lingnan.mooc.message.service;
 
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
+import cn.edu.lingnan.mooc.common.model.NoticeDTO;
+import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerFactory;
 import cn.edu.lingnan.mooc.message.mapper.SendNoticeMapper;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.websock.MessageDTO;
@@ -36,47 +39,35 @@ public class SendNoticeService {
     @Autowired
     private MessageFactory messageFactory;
 
+    @Autowired
+    private NoticeHandlerFactory noticeHandlerFactory;
+
 
     /**
-     * @param notice
+     * @param noticeDTO
      * 根据消息类型，发送对应消息通知
      */
-    public void saveAndSendNotice(Notice notice) {
+    public void saveAndSendNotice(NoticeDTO noticeDTO) {
 
-        if (notice == null) {
+        if (noticeDTO == null) {
             log.error("===== failed to save and send message. because notice object is null ======");
             return;
         }
 
-        if (notice.getType() == null) {
-            log.error("===== message type cannot be null. notice={} ======", notice);
+        if (noticeDTO.getType() == null) {
+            log.error("===== message type cannot be null. notice={} ======", noticeDTO);
             return;
         }
         //根据不同消息类型发送消息
-        int type = notice.getType();
-        switch (type) {
-            case 1:
-                //创建课程通知
-                this.sendCreateCourseNotice(notice.getSendId(), notice.getCourseId(), notice.getContent());
-                break;
-            case 2:
-                //课程提问消息
-                this.sendQuestionNotice(notice.getSendId(),notice.getAcceptId(),notice.getCourseId(),notice.getCommentId(),notice.getContent());
-                break;
-            case 3:
-                //评论回复通知
-                this.sendReplyNotice(notice.getSendId(),notice.getAcceptId(),notice.getCourseId(),notice.getCommentId(),notice.getReplyId(),notice.getContent());
-                break;
-            case 6:
-                //踢除消息消息通知
-                this.sendOfflineNotice(Arrays.asList(notice.getAcceptId()), UserTypeEnum.MANAGER.equals(notice.getUserType()));
-                break;
-            default:
-                log.error("===== 未知类型通知. notice={} ======", notice);
-                break;
+        int type = noticeDTO.getType();
 
+        BaseNoticeHandler noticeHandler = noticeHandlerFactory.getNoticeHandler(type);
+
+        try {
+            noticeHandler.handle(noticeDTO);
+        }catch (Exception e){
+            log.error("处理消息发生异常,notice={}", noticeDTO, e);
         }
-
 
     }
 
@@ -116,7 +107,7 @@ public class SendNoticeService {
      * @param content
      * @return
      */
-    public boolean sendQuestionNotice(Long senderId, Long acceptId, Long courseId, Integer commentId, String content) {
+    public boolean sendQuestionNotice(Long senderId, Long acceptId, Long courseId, Long commentId, String content) {
 
         Notice notice = messageFactory.getQuestionNotice(senderId, acceptId, courseId, commentId, content);
         int insert = noticeService.insert(notice);
@@ -140,7 +131,7 @@ public class SendNoticeService {
      * @param content
      * @return
      */
-    public boolean sendReplyNotice(Long senderId, Long acceptId, Long courseId, Integer commentId, Integer replyId, String content) {
+    public boolean sendReplyNotice(Long senderId, Long acceptId, Long courseId, Long commentId, Long replyId, String content) {
 
         Notice notice = messageFactory.getReplyNotice(senderId, acceptId, courseId, commentId, replyId, content);
         int insert = noticeService.insert(notice);

@@ -49,14 +49,14 @@ public class SendNoticeController {
 
 
     @PutMapping("/questionNotice")
-    public RespResult sendQuestionNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Integer commentId, String content){
+    public RespResult sendQuestionNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Long commentId, String content){
         sendNoticeService.sendQuestionNotice(senderId, acceptId, courseId, commentId,  content);
         return  RespResult.success("消息发送成功");
     }
 
 
     @PutMapping("/replyNotice")
-    public RespResult sendReplyNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Integer commentId, Integer replyId, String content){
+    public RespResult sendReplyNotice(@RequestParam("token") String token,Long senderId,Long acceptId,Long courseId,Long commentId, Long replyId, String content){
         sendNoticeService.sendReplyNotice(senderId, acceptId, courseId, commentId,replyId,  content);
         return  RespResult.success("消息发送成功");
     }

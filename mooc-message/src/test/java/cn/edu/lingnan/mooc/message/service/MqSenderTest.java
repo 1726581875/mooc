@@ -1,6 +1,9 @@
 package cn.edu.lingnan.mooc.message.service;
 
+import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.constant.RabbitMqConstant;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
+import cn.edu.lingnan.mooc.message.jms.RabbitConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -19,10 +22,21 @@ public class MqSenderTest {
     private RabbitMqConstant rabbitMqConstant;
 
     @Test
-    public void sendMessageTest(){
-        amqpTemplate.convertAndSend(rabbitMqConstant.messageQueueName,"test");
+    public void sendMessageTest() {
+        for (int i = 0; i < 10; i++)
+        amqpTemplate.convertAndSend(RabbitConfig.HELLO_WORLD_QUEUE,"test hello word");
         //System.out.println("22222222222222222");
     }
+
+    @Test
+    public void sendNewCourseMessageTest() {
+        NoticeDTO noticeDTO = new NoticeDTO();
+        noticeDTO.setCourseId(123456L);
+        noticeDTO.setContent("发送课程消息测试");
+        noticeDTO.setType(NoticeHandlerEnum.NEW_COURSE_notice.getType());
+        amqpTemplate.convertAndSend(RabbitConfig.MESSAGE_QUEUE_NAME,noticeDTO);
+    }
+
 
 
 }

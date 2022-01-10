@@ -58,7 +58,7 @@ public class MessageFactory {
      * @param content
      * @return
      */
-    public Notice getQuestionNotice(Long senderId,Long acceptId,Long courseId,Integer commentId, String content){
+    public Notice getQuestionNotice(Long senderId,Long acceptId,Long courseId,Long commentId, String content){
         Notice notice = new Notice();
         notice.setCourseId(courseId);
         notice.setCommentId(commentId);
@@ -71,7 +71,7 @@ public class MessageFactory {
         return notice;
     }
 
-    public Notice getReplyNotice(Long senderId,Long acceptId,Long courseId,Integer commentId,Integer replyId, String content){
+    public Notice getReplyNotice(Long senderId,Long acceptId,Long courseId,Long commentId,Long replyId, String content){
         Notice notice = new Notice();
         notice.setCourseId(courseId);
         notice.setCommentId(commentId);

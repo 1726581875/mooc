@@ -15,11 +15,11 @@ public class  ReplyNoticeVO {
     /**
      * 对应的评论表的ID
      */
-    private Integer commentId;
+    private Long commentId;
     /**
      * 对应的回复表的ID
      */
-    private Integer replyId;
+    private Long replyId;
     /**
      * 该消息的内容
      */

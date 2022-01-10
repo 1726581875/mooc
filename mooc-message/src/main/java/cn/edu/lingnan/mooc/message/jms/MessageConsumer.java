@@ -1,16 +1,12 @@
 package cn.edu.lingnan.mooc.message.jms;
-import cn.edu.lingnan.mooc.message.constant.RabbitMqConstant;
+import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.service.SendNoticeService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @author xiaomingzhang
@@ -23,27 +19,21 @@ public class MessageConsumer {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private SendNoticeService sendNoticeService;
 
-    @Resource
-    private RabbitMqConstant rabbitMqConstant;
-
     /**
-     * 消息消费者，负责接收消息
+     * 消息消费者，负责接收处理消息
      */
-    @RabbitHandler
-    @RabbitListener(queues = "${constant.mq.messageQueueName:mooc.mq.messageQueue}")
-    public void messageConsumer(String message) {
-        log.info("messageConsumer accept message : {}", message);
+    @RabbitListener(queues = RabbitConfig.MESSAGE_QUEUE_NAME, concurrency = "3")
+    public void messageConsumer(NoticeDTO noticeDTO) {
+        log.info("messageConsumer accept message : {}", noticeDTO);
         Notice notice = null;
         try {
-            notice = objectMapper.readValue(message, Notice.class);
-            sendNoticeService.saveAndSendNotice(notice);
-        } catch (JsonProcessingException e) {
-            log.error("==== 转换消息发生错误 ==== message={} ", message, e);
+            sendNoticeService.saveAndSendNotice(noticeDTO);
         } catch (Exception e) {
-            log.error("==== 消费发生错误 ==== message={} ", message, e);
+            log.error("==== 消费发生错误 ==== message={} ", noticeDTO, e);
         }
     }
 
