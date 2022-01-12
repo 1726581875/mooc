@@ -1,4 +1,4 @@
-package cn.edu.lingnan.mooc.authorize.model.entity;
+package cn.edu.lingnan.mooc.common.model;
 import java.util.Date;
 
 public class LoginLog {

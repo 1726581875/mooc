@@ -1,5 +1,6 @@
-package cn.edu.lingnan.mooc.message.jms;
+package cn.edu.lingnan.mooc.message.jms.consumer;
 
+import cn.edu.lingnan.mooc.message.jms.MessageMQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class RabbitMqConsumerTest {
 
 
-    @RabbitListener(queues = RabbitConfig.HELLO_WORLD_QUEUE, concurrency = "3")
+    @RabbitListener(queues = MessageMQConfig.HELLO_WORLD_QUEUE, concurrency = "3")
     public void helloWorldConsumer(String msg){
         log.info("接收到消息 ==>[{}]", msg);
     }

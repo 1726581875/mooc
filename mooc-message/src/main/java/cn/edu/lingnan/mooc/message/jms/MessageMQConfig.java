@@ -1,6 +1,5 @@
 package cn.edu.lingnan.mooc.message.jms;
 
-import cn.edu.lingnan.mooc.message.constant.RabbitMqConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -10,7 +9,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +19,7 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-public class RabbitConfig {
+public class MessageMQConfig {
 
     /**
      * 消息接收队列

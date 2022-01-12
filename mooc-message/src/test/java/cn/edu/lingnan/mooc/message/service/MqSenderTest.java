@@ -3,7 +3,7 @@ package cn.edu.lingnan.mooc.message.service;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.constant.RabbitMqConstant;
 import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
-import cn.edu.lingnan.mooc.message.jms.RabbitConfig;
+import cn.edu.lingnan.mooc.message.jms.MessageMQConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ public class MqSenderTest {
     @Test
     public void sendMessageTest() {
         for (int i = 0; i < 10; i++)
-        amqpTemplate.convertAndSend(RabbitConfig.HELLO_WORLD_QUEUE,"test hello word");
+        amqpTemplate.convertAndSend(MessageMQConfig.HELLO_WORLD_QUEUE,"test hello word");
         //System.out.println("22222222222222222");
     }
 
@@ -36,7 +36,7 @@ public class MqSenderTest {
         noticeDTO.setCourseId(123456L);
         noticeDTO.setContent("发送课程消息测试");
         noticeDTO.setType(NoticeHandlerEnum.NEW_COURSE_notice.getType());
-        amqpTemplate.convertAndSend(RabbitConfig.MESSAGE_QUEUE_NAME,noticeDTO);
+        amqpTemplate.convertAndSend(MessageMQConfig.MESSAGE_QUEUE_NAME,noticeDTO);
     }
 
 
@@ -44,8 +44,8 @@ public class MqSenderTest {
     public void sendToDeadLetterQueue() {
         for (int i = 0; i < 10; i++) {
             log.info("发送消息" + i);
-            amqpTemplate.convertAndSend(RabbitConfig.JAVABOY_EXCHANGE_NAME,
-                    RabbitConfig.JAVABOY_ROUTING_KEY, "test hello word" + i);
+            amqpTemplate.convertAndSend(MessageMQConfig.JAVABOY_EXCHANGE_NAME,
+                    MessageMQConfig.JAVABOY_ROUTING_KEY, "test hello word" + i);
         }
     }
 

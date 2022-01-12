@@ -1,8 +1,7 @@
 package cn.edu.lingnan.mooc.authorize.aspect;
 
-import cn.edu.lingnan.mooc.authorize.dao.LoginLogDAO;
-import cn.edu.lingnan.mooc.authorize.model.entity.LoginLog;
 import cn.edu.lingnan.mooc.authorize.model.param.LoginParam;
+import cn.edu.lingnan.mooc.common.model.LoginLog;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
@@ -12,6 +11,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,10 +26,13 @@ import java.util.Date;
 @Component
 public class LoginLogAspect {
 
-    @Autowired
-    private LoginLogDAO loginLogDAO;
 
     private static final Logger log = LoggerFactory.getLogger(LoginLogAspect.class);
+
+    private static final String LOGIN_LOG_QUEUE = "mooc.mq.loginLog";
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Around("execution(* cn.edu.lingnan.mooc.authorize.controller.LoginController.login(..))")
     public Object handleLogin(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -41,18 +44,24 @@ public class LoginLogAspect {
         RespResult respResult = (RespResult)joinPoint.proceed();
 
         // 3、记录登录日志
-        String succeed = respResult.isSuccess() ? "成功" : "失败";
-        LoginLog loginLog = new LoginLog();
-        loginLog.setLogName("登录日志");
-        loginLog.setSystemType("windows");
-        loginLog.setMessage(respResult.getMsg());
-        loginLog.setSucceed(succeed);
-        loginLog.setAccount(loginParams.getUsername());
-        loginLog.setCreateTime(new Date());
-        loginLog.setIp(HttpServletUtil.getIpAddress());
-        loginLogDAO.insertLoginLog(loginLog);
+        LoginLog loginLog = buildLoginLog(loginParams.getUsername(), true, respResult);
+        amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
+
 
         return respResult;
+    }
+
+
+    private LoginLog buildLoginLog(String account, Boolean isLogin, RespResult respResult){
+        LoginLog loginLog = new LoginLog();
+        loginLog.setLogName(isLogin ? "登录日志" : "登出日志");
+        loginLog.setSystemType("windows");
+        loginLog.setMessage(respResult.getMsg());
+        loginLog.setSucceed(respResult.isSuccess() ? "成功" : "失败");
+        loginLog.setAccount(account);
+        loginLog.setCreateTime(new Date());
+        loginLog.setIp(HttpServletUtil.getIpAddress());
+        return loginLog;
     }
 
 
@@ -74,16 +83,8 @@ public class LoginLogAspect {
         RespResult respResult = (RespResult)joinPoint.proceed();
 
         // 3、记录登出日志
-        String succeed = respResult.isSuccess() ? "成功" : "失败";
-        LoginLog loginLog = new LoginLog();
-        loginLog.setLogName("登出日志");
-        loginLog.setSystemType("windows");
-        loginLog.setMessage(respResult.getMsg());
-        loginLog.setSucceed(succeed);
-        loginLog.setAccount(account);
-        loginLog.setCreateTime(new Date());
-        loginLog.setIp(HttpServletUtil.getIpAddress());
-        loginLogDAO.insertLoginLog(loginLog);
+        LoginLog loginLog = buildLoginLog(account, false, respResult);
+        amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
 
         return respResult;
     }

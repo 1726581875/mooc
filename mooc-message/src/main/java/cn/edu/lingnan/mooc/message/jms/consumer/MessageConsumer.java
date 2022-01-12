@@ -1,5 +1,6 @@
-package cn.edu.lingnan.mooc.message.jms;
+package cn.edu.lingnan.mooc.message.jms.consumer;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
+import cn.edu.lingnan.mooc.message.jms.MessageMQConfig;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.service.SendNoticeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +27,7 @@ public class MessageConsumer {
     /**
      * 消息消费者，负责接收处理消息
      */
-    @RabbitListener(queues = RabbitConfig.MESSAGE_QUEUE_NAME, concurrency = "3")
+    @RabbitListener(queues = MessageMQConfig.MESSAGE_QUEUE_NAME, concurrency = "3")
     public void messageConsumer(NoticeDTO noticeDTO) {
         log.info("messageConsumer accept message : {}", noticeDTO);
         Notice notice = null;
