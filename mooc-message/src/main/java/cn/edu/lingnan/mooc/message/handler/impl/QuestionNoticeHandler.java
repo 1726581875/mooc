@@ -3,14 +3,16 @@ package cn.edu.lingnan.mooc.message.handler.impl;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
-import cn.edu.lingnan.mooc.message.service.NoticeService;
 import cn.edu.lingnan.mooc.message.websock.MessageDTO;
 import cn.edu.lingnan.mooc.message.websock.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * 课程提问消息处理
@@ -21,8 +23,8 @@ import org.springframework.stereotype.Component;
 @Component("questionNoticeHandler")
 public class QuestionNoticeHandler implements BaseNoticeHandler {
 
-    @Autowired
-    private NoticeService noticeService;
+    @Resource
+    private NoticeMapper noticeMapper;
 
     @Autowired
     private WebSocketHandler webSocket;
@@ -31,7 +33,7 @@ public class QuestionNoticeHandler implements BaseNoticeHandler {
     public void handle(NoticeDTO noticeDTO) {
         log.info("处理【课程提问通知】 start...");
         Notice questionNotice = getQuestionNotice(noticeDTO);
-        int insert = noticeService.insert(questionNotice);
+        int insert = noticeMapper.insert(questionNotice);
         if (insert == 0) {
             log.error("==== 插入新提问消息发生失败 notice={}====", noticeDTO);
             return;

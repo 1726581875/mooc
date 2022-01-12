@@ -1,22 +1,18 @@
 package cn.edu.lingnan.mooc.message.model.entity;
 
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
 @Accessors(chain = true)
 public class Notice {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long sendId;

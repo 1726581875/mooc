@@ -13,7 +13,7 @@ public enum MoocExceptionEnum implements BaseException {
 
     private String msg;
 
-    private MoocExceptionEnum(int code, String msg){
+    MoocExceptionEnum(int code, String msg){
         this.code = code;
         this.msg = msg;
     }

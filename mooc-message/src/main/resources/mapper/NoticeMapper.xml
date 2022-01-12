@@ -4,10 +4,6 @@
 
 <mapper namespace="cn.edu.lingnan.mooc.message.mapper.NoticeMapper">
 
-	<insert id="insert">
-		insert into notice(`send_id`,`accept_id`,`course_id`,`comment_id`,`reply_id`,`content`,`type`,`status`)
-		value (#{sendId},#{acceptId},#{courseId},#{commentId},#{replyId},#{content},#{type},#{status})
-	</insert>
 
 	<update id="updateNoticeStatus">
 		update notice set status = #{status}

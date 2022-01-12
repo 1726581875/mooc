@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.message.mapper;
 
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.model.vo.NoticeVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @author xmz
  * @date: 2021/04/10
  */
-public interface NoticeMapper {
+public interface NoticeMapper extends BaseMapper<Notice> {
 
     /**
      * 统计用户消息数
@@ -73,11 +74,4 @@ public interface NoticeMapper {
      * @return
      */
     String getUserName(@Param("id")Long id);
-
-    /**
-     * 插入一条消息
-     * @param notice
-     * @return
-     */
-    int insert(Notice notice);
 }

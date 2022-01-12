@@ -9,8 +9,6 @@ import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.model.vo.NoticeVO;
 import cn.edu.lingnan.mooc.message.model.vo.ReplyNoticeVO;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +53,7 @@ public class NoticeService {
     public PageVO<NoticeVO> getMessageList(Integer status,Integer pageIndex, Integer pageSize){
 
         LoginUser loginUser = UserUtil.getLoginUser();
-        PageHelper.startPage(pageIndex,pageSize,"create_time DESC");
+       // PageHelper.startPage(pageIndex,pageSize,"create_time DESC");
         List<NoticeVO> noticeVOList = null;
         if(UserTypeEnum.TEACHER.equals(loginUser.getType())){
            noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),false);
@@ -63,14 +61,14 @@ public class NoticeService {
            noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),true);
         }
         //使用分页插件分页，设置页面大小和第几页
-        PageInfo<NoticeVO> pageInfo = new PageInfo<NoticeVO>(noticeVOList);
+        //PageInfo<NoticeVO> pageInfo = new PageInfo<NoticeVO>(noticeVOList);
 
         PageVO<NoticeVO> pageVO = new PageVO<>();
         pageVO.setPageIndex(pageIndex);
         pageVO.setPageSize(pageSize);
-        pageVO.setPageCount(pageInfo.getPages());
-        pageVO.setContent(pageInfo.getList());
-        pageVO.setTotalRow(pageInfo.getTotal());
+        pageVO.setPageCount(1);
+        pageVO.setContent(noticeVOList);
+        pageVO.setTotalRow(1L);
 
         return pageVO;
     }

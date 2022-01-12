@@ -40,7 +40,7 @@ public class OfflineNoticeHandler implements BaseNoticeHandler {
      * 创建下线消息
      * @return
      */
-    public String getOfflineNotice(){
+    private String getOfflineNotice(){
         return "亲~~您已经被踢除下线..";
     }
 

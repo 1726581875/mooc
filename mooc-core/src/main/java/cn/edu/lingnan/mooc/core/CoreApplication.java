@@ -6,6 +6,7 @@ import cn.edu.lingnan.mooc.core.client.AuthorizeClient;
 import cn.edu.lingnan.mooc.core.client.DocmanClient;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -47,6 +48,10 @@ public class CoreApplication {
     @Autowired
     private DocmanClient docmanClient;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class,args);
     }
@@ -66,6 +71,8 @@ public class CoreApplication {
             log.info("thread-userId=" + UserUtil.getUserId());
             log.info("=== end ===");
         }).start();
+
+        amqpTemplate.convertAndSend("mooc.mq.hello.world", "Hello 我来自core模块");
 
         return RespResult.success();
     }
