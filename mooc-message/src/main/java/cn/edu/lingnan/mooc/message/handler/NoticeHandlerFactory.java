@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author xiaomingzhang
  * @date 2022/1/10
+ * 消息处理工厂类
  */
 @Slf4j
 @Component

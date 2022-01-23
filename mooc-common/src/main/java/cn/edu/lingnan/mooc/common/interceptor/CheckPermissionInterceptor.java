@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 /**
  * @author xmz
  * @date: 2020/11/15
+ * 统一权限拦截器
  */
 @Component
 public class CheckPermissionInterceptor implements HandlerInterceptor {

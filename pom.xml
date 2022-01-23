@@ -22,6 +22,7 @@
         <module>mooc-statistics</module>
         <module>mooc-authorize-shiro</module>
         <module>mooc-portal</module>
+        <module>base-jdbc</module>
     </modules>
     <groupId>cn.edu.lingnan.mooc</groupId>
     <artifactId>mooc</artifactId>

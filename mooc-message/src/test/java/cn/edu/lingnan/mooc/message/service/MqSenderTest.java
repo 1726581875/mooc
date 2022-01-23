@@ -35,7 +35,7 @@ public class MqSenderTest {
         NoticeDTO noticeDTO = new NoticeDTO();
         noticeDTO.setCourseId(123456L);
         noticeDTO.setContent("发送课程消息测试");
-        noticeDTO.setType(NoticeHandlerEnum.NEW_COURSE_notice.getType());
+        noticeDTO.setType(NoticeHandlerEnum.NEW_COURSE_NOTICE.getType());
         amqpTemplate.convertAndSend(MessageMQConfig.MESSAGE_QUEUE_NAME,noticeDTO);
     }
 

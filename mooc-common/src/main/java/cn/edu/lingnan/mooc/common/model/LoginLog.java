@@ -1,7 +1,10 @@
 package cn.edu.lingnan.mooc.common.model;
+import java.io.Serializable;
 import java.util.Date;
 
-public class LoginLog {
+public class LoginLog implements Serializable {
+
+    private static final long serialVersionUID = -8535147925502273020L;
     // 主键
     private Long id;
     // 日志名称   

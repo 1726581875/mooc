@@ -3,6 +3,9 @@ package cn.edu.lingnan.mooc.authorize.model.entity;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -10,8 +13,10 @@ import java.util.Date;
  * @date: 2020/11/22
  */
 @Data
+@Entity(name = "mooc_manager")
 public class MoocManager {
 
+    @Id
     private Long id;
 
     private String name;
@@ -21,7 +26,7 @@ public class MoocManager {
     private String password;
 
     private Integer status;
-
+    @Transient
     private UserTypeEnum type;
 
     private Date updateTime;

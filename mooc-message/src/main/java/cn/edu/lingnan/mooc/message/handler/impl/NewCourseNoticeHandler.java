@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.message.handler.impl;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
 import cn.edu.lingnan.mooc.message.mapper.SendNoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
@@ -21,7 +22,7 @@ import java.util.List;
  * @date 2022/1/10
  */
 @Slf4j
-@Component("newCourseNoticeHandler")
+@Component(NoticeHandlerEnum.NEW_COURSE_NOTICE_NAME)
 public class NewCourseNoticeHandler implements BaseNoticeHandler {
 
     @Autowired
@@ -35,6 +36,7 @@ public class NewCourseNoticeHandler implements BaseNoticeHandler {
 
     @Override
     public void handle(NoticeDTO noticeDTO) {
+
         log.info("处理【新建课程通知】 start...");
         Notice newCourseNotice = getCreateCourseNotice(noticeDTO);
         int insert = noticeService.insert(newCourseNotice);

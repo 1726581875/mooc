@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.message.handler.impl;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.service.NoticeService;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/1/10
  */
 @Slf4j
-@Component("replyNoticeHandler")
+@Component(NoticeHandlerEnum.REPLY_NOTICE_NAME)
 public class ReplyNoticeHandler implements BaseNoticeHandler {
 
     @Autowired

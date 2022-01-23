@@ -17,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -76,6 +77,18 @@ public class CoreApplication {
 
         return RespResult.success();
     }
+
+
+    @GetMapping("/auth")
+    public String auth(@RequestParam String code, @RequestParam(name = "app_key") String appKey
+            , @RequestParam Long ts, String sign) {
+        log.info("code={}", code);
+        log.info("appKey={}", appKey);
+        log.info("ts={}", ts);
+        log.info("sign={}", sign);
+        return "{\"code\": 0, \"result\": {\"name\":\"guoquanhui\"} }";
+    }
+
 
 
 

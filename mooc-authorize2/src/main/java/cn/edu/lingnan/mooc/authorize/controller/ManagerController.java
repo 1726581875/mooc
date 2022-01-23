@@ -77,13 +77,7 @@ public class ManagerController {
     @Transactional
     public RespResult updateStatus(@PathVariable("id") Long managerId,
                                    @PathVariable("status") Integer status) throws Exception {
-        MoocManager manager = new MoocManager();
-        manager.setId(managerId);
-        manager.setStatus(status);
-        Integer flag = managerService.update(manager);
-        if (flag == 0) {
-            return RespResult.fail("更新管理员状态失败");
-        }
+       managerService.updateManagerStatus(managerId, status);
         return RespResult.success("更新管理员状态成功");
     }
 

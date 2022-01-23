@@ -2,6 +2,7 @@ package cn.edu.lingnan.mooc.authorize.service;
 
 import cn.edu.lingnan.mooc.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.mooc.authorize.dao.UserDAO;
+import cn.edu.lingnan.mooc.authorize.dao.jpa.ManagerRepository;
 import cn.edu.lingnan.mooc.authorize.model.entity.ManagerRoleRel;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocManager;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocUser;
@@ -9,6 +10,7 @@ import cn.edu.lingnan.mooc.authorize.model.entity.Role;
 import cn.edu.lingnan.mooc.authorize.model.param.ManagerParam;
 import cn.edu.lingnan.mooc.authorize.model.param.PasswordParam;
 import cn.edu.lingnan.mooc.authorize.util.RsaUtil;
+import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.util.CopyUtil;
@@ -24,7 +26,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,8 @@ public class ManagerService {
     private UserDAO userDAO;
     @Value("${mooc.rsa.privateKey}")
     private String RSA_PRI_KEY;
+    @Resource
+    private ManagerRepository managerRepository;
 
     /**
      * 管理员（分管本人）修改密码
@@ -181,6 +187,17 @@ public class ManagerService {
 
         return 1;
     }
+
+    public void updateManagerStatus(@NotNull Long managerId, @NotNull Integer status){
+        Optional<MoocManager> managerOptional = managerRepository.findById(managerId);
+        if(!managerOptional.isPresent()){
+            throw new MoocException("管理员没找到");
+        }
+        MoocManager manager = managerOptional.get();
+        manager.setStatus(status);
+        managerRepository.save(manager);
+    }
+
 
     public Integer deleteById(Integer id) {
         return null;

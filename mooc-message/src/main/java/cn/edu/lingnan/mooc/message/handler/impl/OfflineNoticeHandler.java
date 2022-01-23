@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.message.handler.impl;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
 import cn.edu.lingnan.mooc.message.websock.MessageDTO;
 import cn.edu.lingnan.mooc.message.websock.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/1/10
  */
 @Slf4j
-@Component("offlineNoticeHandler")
+@Component(NoticeHandlerEnum.OFFLINE_NOTICE_NAME)
 public class OfflineNoticeHandler implements BaseNoticeHandler {
 
     @Autowired

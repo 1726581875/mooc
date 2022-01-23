@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.message.handler.impl;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.NoticeDTO;
 import cn.edu.lingnan.mooc.message.handler.BaseNoticeHandler;
+import cn.edu.lingnan.mooc.message.handler.NoticeHandlerEnum;
 import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeTypeEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
@@ -20,7 +21,7 @@ import javax.annotation.Resource;
  * @date 2022/1/10
  */
 @Slf4j
-@Component("questionNoticeHandler")
+@Component(NoticeHandlerEnum.QUESTION_NOTICE_NAME)
 public class QuestionNoticeHandler implements BaseNoticeHandler {
 
     @Resource

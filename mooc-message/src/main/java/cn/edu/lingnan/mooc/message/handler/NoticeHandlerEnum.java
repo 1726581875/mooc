@@ -5,11 +5,16 @@ package cn.edu.lingnan.mooc.message.handler;
  * @date 2022/1/10
  */
 public enum NoticeHandlerEnum {
-    NEW_COURSE_notice(1, "newCourseNoticeHandler"),
-    QUESTION_NOTICE(2,"questionNoticeHandler"),
-    REPLY_NOTICE(3,"replyNoticeHandler"),
-    OFFLINE_NOTICE(6, "offlineNoticeHandler")
+    NEW_COURSE_NOTICE(1, NoticeHandlerEnum.NEW_COURSE_NOTICE_NAME),
+    QUESTION_NOTICE(2, NoticeHandlerEnum.QUESTION_NOTICE_NAME),
+    REPLY_NOTICE(3,NoticeHandlerEnum.REPLY_NOTICE_NAME),
+    OFFLINE_NOTICE(6, NoticeHandlerEnum.OFFLINE_NOTICE_NAME)
     ;
+
+    public static final String NEW_COURSE_NOTICE_NAME = "newCourseNoticeHandler";
+    public static final String QUESTION_NOTICE_NAME = "questionNoticeHandler";
+    public static final String REPLY_NOTICE_NAME = "replyNoticeHandler";
+    public static final String OFFLINE_NOTICE_NAME = "offlineNoticeHandler";
 
     private Integer type;
 
