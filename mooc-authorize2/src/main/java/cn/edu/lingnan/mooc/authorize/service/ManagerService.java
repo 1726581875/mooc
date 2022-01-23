@@ -9,6 +9,7 @@ import cn.edu.lingnan.mooc.authorize.model.entity.MoocUser;
 import cn.edu.lingnan.mooc.authorize.model.entity.Role;
 import cn.edu.lingnan.mooc.authorize.model.param.ManagerParam;
 import cn.edu.lingnan.mooc.authorize.model.param.PasswordParam;
+import cn.edu.lingnan.mooc.authorize.model.vo.ManagerVO;
 import cn.edu.lingnan.mooc.authorize.util.RsaUtil;
 import cn.edu.lingnan.mooc.common.exception.MoocException;
 import cn.edu.lingnan.mooc.common.model.PageVO;
@@ -128,7 +129,7 @@ public class ManagerService {
      * @param pageSize
      * @return
      */
-    public PageVO<MoocManager> findPage(String queryStr, Integer pageIndex, Integer pageSize){
+    public PageVO<MoocManager> findPage(String queryStr, Integer pageIndex, Integer pageSize) {
         return managerDAO.findManagePage(queryStr, pageIndex, pageSize);
     }
 

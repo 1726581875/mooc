@@ -44,7 +44,7 @@ public interface NoticeMapper extends BaseMapper<Notice> {
      * @param status
      * @return
      */
-    int updateNoticeStatus(@Param("noticeIdList")List<Integer> noticeIdList,@Param("status")Integer status);
+    int updateNoticeStatus(@Param("noticeIdList")List<Long> noticeIdList,@Param("status")Integer status);
 
     /**
      * 批量更新通知状态

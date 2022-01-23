@@ -27,18 +27,23 @@ public class UserUtil {
 
     /**
      * 获取用户信息
+     *
      * @return
      */
-    public static LoginUser getLoginUser(){
+    public static LoginUser getLoginUser() {
         LoginUser loginUser = user.get();
-        if(loginUser == null){
+        if (loginUser == null) {
             throw new MoocException(ExceptionEnum.UNAUTHORIZED_ERROR);
         }
         return loginUser;
     }
 
-    public static boolean isTeacher(){
+    public static boolean isTeacher() {
         return UserTypeEnum.TEACHER.equals(getLoginUser().getType());
+    }
+
+    public static boolean isManager() {
+        return UserTypeEnum.MANAGER.equals(getLoginUser().getType());
     }
 
     public static Long getUserId() {
@@ -49,7 +54,7 @@ public class UserUtil {
     /**
      * 使用完记得remove,防止内存泄露
      */
-    public static void remove(){
+    public static void remove() {
         user.remove();
     }
 

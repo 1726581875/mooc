@@ -37,14 +37,14 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
 
         //todo 为了方便开发
         //构造超管用户
-        LoginUser superMan = new LoginUser();
+/*        LoginUser superMan = new LoginUser();
         superMan.setUserId(0L);
         superMan.setAccount("admin");
         UserUtil.setUserToken(superMan);
         //所有请求都放行
         if(true){
             return true;
-        }
+        }*/
 
         // 1、获取请求头携带的token
         String token = request.getHeader(CommonConstant.HTTP_TOKEN_HEAD);

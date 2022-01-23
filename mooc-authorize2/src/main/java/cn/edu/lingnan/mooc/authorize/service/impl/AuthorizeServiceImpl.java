@@ -196,10 +196,6 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             if(moocUser == null){
                return null;
             }
-            final String teacher = "教师";
-            if(!teacher.equals(moocUser.getUserType())){
-                throw new MoocException("您不能登录本系统");
-            }
             return createTeacherManager(moocUser);
         } else {
             // 超级管理员

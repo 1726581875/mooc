@@ -50,7 +50,7 @@ public class NoticeController {
      * @return
      */
     @PostMapping("/read")
-    public RespResult readNotice(@RequestBody List<Integer> noticeIdList) {
+    public RespResult readNotice(@RequestBody List<Long> noticeIdList) {
         noticeService.updateNoticeStatus(noticeIdList, NoticeStatusEnum.READ.getStatus());
         return RespResult.success("阅读消息成功");
     }
@@ -61,7 +61,7 @@ public class NoticeController {
      * @return
      */
     @PostMapping("/delete")
-    public RespResult deleteNotice(@RequestBody List<Integer> noticeIdList) {
+    public RespResult deleteNotice(@RequestBody List<Long> noticeIdList) {
         noticeService.updateNoticeStatus(noticeIdList, NoticeStatusEnum.DELETED.getStatus());
         return RespResult.success("删除消息成功");
     }
@@ -72,7 +72,7 @@ public class NoticeController {
      * @return
      */
     @PostMapping("/recover")
-    public RespResult recoverNotice(@RequestBody List<Integer> noticeIdList) {
+    public RespResult recoverNotice(@RequestBody List<Long> noticeIdList) {
         noticeService.updateNoticeStatus(noticeIdList, NoticeStatusEnum.READ.getStatus());
         return RespResult.success("恢复消息成功");
     }

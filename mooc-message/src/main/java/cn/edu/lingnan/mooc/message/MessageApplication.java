@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author xmz
@@ -18,6 +19,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 //Eureka
 @EnableEurekaClient
 @SpringBootApplication
+@ComponentScan({"cn.edu.lingnan.mooc.message"
+        ,"cn.edu.lingnan.mooc.common"})
 @MapperScan("cn.edu.lingnan.mooc.message.mapper")
 public class MessageApplication {
 

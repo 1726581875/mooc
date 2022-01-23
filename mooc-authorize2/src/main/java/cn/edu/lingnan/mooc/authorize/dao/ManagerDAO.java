@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.authorize.dao;
 import cn.edu.lingnan.mooc.authorize.constant.SqlConstant;
 import cn.edu.lingnan.mooc.authorize.model.entity.ManagerRoleRel;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocManager;
+import cn.edu.lingnan.mooc.authorize.model.vo.ManagerVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

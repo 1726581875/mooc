@@ -3,16 +3,22 @@ package cn.edu.lingnan.mooc.message.service;
 import cn.edu.lingnan.mooc.common.enums.UserTypeEnum;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
+import cn.edu.lingnan.mooc.common.util.CopyUtil;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import cn.edu.lingnan.mooc.message.mapper.NoticeMapper;
 import cn.edu.lingnan.mooc.message.menus.NoticeStatusEnum;
 import cn.edu.lingnan.mooc.message.model.entity.Notice;
 import cn.edu.lingnan.mooc.message.model.vo.NoticeVO;
 import cn.edu.lingnan.mooc.message.model.vo.ReplyNoticeVO;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,25 +58,32 @@ public class NoticeService {
      */
     public PageVO<NoticeVO> getMessageList(Integer status,Integer pageIndex, Integer pageSize){
 
+
+        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
         LoginUser loginUser = UserUtil.getLoginUser();
-       // PageHelper.startPage(pageIndex,pageSize,"create_time DESC");
-        List<NoticeVO> noticeVOList = null;
-        if(UserTypeEnum.TEACHER.equals(loginUser.getType())){
-           noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),false);
+
+        queryWrapper = queryWrapper.eq(Notice::getStatus, status)
+                .eq(Notice::getUserType, loginUser.getType());
+
+        if (UserUtil.isTeacher()) {
+            queryWrapper = queryWrapper.and(
+                         e -> e.eq(Notice::getAcceptId, loginUser.getUserId()).or(o -> o.isNotNull(Notice::getCourseId))
+                    );
         }else {
-           noticeVOList = noticeMapper.getNoticeList(status,loginUser.getUserId(),true);
+            queryWrapper = queryWrapper.eq(Notice::getAcceptId, loginUser.getUserId());
         }
-        //使用分页插件分页，设置页面大小和第几页
-        //PageInfo<NoticeVO> pageInfo = new PageInfo<NoticeVO>(noticeVOList);
 
-        PageVO<NoticeVO> pageVO = new PageVO<>();
-        pageVO.setPageIndex(pageIndex);
-        pageVO.setPageSize(pageSize);
-        pageVO.setPageCount(1);
-        pageVO.setContent(noticeVOList);
-        pageVO.setTotalRow(1L);
+        Page<Notice> noticePage = noticeMapper.selectPage(new Page<>(pageIndex , pageSize), queryWrapper);
 
-        return pageVO;
+
+        if(CollectionUtils.isEmpty(noticePage.getRecords())){
+            return new PageVO<>(pageIndex, pageSize,0, 0L,  new ArrayList<>());
+        }
+
+        List<NoticeVO> noticeVOList = CopyUtil.copyList(noticePage.getRecords(), NoticeVO.class);
+        int pageCount = Long.valueOf(noticePage.getPages()).intValue();
+        return new PageVO<>(pageIndex, pageSize, pageCount, noticePage.getTotal(), noticeVOList);
+
     }
 
     /**
@@ -78,7 +91,7 @@ public class NoticeService {
      * @param noticeIdList
      * @param status
      */
-    public void updateNoticeStatus(List<Integer> noticeIdList,Integer status){
+    public void updateNoticeStatus(List<Long> noticeIdList,Integer status){
         int successNum = noticeMapper.updateNoticeStatus(noticeIdList, status);
         log.info("=====更新消息的状态 idList={},status={},成功数={} =====",noticeIdList.toString(),status,successNum);
     }
