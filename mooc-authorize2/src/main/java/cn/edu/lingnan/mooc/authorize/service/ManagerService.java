@@ -3,6 +3,7 @@ package cn.edu.lingnan.mooc.authorize.service;
 import cn.edu.lingnan.mooc.authorize.dao.ManagerDAO;
 import cn.edu.lingnan.mooc.authorize.dao.UserDAO;
 import cn.edu.lingnan.mooc.authorize.dao.jpa.ManagerRepository;
+import cn.edu.lingnan.mooc.authorize.dao.jpa.RoleRepository;
 import cn.edu.lingnan.mooc.authorize.model.entity.ManagerRoleRel;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocManager;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocUser;
@@ -49,6 +50,8 @@ public class ManagerService {
     private String RSA_PRI_KEY;
     @Resource
     private ManagerRepository managerRepository;
+    @Resource
+    private RoleRepository roleRepository;
 
     /**
      * 管理员（分管本人）修改密码
@@ -129,7 +132,7 @@ public class ManagerService {
      * @param pageSize
      * @return
      */
-    public PageVO<MoocManager> findPage(String queryStr, Integer pageIndex, Integer pageSize) {
+    public PageVO<ManagerVO> findPage(String queryStr, Integer pageIndex, Integer pageSize) {
         return managerDAO.findManagePage(queryStr, pageIndex, pageSize);
     }
 

@@ -16,7 +16,10 @@ import java.util.List;
 @ToString
 public class ManagerParam {
 
-    private Integer id;
+    /**
+     * 管理员id
+     */
+    private Long id;
     // 名字
     private String name;
     // 登录账号

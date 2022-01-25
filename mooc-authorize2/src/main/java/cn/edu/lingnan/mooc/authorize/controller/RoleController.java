@@ -51,6 +51,11 @@ public class RoleController {
         return RespResult.success(roleService.findAll());
     }
 
+    @GetMapping("/manager/{managerId}")
+    private RespResult getRoleByManagerId(@PathVariable Long managerId){
+        return RespResult.success(roleService.findRoleByManagerId(managerId));
+    }
+
     /**
      * 更新role接口
      * 请求方法: put

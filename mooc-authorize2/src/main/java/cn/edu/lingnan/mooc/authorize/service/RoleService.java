@@ -66,6 +66,10 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
+    public List<Role> findRoleByManagerId(Long managerId){
+        return roleRepository.findAllRoleInManagerId(managerId);
+    }
+
     /**
      * 根据匹配条件查询所有
      * @param matchObject
@@ -213,19 +217,6 @@ public class RoleService {
         //批量删除角色权限
         roleMenuRelRepository.deleteAllByRoleIdIn(roleIdList);
         return delRoleList.size();
-    }
-
-    public Map<Long,List<Role>> findRoleByManagerIdList(List<Long> managerIdList){
-        if(managerIdList == null && managerIdList.isEmpty()){
-            log.error("查询角色列表传入的id不能为null");
-            throw new IllegalArgumentException("传入的id不能为null");
-        }
-        // TODO 有时间要去优化
-        Map<Long,List<Role>> roleMap = new HashMap<>(managerIdList.size());
-        managerIdList.forEach(managerId -> roleMap.put(managerId,roleRepository.findAllRoleInManagerId(managerId)));
-        //List<Role> roleList = roleRepository.findAllRoleInManagerIdList(managerIdList);
-        //Map<Integer, List<Role>> roleMap = roleList.stream().collect(Collectors.groupingBy(Role::getId));
-        return roleMap;
     }
 
 }

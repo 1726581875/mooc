@@ -1,12 +1,17 @@
 package cn.edu.lingnan.mooc.authorize.dao;
 
+import cn.edu.lingnan.mooc.authorize.dao.jpa.ManagerRepository;
+import cn.edu.lingnan.mooc.authorize.dao.jpa.RoleRepository;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocManager;
+import cn.edu.lingnan.mooc.authorize.model.entity.Role;
 import cn.edu.lingnan.mooc.common.model.PageVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @author xmz
@@ -20,6 +25,8 @@ public class ManagerDAOTest {
     private ManagerDAO managerDAO;
     @Autowired
     private MenuTreeDAO menuTreeDAO;
+    @Resource
+    private RoleRepository roleRepository;
 
     @Test
     public void findMoocManagerTest(){
@@ -45,8 +52,8 @@ public class ManagerDAOTest {
         Integer pageIndex = 1;
         Integer pageSize = 10;
         String queryStr = "";
-        PageVO<MoocManager> managePage = managerDAO.findManagePage(queryStr, pageIndex, pageSize);
-        System.out.println(managePage);
+/*        PageVO<MoocManager> managePage = managerDAO.findManagePage(queryStr, pageIndex, pageSize);
+        System.out.println(managePage);*/
     }
 
 

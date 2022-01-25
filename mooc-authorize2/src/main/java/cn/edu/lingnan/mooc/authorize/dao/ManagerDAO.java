@@ -3,8 +3,10 @@ package cn.edu.lingnan.mooc.authorize.dao;
 import cn.edu.lingnan.mooc.authorize.constant.SqlConstant;
 import cn.edu.lingnan.mooc.authorize.model.entity.ManagerRoleRel;
 import cn.edu.lingnan.mooc.authorize.model.entity.MoocManager;
+import cn.edu.lingnan.mooc.authorize.model.enums.ManagerStatusEnum;
 import cn.edu.lingnan.mooc.authorize.model.vo.ManagerVO;
 import cn.edu.lingnan.mooc.common.model.PageVO;
+import cn.edu.lingnan.mooc.common.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -95,7 +97,7 @@ public class ManagerDAO extends BaseDAO {
     }
 
     /**
-     * 疲劳插入管理员角色关系
+     * 批量插入管理员角色关系
      *
      * @param managerRoleRels
      * @return
@@ -162,7 +164,7 @@ public class ManagerDAO extends BaseDAO {
      * @param pageSize
      * @return
      */
-    public PageVO<MoocManager> findManagePage(String queryStr, Integer pageIndex, Integer pageSize) {
+    public PageVO<ManagerVO> findManagePage(String queryStr, Integer pageIndex, Integer pageSize) {
 
         StringBuilder commonSql = new StringBuilder(" from mooc_manager ");
         if (!StringUtils.isEmpty(queryStr)) {
@@ -186,7 +188,15 @@ public class ManagerDAO extends BaseDAO {
 
         //计算页数
         Integer pageCount = Math.toIntExact(totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1);
-        return new PageVO<>(pageIndex, pageSize, pageCount, totalCount, moocManagers);
+
+        List<ManagerVO> managerVOList = new ArrayList<>(moocManagers.size());
+        for(MoocManager manager : moocManagers) {
+            ManagerVO managerVO = CopyUtil.copy(manager, ManagerVO.class);
+            managerVO.setStatus(ManagerStatusEnum.NORMAL.getStatus().equals(manager.getStatus()));
+            managerVOList.add(managerVO);
+        }
+
+        return new PageVO<>(pageIndex, pageSize, pageCount, totalCount, managerVOList);
     }
 
     /**
