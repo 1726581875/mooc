@@ -1,17 +1,22 @@
 package cn.edu.lingnan.mooc.core.client;
 
 import cn.edu.lingnan.mooc.core.client.hystrix.DocmanHystrix;
+import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author xiaomingzhang
  * @date 2021/12/14
  */
-@FeignClient(value = "docman", url = "http://192.168.23.172:9008", fallback = DocmanHystrix.class)
+@FeignClient(value = "test", url = "http://127.0.0.1:9002", fallback = DocmanHystrix.class)
 public interface DocmanClient {
 
-    @GetMapping("/manager/list")
-    String getManagerList();
+    @PostMapping("/postTest")
+    @Headers("")
+    String getManagerList(@RequestBody FeignParam feignParam);
 
 }

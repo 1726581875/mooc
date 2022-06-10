@@ -637,6 +637,13 @@ values
 (6,1,3,1,"哈哈",'2021-04-10 14:29',2);
 
 -- 创建通知表
+-- 通知类型以及规则：
+/*
+1、新增课程通知(发送给管理员，管理员进行审批课程)，接收人accept_id为管理员id,必须包含send_id(教师id)、course_id、accept_id(管理员id)
+2、课程提问通知(发送给教师，教师可进行回复)，接收人accept_id为教师id,必须包含send_id(用户id)、course_id(课程id)、comment_id(评论表id)
+3、评论/提问回复通知(发送给用户，用户可进行继续回复)，接收人accept_id为用户或者教师, 必须包含send_id(教师id/用户id)、course_id(课程id)、comment_id(评论表id)、reply_id(回复表id)
+4、系统通知
+ */
 DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice`(
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '通知id',
@@ -646,7 +653,7 @@ CREATE TABLE `notice`(
 `comment_id` bigint(20) default NULL  COMMENT '评论id,如果是评论通知不为null',
 `reply_id` bigint(20) default NULL  COMMENT '回复id,如果是回复不为null',
 `content` varchar(512) not null COMMENT '消息内容',
-`user_type` varchar(20) NOT NULL COMMENT '用户类型,管理员MANAGER，教师TEACHER, 普通用户USER',
+`user_type` varchar(20) NOT NULL COMMENT '接收人用户类型,管理员MANAGER，教师TEACHER, 普通用户USER',
 `type` int NOT NULL DEFAULT 1 COMMENT '消息类型,1新增课程，2课程提问，3评论回复，4、系统通知',
 `status` int NOT NULL DEFAULT 0 COMMENT '0未读，1已读，2已删除',
 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送通知的时间',

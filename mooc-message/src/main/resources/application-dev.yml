@@ -33,11 +33,11 @@ spring:
     password: y1234567
   #rabbitmq配置
   rabbitmq:
-    host: 192.168.23.21
+    host: 159.75.134.161
     virtual-host: /xmz/test
     port: 5672
-    username: admin
-    password: admin
+    username: guest
+    password: guest
 
   #时间格式化
   jackson:

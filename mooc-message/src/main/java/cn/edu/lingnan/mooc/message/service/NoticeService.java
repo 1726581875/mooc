@@ -37,16 +37,8 @@ public class NoticeService {
      * @return
      */
     public Integer getUnReadNoticeNum(Integer status) {
-        LoginUser user = UserUtil.getLoginUser();
-        if(user == null){
-            log.error("====== 统计未读消息发生异常 用户还没有登录======");
-            return null;
-        }
-        if(UserTypeEnum.TEACHER.equals(user.getType())){
-            return noticeMapper.countUnReadNoticeByUserId(user.getUserId(),status);
-        }
-
-        return noticeMapper.countUnReadNoticeByManagerId(user.getUserId(), status);
+        LambdaQueryWrapper<Notice> noticeQueryWrapper = getNoticeQueryWrapper(status);
+        return noticeMapper.selectCount(noticeQueryWrapper);
     }
 
     /**
@@ -59,22 +51,9 @@ public class NoticeService {
     public PageVO<NoticeVO> getMessageList(Integer status,Integer pageIndex, Integer pageSize){
 
 
-        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
-        LoginUser loginUser = UserUtil.getLoginUser();
+        LambdaQueryWrapper<Notice> noticeQueryWrapper = getNoticeQueryWrapper(status);
 
-        queryWrapper = queryWrapper.eq(Notice::getStatus, status)
-                .eq(Notice::getUserType, loginUser.getType());
-
-        if (UserUtil.isTeacher()) {
-            queryWrapper = queryWrapper.and(
-                         e -> e.eq(Notice::getAcceptId, loginUser.getUserId()).or(o -> o.isNotNull(Notice::getCourseId))
-                    );
-        }else {
-            queryWrapper = queryWrapper.eq(Notice::getAcceptId, loginUser.getUserId());
-        }
-
-        Page<Notice> noticePage = noticeMapper.selectPage(new Page<>(pageIndex , pageSize), queryWrapper);
-
+        Page<Notice> noticePage = noticeMapper.selectPage(new Page<>(pageIndex , pageSize), noticeQueryWrapper);
 
         if(CollectionUtils.isEmpty(noticePage.getRecords())){
             return new PageVO<>(pageIndex, pageSize,0, 0L,  new ArrayList<>());
@@ -85,6 +64,23 @@ public class NoticeService {
         return new PageVO<>(pageIndex, pageSize, pageCount, noticePage.getTotal(), noticeVOList);
 
     }
+
+    private LambdaQueryWrapper<Notice> getNoticeQueryWrapper(Integer status) {
+        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
+        LoginUser loginUser = UserUtil.getLoginUser();
+
+        queryWrapper = queryWrapper.eq(Notice::getStatus, status)
+                .eq(Notice::getUserType, loginUser.getType());
+        // todo 这段逻辑考虑是否可以去除
+/*        if (UserUtil.isTeacher()) {
+            return queryWrapper.and(
+                    e -> e.eq(Notice::getAcceptId, loginUser.getUserId()).or(o -> o.isNotNull(Notice::getCourseId))
+            );
+        }*/
+        return queryWrapper.eq(Notice::getAcceptId, loginUser.getUserId());
+    }
+
+
 
     /**
      * 更新消息状态

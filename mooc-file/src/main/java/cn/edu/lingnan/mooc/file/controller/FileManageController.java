@@ -6,7 +6,6 @@ import cn.edu.lingnan.mooc.file.entity.MoocFile;
 import cn.edu.lingnan.mooc.file.model.FileExport;
 import cn.edu.lingnan.mooc.file.service.MoocFileService;
 import com.alibaba.excel.EasyExcel;
-import com.sun.deploy.net.URLEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;

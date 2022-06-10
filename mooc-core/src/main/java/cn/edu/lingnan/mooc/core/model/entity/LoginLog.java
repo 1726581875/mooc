@@ -14,7 +14,7 @@ public class LoginLog{
     // 主键   
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     // 日志名称   
     private String logName;
     // 管理员账号   

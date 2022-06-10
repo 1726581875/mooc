@@ -23,6 +23,8 @@ public class CoreInterceptorConfig implements WebMvcConfigurer {
 
         List<String> excludePathList = new ArrayList<>();
         excludePathList.add("/file/**");
+        excludePathList.add("/auth");
+        excludePathList.add("/core/auth");
         excludePathList.add("/logoImage/**");
         excludePathList.add("/admin/categorys/all");
         //用户端，放行

@@ -1,7 +1,8 @@
 package cn.edu.lingnan.mooc.authorize.aspect;
 
+import cn.edu.lingnan.mooc.authorize.dao.jpa.LoginLogRepository;
+import cn.edu.lingnan.mooc.authorize.model.entity.LoginLog;
 import cn.edu.lingnan.mooc.authorize.model.param.LoginParam;
-import cn.edu.lingnan.mooc.common.model.LoginLog;
 import cn.edu.lingnan.mooc.common.model.LoginUser;
 import cn.edu.lingnan.mooc.common.model.RespResult;
 import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
@@ -11,10 +12,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -31,8 +31,11 @@ public class LoginLogAspect {
 
     private static final String LOGIN_LOG_QUEUE = "mooc.mq.loginLog";
 
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+    @Resource
+    private LoginLogRepository logRepository;
+
+    //@Autowired
+    //private AmqpTemplate amqpTemplate;
 
     @Around("execution(* cn.edu.lingnan.mooc.authorize.controller.LoginController.login(..))")
     public Object handleLogin(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -45,7 +48,10 @@ public class LoginLogAspect {
 
         // 3、记录登录日志
         LoginLog loginLog = buildLoginLog(loginParams.getUsername(), true, respResult);
-        amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
+
+        logRepository.save(loginLog);
+
+        //amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
 
 
         return respResult;
@@ -84,7 +90,9 @@ public class LoginLogAspect {
 
         // 3、记录登出日志
         LoginLog loginLog = buildLoginLog(account, false, respResult);
-        amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
+        //amqpTemplate.convertAndSend(LOGIN_LOG_QUEUE, loginLog);
+
+        logRepository.save(loginLog);
 
         return respResult;
     }

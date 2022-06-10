@@ -7,6 +7,8 @@ import cn.edu.lingnan.mooc.common.util.HttpServletUtil;
 import cn.edu.lingnan.mooc.common.util.RedisUtil;
 import cn.edu.lingnan.mooc.common.util.UserUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -30,7 +32,8 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Transactional
+    private static final Logger log = LoggerFactory.getLogger(CheckPermissionInterceptor.class);
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -49,12 +52,14 @@ public class CheckPermissionInterceptor implements HandlerInterceptor {
         // 1、获取请求头携带的token
         String token = request.getHeader(CommonConstant.HTTP_TOKEN_HEAD);
         if(token == null){
-            HttpServletUtil.responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"你还没有登录");
+            log.warn("请求头缺少授权标识");
+            HttpServletUtil.responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"请求头缺少授权标识");
             return false;
         }
         // 2、去redis获取用户信息，如果获取不到，说明没有登录或者token过期
         LoginUser userToken = RedisUtil.get(token, LoginUser.class);
-        if(userToken == null){
+        if(userToken == null) {
+            log.warn("redis中获取不到登录用户，token={}",token);
             HttpServletUtil.responseMsg(response,HttpStatus.UNAUTHORIZED.value(),"无效token");
             return false;
         }

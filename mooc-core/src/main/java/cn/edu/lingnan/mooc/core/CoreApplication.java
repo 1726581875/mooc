@@ -33,7 +33,6 @@ import java.util.Map;
 @EnableCircuitBreaker
 @SpringBootApplication
 @ComponentScan({"cn.edu.lingnan.mooc.core"
-        //,"cn.edu.lingnan.mooc.authorize"
         ,"cn.edu.lingnan.mooc.common"})
 @EnableEurekaClient
 // 开启异步

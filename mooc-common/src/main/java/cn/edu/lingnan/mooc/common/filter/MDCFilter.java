@@ -20,8 +20,8 @@ import java.io.IOException;
  * @date 2021/12/13
  * 链路跟踪，MDC过滤器，拦截获取请求传来的traceId
  */
-@Order(1)
-@Component
+//@Order(1)
+//@Component
 public class MDCFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(MDCFilter.class);

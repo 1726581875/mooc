@@ -37,6 +37,10 @@ public class LoginFilter implements GlobalFilter, Ordered {
         log.info("请求url={}, ip={}", url, ipAddress);
 
 
+        if(true){
+            return chain.filter(exchange);
+        }
+
         //webflux
 
         // 1、请求头获取token

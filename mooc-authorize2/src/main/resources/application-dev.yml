@@ -1,5 +1,5 @@
 server:
-  port: 10000
+  port: 10001
 
 spring:
   application:
@@ -16,12 +16,12 @@ spring:
     port: 6379
     password: y1234567
   #rabbitmq配置
-  rabbitmq:
-    host: 192.168.23.21
-    virtual-host: /xmz/test
-    port: 5672
-    username: admin
-    password: admin
+#  rabbitmq:
+#    host: 192.168.23.21
+#    virtual-host: /xmz/test
+#    port: 5672
+#    username: admin
+#    password: admin
 
 #rsa公钥、私钥
 mooc:

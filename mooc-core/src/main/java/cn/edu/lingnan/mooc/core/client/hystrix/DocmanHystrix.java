@@ -1,6 +1,7 @@
 package cn.edu.lingnan.mooc.core.client.hystrix;
 
 import cn.edu.lingnan.mooc.core.client.DocmanClient;
+import cn.edu.lingnan.mooc.core.client.FeignParam;
 
 /**
  * @author xiaomingzhang
@@ -8,7 +9,7 @@ import cn.edu.lingnan.mooc.core.client.DocmanClient;
  */
 public class DocmanHystrix implements DocmanClient {
     @Override
-    public String getManagerList() {
+    public String getManagerList(FeignParam feignParam) {
         return "error";
     }
 }
